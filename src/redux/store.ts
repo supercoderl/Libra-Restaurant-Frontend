@@ -3,14 +3,14 @@ import { combineReducers } from 'redux';
 import cartSlice from './slices/cart-slice';
 import mainStoreSlice, { fetchData } from './slices/products-slice';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
-import userSlice from './slices/user-slice';
 import storage from 'redux-persist/lib/storage';
 import { persistReducer } from 'redux-persist';
+import emblaSlice from './slices/embla-slice';
 
 const reducers = combineReducers({
   cart:cartSlice,
   mainStoreSlice:mainStoreSlice,
-  userStore:userSlice
+  emblaStore: emblaSlice
 });
 
 

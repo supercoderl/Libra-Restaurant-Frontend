@@ -12,7 +12,7 @@ export default function useCartProducts() {
     shallowEqual,
   );
   useEffect(() => {
-    const tempTotalPrice = productsInCart.reduce((a,b)=> {
+    const tempTotalPrice = productsInCart.reduce((a: any,b: any)=> {
       return a + b.product.price * b.quantity
       }  , 0)
     setTotalPrice(tempTotalPrice)

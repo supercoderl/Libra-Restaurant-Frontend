@@ -51,7 +51,7 @@ const mainStoreSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchData.fulfilled, (state, action) => {
       state.categories = action.payload.categories;
-      state.products = action.payload.products
+      state.products = action.payload.products;
     })
   },
 

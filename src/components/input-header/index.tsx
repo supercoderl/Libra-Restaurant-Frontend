@@ -9,7 +9,7 @@ export default function InputHeader() {
       <ImageContainer>
         <SearchIcon fill={theme`textColor.primary`} />
       </ImageContainer>
-      <Input placeholder="Search" />
+      <Input placeholder="Tìm món ăn..." />
     </Container>
   );
 }

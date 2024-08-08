@@ -10,6 +10,6 @@ module.exports = {
     return config;
   },
   images: {
-    domains: ['image.flaticon.com', 'images.pexels.com', 'i.ibb.co'],
+    domains: ['image.flaticon.com', 'images.pexels.com', 'i.ibb.co', 'modinatheme.com', 'libra-novel.vercel.app'],
   },
 };

@@ -4,6 +4,7 @@ import {
   Container,
   DetailContainer,
   ImageContainer,
+  PlusContainer,
   RowContainer,
   StyledStarIcon,
   Text,
@@ -15,14 +16,14 @@ import {useStoreDispatch} from 'src/redux/store';
 import {addProduct} from 'src/redux/slices/cart-slice';
 import {productsType} from 'src/redux/slices/products-slice';
 import {theme} from 'twin.macro';
+import PlusIcon from 'public/assets/icons/plus-icon.svg';
 
 export default function FoodItem(product: productsType) {
   const {image, name, price, qualification, time} = product;
   const [priceRepresentation, setPriceRepresentation] = useState('');
   const dispatch = useStoreDispatch();
   useEffect(() => {
-    const stringPrice = Math.trunc(price).toString();
-    setPriceRepresentation('$'.repeat(stringPrice.length));
+    setPriceRepresentation(price.toString() + ' VND');
   }, [price]);
 
   const handleClick = () => {
@@ -30,7 +31,11 @@ export default function FoodItem(product: productsType) {
   };
 
   return (
-    <Container onClick={handleClick}>
+    <Container onClick={handleClick} className='group'>
+      <PlusContainer>
+        <PlusIcon fill="black" />
+        <Title>Thêm vào giỏ</Title>
+      </PlusContainer>
       <ImageContainer>
         <Image
           layout="fill"
@@ -40,7 +45,7 @@ export default function FoodItem(product: productsType) {
         />
         <TimeContainer>
           <TimeText>
-            <b>{time}</b> min
+            <b>{time}</b> phút
           </TimeText>
         </TimeContainer>
       </ImageContainer>
@@ -51,13 +56,12 @@ export default function FoodItem(product: productsType) {
         <RowContainer>
           <StyledStarIcon
             fill={theme`textColor.primary`}
-            height="35%"
+            height="15"
             tw="mr-1.5"
           />
           <Text>{qualification}</Text>
           <Text isAlternativeColor>Coffee</Text>
-          <Text isAlternativeColor>SandWich</Text>
-          <Text isAlternativeColor>{priceRepresentation}</Text>
+          <Text isAlternativeColor isEnd>{priceRepresentation}</Text>
         </RowContainer>
       </DetailContainer>
     </Container>

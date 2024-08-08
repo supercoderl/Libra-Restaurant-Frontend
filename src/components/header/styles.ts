@@ -2,13 +2,13 @@ import styled from "styled-components";
 import tw from "twin.macro";
 
 
-export const Container = tw.div`flex w-full h-24 bg-primary items-center md:justify-between`
+export const Container = tw.div`flex w-full gap-10 h-24 bg-primary items-center md:justify-between`
 
 
-export const RightSideContainer = tw.div`w-full `
+export const RightSideContainer = tw.div`w-full flex-1`
 
-export const LeftSideContainer = tw.div`flex w-max items-center justify-around `
+export const LeftSideContainer = tw.div`w-max items-center justify-around hidden md:flex`
 
-export const TitleContainer = tw.div`hidden ml-6 md:block hover:cursor-pointer`
+export const TitleContainer = tw.div`hover:cursor-pointer`
 
-export const IconContainer = tw.div`flex h-16 w-20 items-center justify-center hover:cursor-pointer`
+export const IconContainer = tw.div`flex h-16 w-fit items-center justify-center hover:cursor-pointer gap-4`

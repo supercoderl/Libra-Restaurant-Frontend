@@ -1,8 +1,8 @@
 import React from 'react';
 import InputHeader from '@/components/input-header';
-import HamburgerMenu from '@/components/hamburger-button';
-import {Title} from '@/components/title';
-import CartIcon from '../../../public/assets/icons/cart-icon.svg';
+import { SpanLogo, Title, TitleLogo } from '@/components/title';
+import BagIcon from '../../../public/assets/icons/bag-icon.svg';
+import ScanIcon from '../../../public/assets/icons/qr-scan-icon.svg';
 import {
   Container,
   IconContainer,
@@ -10,10 +10,11 @@ import {
   RightSideContainer,
   TitleContainer,
 } from './styles';
-import {toggleCart} from 'src/redux/slices/cart-slice';
-import {useStoreDispatch} from 'src/redux/store';
-import {theme} from 'twin.macro';
+import { toggleCart } from 'src/redux/slices/cart-slice';
+import { useStoreDispatch } from 'src/redux/store';
+import { theme } from 'twin.macro';
 import useWindowDimensions from 'src/hooks/use-window-dimensions';
+import Link from 'next/link';
 
 export default function Header() {
   const dispatch = useStoreDispatch();
@@ -21,21 +22,21 @@ export default function Header() {
     dispatch(toggleCart());
   };
 
-  const {width} = useWindowDimensions();
+  const { width } = useWindowDimensions();
   return (
     <Container>
       <LeftSideContainer>
-        <HamburgerMenu />
         <TitleContainer>
-          <Title>Chukwudi</Title>
+          <TitleLogo>Libra <SpanLogo>Restaurant</SpanLogo></TitleLogo>
         </TitleContainer>
       </LeftSideContainer>
       <RightSideContainer>
         <InputHeader />
       </RightSideContainer>
       {width < 1600 && (
-        <IconContainer onClick={clickHandler}>
-          <CartIcon fill={theme`textColor.primary`} height="50%"></CartIcon>
+        <IconContainer>
+          <BagIcon fill={theme`textColor.primary`} height="35%"></BagIcon>
+          <Link href='scan'><ScanIcon fill={theme`textColor.primary`} height="50%"></ScanIcon></Link>
         </IconContainer>
       )}
     </Container>

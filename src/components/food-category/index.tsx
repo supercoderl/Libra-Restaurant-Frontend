@@ -1,38 +1,43 @@
-import React, {useContext, useState} from 'react';
-import {Container, IconContainer, StyledImage, Text} from './style';
-import {categoriesType} from 'src/redux/slices/products-slice';
-import {ThemeContext} from 'src/theme/theme-provider';
-import {theme} from 'twin.macro';
-import {useStoreDispatch, useStoreSelector} from 'src/redux/store';
-import {setCurrentCategory} from 'src/redux/slices/products-slice';
+import React, { useContext, useState } from 'react';
+import { CategoryContentContainer, CategoryImageContainer, Container, StyledImage, Text, TextQuantity } from './style';
+import { categoriesType } from 'src/redux/slices/products-slice';
+import { ThemeContext } from 'src/theme/theme-provider';
+import { theme } from 'twin.macro';
+import { useStoreDispatch, useStoreSelector } from 'src/redux/store';
+import { setCurrentCategory } from 'src/redux/slices/products-slice';
 
-export default function FoodCategory({name, icon, id}: categoriesType) {
+export default function FoodCategory({ name, icon, id }: categoriesType) {
   const currentCategory = useStoreSelector(
     state => state.mainStoreSlice.currentCategory,
   );
   const dispatch = useStoreDispatch();
   const themeContext = useContext(ThemeContext);
-  const isPressed = currentCategory === id;
 
   const handleClick = () => {
     dispatch(setCurrentCategory(id));
   };
 
   return (
-    <Container onClick={handleClick} isPressed={isPressed}>
-      <IconContainer>
+    <Container onClick={handleClick} className="group">
+      <CategoryImageContainer>
         <StyledImage
-          width="35%"
-          height="35%"
-          alt={`${name} icon`}
-          src={icon}
-          isDarkTheme={themeContext.theme === 'dark'}
+          decoding="async"
+          fill
+          data-src="https://modinatheme.com/foodking/wp-content/uploads/2024/03/french-fry.png"
+          alt="Image"
+          src="https://modinatheme.com/foodking/wp-content/uploads/2024/03/french-fry.png"
+          className="lazyloaded"
         />
-      </IconContainer>
-      <Text
-        color={isPressed ? theme`textColor.black` : theme`textColor.primary`}>
-        {name}
-      </Text>
+      </CategoryImageContainer>
+      <CategoryContentContainer className="catagory-product-content text-center">
+        <div className="catagory-product-icon">
+
+        </div>
+        <Text>
+          <a href="https://modinatheme.com/foodking/product-category/pro-pasta/">Pro Pasta</a>
+        </Text>
+        <TextQuantity>3 Products</TextQuantity>
+      </CategoryContentContainer>
     </Container>
   );
 }

@@ -1,6 +1,4 @@
 import React from 'react';
-import PersonIcon from '../../../public/assets/icons/person-icon.svg';
-import CartDirection from '@/components/cart-direction';
 import CartItem from '@/components/cart-item';
 import CheckoutButton from '@/components/checkout-button';
 import Divider from '@/components/divider';
@@ -22,7 +20,6 @@ import {clearCart, closeCart} from 'src/redux/slices/cart-slice';
 import useCartProducts from 'src/hooks/use-cart-products';
 import {shallowEqual} from 'react-redux';
 
-import LoginCard from '@/components/login-card';
 import Swal from 'sweetalert2';
 import {theme} from 'twin.macro';
 
@@ -59,7 +56,6 @@ export default function Cart() {
         <HeaderContainer>
           <CloseButton onClick={handleClose}>X</CloseButton>
           <HeaderItemsGroup>
-            <LoginCard></LoginCard>
             <ItemCount>{productsInCart.length}</ItemCount>
           </HeaderItemsGroup>
         </HeaderContainer>
@@ -69,8 +65,7 @@ export default function Cart() {
         <Text>
           <b>Order</b>
         </Text>
-        <CartDirection />
-        {productsInCart.map(element => (
+        {productsInCart.map((element: any) => (
           <CartItem {...element} key={element.product.id}></CartItem>
         ))}
         <TotalContainer>
