@@ -1,6 +1,6 @@
 import React from 'react'
 import { Menu } from 'antd'
-import { AppstoreOutlined, MailOutlined, SettingOutlined, ShopOutlined } from '@ant-design/icons'
+import { AppstoreOutlined, MailOutlined, SettingOutlined, ShopOutlined, SolutionOutlined } from '@ant-design/icons'
 
 const SubMenu = Menu.SubMenu
 
@@ -8,55 +8,50 @@ export default function MenuComponent() {
     return (
         <Menu
             style={{ textAlign: 'left' }}
-            defaultSelectedKeys={['sub1']}
-            defaultOpenKeys={['sub1', 'sub2', 'sub3']}
+            defaultSelectedKeys={['1']}
             mode="inline"
         >
-            <SubMenu
-                key="sub1"
-                title={
-                    <span>
-                        <ShopOutlined />
-                        <span>店铺管理</span>
-                    </span>
-                }
-            >
-                <Menu.Item key="1">店铺信息</Menu.Item>
-                <Menu.Item key="2">公告管理</Menu.Item>
-            </SubMenu>
+            <Menu.Item key="1">Trang quản trị</Menu.Item>
+            <Menu.Item key="2">QL chi nhánh</Menu.Item>
             <SubMenu
                 key="sub2"
                 title={
                     <span>
-                        <MailOutlined />
-                        <span>商品管理</span>
+                        <SolutionOutlined />
+                        <span>QL nhà hàng</span>
                     </span>
                 }
             >
-                <Menu.Item key="3">分类管理</Menu.Item>
-                <Menu.Item key="4">商品管理</Menu.Item>
+                <Menu.Item key="3">QL đặt chỗ</Menu.Item>
+                <Menu.Item key="4">QL thức ăn</Menu.Item>
+                <Menu.Item key="5">QL danh mục</Menu.Item>
+                <Menu.Item key="6">QL thực đơn</Menu.Item>
             </SubMenu>
             <SubMenu
                 key="sub3"
                 title={
                     <span>
                         <AppstoreOutlined />
-                        <span>订单管理</span>
+                        <span>QL đơn hàng</span>
                     </span>
                 }
             >
-                <Menu.Item key="5">订单列表</Menu.Item>
+                <Menu.Item key="7">In bill</Menu.Item>
+                <Menu.Item key="8">Lịch sử thanh toán</Menu.Item>
             </SubMenu>
             <SubMenu
                 key="sub4"
                 title={
                     <span>
                         <SettingOutlined />
-                        <span>供应链管理</span>
+                        <span>Cài đặt</span>
                     </span>
                 }
             >
-                <Menu.Item key="5">骑手管理</Menu.Item>
+                <Menu.Item key="9">Giao diện</Menu.Item>
+                <Menu.Item key="10">Tiền tệ</Menu.Item>
+                <Menu.Item key="11">Ngôn ngữ</Menu.Item>
+                <Menu.Item key="12">Vị trí</Menu.Item>
             </SubMenu>
         </Menu>
     )

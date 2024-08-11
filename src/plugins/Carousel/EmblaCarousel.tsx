@@ -6,10 +6,11 @@ import Autoplay from 'embla-carousel-autoplay';
 type PropType = {
   options?: EmblaOptionsType;
   children?: React.ReactNode;
+  className?: string;
 }
 
 const EmblaCarousel: React.FC<PropType> = (props) => {
-  const { options, children } = props
+  const { options, children, className } = props
   const [emblaRef, emblaApi] = useEmblaCarousel(options, [
     Autoplay({ playOnInit: false, delay: 3000 })
   ]);
@@ -41,7 +42,7 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
   }, [emblaApi, updateVisibleSlides]);
 
   return (
-    <div className="embla">
+    <div className={`embla ${className}`}>
       <div className="embla__viewport" ref={emblaRef}>
         <div className="embla__container">
           {children}

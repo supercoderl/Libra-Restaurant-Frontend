@@ -1,6 +1,6 @@
 export default interface Category {
-  objectId?: string
+  categoryId: number;
   name: string
-  sort: number
-  pid?: string
+  description?: string | null;
+  isActive: boolean;
 }

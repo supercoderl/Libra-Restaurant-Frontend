@@ -5,7 +5,7 @@ export default function DashboardFooter() {
   return (
     <div className="footer">
       <GithubOutlined />
-      <a href='https://github.com/h2oiswater/nextjs-ts-antd-starter' style={{ margin: 5 }}>Github</a>
+      <a href='https://github.com/supercoderl/Libra-Restaurant-Frontend' target='_blank' style={{ margin: 5 }}>Github</a>
     </div>
   )
 }

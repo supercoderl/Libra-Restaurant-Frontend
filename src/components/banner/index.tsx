@@ -10,6 +10,7 @@ export default function Banner() {
 
     return (
         <EmblaCarousel
+            className='banner'
             options={OPTIONS} >
             {
                 SLIDES.map((index) => (

@@ -3,7 +3,6 @@ import { AVUser } from 'src/type/Store'
 export const keys = {
   KEY_TOKEN: 'token',
   KEY_CURRENT_USER: 'current_user',
-  KEY_CURRENT_SOTRE_ID: 'current_store_id'
 }
 
 export function set(key: string, data: string) {

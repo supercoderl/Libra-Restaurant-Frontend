@@ -12,10 +12,12 @@
 export default interface Query {
   class?: string
   where?: any
-  limit?: number
   skip?: number
   order?: string
   include?: string
   keys?: string
   count?: number
+  page?: number
+  pageSize?: number
+  searchTerm?: string | null
 }

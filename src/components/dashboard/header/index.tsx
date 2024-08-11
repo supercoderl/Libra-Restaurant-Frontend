@@ -1,44 +1,43 @@
 import React from 'react'
-import { Tooltip, Avatar, Menu, Dropdown } from 'antd'
-import { HeaderContainer } from './style'
-import { QuestionCircleOutlined, UserOutlined } from '@ant-design/icons'
-import type { MenuProps } from 'antd';
+import { Avatar, Button, Dropdown } from 'antd'
+import { HeaderContainer, Name, UserContainer } from './style'
+import { CreditCardOutlined, LogoutOutlined, MenuOutlined, ProfileOutlined, UserOutlined } from '@ant-design/icons'
 
 const items = [
     {
-        label: '1st menu item',
+        label: 'Thông tin',
         key: '1',
+        icon: <ProfileOutlined />
     },
     {
-        label: '2nd menu item',
+        label: 'Thanh toán',
         key: '2',
+        icon: <CreditCardOutlined />
     },
     {
-        label: '3rd menu item',
+        label: 'Đăng xuất',
         key: '3',
+        icon: <LogoutOutlined />
     },
 ];
 
+type DashboardHeaderProps = {
+    isShowButton?: boolean;
+    onMenuClick?: () => void;
+}
 
-export default function DashboardHeader() {
+const DashboardHeader: React.FC<DashboardHeaderProps> = ({ isShowButton, onMenuClick}) => {
     return (
         <HeaderContainer className="header">
-            <Tooltip title="使用文档">
-                <a
-                    target="_blank"
-                    href="https://pro.ant.design/docs/getting-started"
-                    rel="noopener noreferrer"
-                    title="使用文档"
-                >
-                    <QuestionCircleOutlined />
-                </a>
-            </Tooltip>
-            <Dropdown menu={{ items }} placement="bottomCenter">
-                <div>
+            { isShowButton && <Button icon={<MenuOutlined />} onClick={onMenuClick}/>}
+            <Dropdown menu={{ items }} placement="bottomCenter" overlayStyle={{ cursor: 'pointer' }}>
+                <UserContainer>
                     <Avatar icon={<UserOutlined />} style={{ margin: 5 }} size='small' />
-                    王闪火
-                </div>
+                    <Name>Administrator</Name>
+                </UserContainer>
             </Dropdown>
         </HeaderContainer>
     )
 }
+
+export default DashboardHeader;

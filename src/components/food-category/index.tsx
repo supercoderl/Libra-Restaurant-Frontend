@@ -2,13 +2,12 @@ import React, { useContext, useState } from 'react';
 import { CategoryContentContainer, CategoryImageContainer, Container, StyledImage, Text, TextQuantity } from './style';
 import { categoriesType } from 'src/redux/slices/products-slice';
 import { ThemeContext } from 'src/theme/theme-provider';
-import { theme } from 'twin.macro';
 import { useStoreDispatch, useStoreSelector } from 'src/redux/store';
 import { setCurrentCategory } from 'src/redux/slices/products-slice';
 
 export default function FoodCategory({ name, icon, id }: categoriesType) {
   const currentCategory = useStoreSelector(
-    state => state.mainStoreSlice.currentCategory,
+    (state: any) => state.mainStoreSlice.currentCategory,
   );
   const dispatch = useStoreDispatch();
   const themeContext = useContext(ThemeContext);
