@@ -1,24 +1,17 @@
 import { Title } from "@/components/title"
 import { FoodContainer, MidContainer } from "./style"
-import { productsType } from "src/redux/slices/products-slice";
 import React from "react";
 import FoodItem from "@/components/food-item";
-import ReadMoreButton from "@/components/readmore-button";
-import { SecondCategory } from "@/components/food-category/second-category";
+import Item from "@/type/Item";
 
 interface FoodProps {
     currentCategory: number;
-    products: productsType[];
+    items: Item[];
     showTitle?: boolean;
     isReservation?: boolean;
 }
 
-export const Food: React.FC<FoodProps> = ({ currentCategory, products, showTitle, isReservation }) => {
-    const filteredProducts = (() => {
-        if (currentCategory === 1) return products;
-        return products.filter(element => element.category === currentCategory);
-    })();
-
+export const Food: React.FC<FoodProps> = ({ currentCategory, items, showTitle, isReservation }) => {
     return (
         <>
             {
@@ -29,8 +22,8 @@ export const Food: React.FC<FoodProps> = ({ currentCategory, products, showTitle
             }
 
             <FoodContainer isReservation={isReservation} className="food-container">
-                {filteredProducts.map(e => (
-                    <FoodItem {...e} key={e.id}></FoodItem>
+                {items.map(e => (
+                    <FoodItem {...e} key={e.itemId}></FoodItem>
                 ))}
             </FoodContainer>
         </>

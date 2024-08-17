@@ -6,11 +6,13 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import storage from 'redux-persist/lib/storage';
 import { persistReducer } from 'redux-persist';
 import emblaSlice from './slices/embla-slice';
+import reservationSlice, { getStatus } from './slices/reservation-slice';
 
 const reducers = combineReducers({
   cart:cartSlice,
   mainStoreSlice:mainStoreSlice,
-  emblaStore: emblaSlice
+  emblaStore: emblaSlice,
+  reservation:reservationSlice
 });
 
 
@@ -21,9 +23,6 @@ const persistConfig = {
 };
 
 const persistedReducer = persistReducer(persistConfig, reducers);
-
-
-
 
 const store = configureStore({
   reducer: persistedReducer,
@@ -40,6 +39,6 @@ export type AppDispatch = typeof store.dispatch
 export const useStoreDispatch = () => useDispatch<AppDispatch>()
 export const useStoreSelector: TypedUseSelectorHook<RootState> = useSelector
 
-store.dispatch(fetchData())
+store.dispatch(fetchData());
 
 export default store

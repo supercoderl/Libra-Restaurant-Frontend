@@ -10,18 +10,17 @@ import {
   Container,
   HeaderContainer,
   HeaderItemsGroup,
-  IconContainer,
   ItemCount,
   Text,
   TotalContainer,
 } from './style';
-import {useStoreDispatch, useStoreSelector} from 'src/redux/store';
-import {clearCart, closeCart} from 'src/redux/slices/cart-slice';
+import { useStoreDispatch, useStoreSelector } from 'src/redux/store';
+import { clearCart, closeCart } from 'src/redux/slices/cart-slice';
 import useCartProducts from 'src/hooks/use-cart-products';
-import {shallowEqual} from 'react-redux';
+import { shallowEqual } from 'react-redux';
 
 import Swal from 'sweetalert2';
-import {theme} from 'twin.macro';
+import { theme } from 'twin.macro';
 
 export default function Cart() {
   const totalPrice = useCartProducts();
@@ -29,15 +28,15 @@ export default function Cart() {
   const handleClose = () => {
     dispatch(closeCart());
   };
-  const {productsInCart} = useStoreSelector(
+  const { itemsInCart } = useStoreSelector(
     state => ({
-      productsInCart: state.cart.productsInCart,
+      itemsInCart: state.cart.itemsInCart,
     }),
     shallowEqual,
   );
 
   const handleCheckoutButton = () => {
-    if (!productsInCart.length) return;
+    if (!itemsInCart.length) return;
     dispatch(clearCart());
     Swal.fire({
       customClass: {
@@ -56,7 +55,7 @@ export default function Cart() {
         <HeaderContainer>
           <CloseButton onClick={handleClose}>X</CloseButton>
           <HeaderItemsGroup>
-            <ItemCount>{productsInCart.length}</ItemCount>
+            <ItemCount>{itemsInCart.length}</ItemCount>
           </HeaderItemsGroup>
         </HeaderContainer>
         <Text>
@@ -65,8 +64,8 @@ export default function Cart() {
         <Text>
           <b>Order</b>
         </Text>
-        {productsInCart.map((element: any) => (
-          <CartItem {...element} key={element.product.id}></CartItem>
+        {itemsInCart.map((element: any) => (
+          <CartItem {...element} key={element.item.itemId}></CartItem>
         ))}
         <TotalContainer>
           <Text>Total:</Text>

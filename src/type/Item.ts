@@ -4,7 +4,7 @@ export default interface Item {
     slug: string;
     summary?: string | null;
     sku: string;
-    picture?: string | null;
+    picture: string | null;
     price: number;
     quantity: number;
     recipe?: string | null;

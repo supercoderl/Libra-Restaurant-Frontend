@@ -9,36 +9,36 @@ import {
   TextContainer,
 } from './style';
 import Image from 'next/image';
-import {useStoreDispatch} from 'src/redux/store';
-import {changeQuantity, removeProduct} from 'src/redux/slices/cart-slice';
-import {productsType} from 'src/redux/slices/products-slice';
+import { useStoreDispatch } from 'src/redux/store';
+import { changeQuantity, removeItem } from 'src/redux/slices/cart-slice';
+import Item from '@/type/Item';
 
 type propsType = {
-  product: productsType;
-  quantity: number;
+  item: Item;
+  quantityOrder: number;
 };
 
 export default function CartItem({
-  product: {image, name, price, id},
-  quantity,
+  item: { picture, title, price, itemId },
+  quantityOrder,
 }: propsType) {
   const dispatch = useStoreDispatch();
   const handleClick = () => {
-    dispatch(removeProduct(id));
+    dispatch(removeItem(itemId));
   };
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     let value = parseInt(event.target.value);
     if (isNaN(value)) {
       value = 0;
     }
-    dispatch(changeQuantity({id, quantity: value}));
+    dispatch(changeQuantity({ id: itemId, quantity: value }));
   };
   return (
     <Container>
       <ImageContainer>
         <Image
           alt="temp"
-          src={image}
+          src={picture || process.env.NEXT_PUBLIC_DUMMY_PICTURE || ""}
           width="100"
           height="100"
           objectFit="cover"
@@ -46,16 +46,16 @@ export default function CartItem({
       </ImageContainer>
       <TextContainer>
         <Input
-          value={quantity.toString()}
+          value={quantityOrder.toString()}
           type="number"
           onChange={handleInput}
         />
         <Text>x</Text>
-        <Text>{name}</Text>
+        <Text>{title}</Text>
       </TextContainer>
       <PriceContainer>
         <Text isAlternativeColor>
-          ${Math.round(price * quantity * 100) / 100}
+          ${Math.round(price * quantityOrder * 100) / 100}
         </Text>
         <RemoveText onClick={handleClick}>remove</RemoveText>
       </PriceContainer>

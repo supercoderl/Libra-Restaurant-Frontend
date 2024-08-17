@@ -12,15 +12,15 @@ import {
 } from './style';
 import useWindowDimensions from 'src/hooks/use-window-dimensions';
 import Banner from '@/components/banner';
-import {Category} from './category';
+import { Category } from './category';
 import { Food } from './food';
 import ReadMoreButton from '@/components/readmore-button';
 
 export default function HomeContainer() {
-  const { isCartOpen, categories, products, currentCategory } = useStoreSelector(
+  const { isCartOpen, categories, items, currentCategory } = useStoreSelector(
     state => ({
       isCartOpen: state.cart.isOpen,
-      products: state.mainStoreSlice.products,
+      items: state.mainStoreSlice.items,
       categories: state.mainStoreSlice.categories,
       currentCategory: state.mainStoreSlice.currentCategory,
     }),
@@ -36,7 +36,7 @@ export default function HomeContainer() {
           <Header />
           <Banner />
           <Category categories={categories} />
-          <Food currentCategory={currentCategory} products={products} showTitle isReservation={false} />
+          <Food currentCategory={currentCategory} items={items} showTitle isReservation={false} />
           <ReadMoreButton />
         </CenterContainer>
       </BodyContainer>

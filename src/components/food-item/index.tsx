@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import {
   Container,
@@ -12,22 +12,22 @@ import {
   TimeText,
   Title,
 } from './style';
-import {useStoreDispatch} from 'src/redux/store';
-import {addProduct} from 'src/redux/slices/cart-slice';
-import {productsType} from 'src/redux/slices/products-slice';
-import {theme} from 'twin.macro';
+import { useStoreDispatch } from 'src/redux/store';
+import { addItem } from 'src/redux/slices/cart-slice';
+import { theme } from 'twin.macro';
 import PlusIcon from 'public/assets/icons/plus-icon.svg';
+import Item from '@/type/Item';
 
-export default function FoodItem(product: productsType) {
-  const {image, name, price, qualification, time} = product;
+export default function FoodItem(item: Item) {
+  const { picture, title, price } = item;
   const [priceRepresentation, setPriceRepresentation] = useState('');
   const dispatch = useStoreDispatch();
   useEffect(() => {
-    setPriceRepresentation(price.toString() + ' VND');
+    setPriceRepresentation(price.toString() + ' ₫');
   }, [price]);
 
   const handleClick = () => {
-    dispatch(addProduct(product));
+    dispatch(addItem(item));
   };
 
   return (
@@ -39,19 +39,19 @@ export default function FoodItem(product: productsType) {
       <ImageContainer>
         <Image
           layout="fill"
-          src={image}
-          alt={`${name} image`}
+          src={picture || process.env.NEXT_PUBLIC_DUMMY_PICTURE || ""}
+          alt={`${title} image`}
           objectFit="cover"
         />
         <TimeContainer>
           <TimeText>
-            <b>{time}</b> phút
+            <b>26-30</b> phút
           </TimeText>
         </TimeContainer>
       </ImageContainer>
       <DetailContainer>
         <RowContainer>
-          <Title>{name}</Title>
+          <Title>{title}</Title>
         </RowContainer>
         <RowContainer>
           <StyledStarIcon
@@ -59,7 +59,7 @@ export default function FoodItem(product: productsType) {
             height="15"
             tw="mr-1.5"
           />
-          <Text>{qualification}</Text>
+          <Text>A</Text>
           <Text isAlternativeColor>Coffee</Text>
           <Text isAlternativeColor isEnd>{priceRepresentation}</Text>
         </RowContainer>

@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
-  reactStrictMode: true,
+  reactStrictMode: false,
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,
@@ -10,6 +10,6 @@ module.exports = {
     return config;
   },
   images: {
-    domains: ['image.flaticon.com', 'images.pexels.com', 'i.ibb.co', 'modinatheme.com', 'libra-novel.vercel.app'],
+    domains: ['image.flaticon.com', 'images.pexels.com', 'i.ibb.co', 'modinatheme.com', 'libra-novel.vercel.app', 'res.cloudinary.com'],
   },
 };

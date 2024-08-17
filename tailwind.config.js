@@ -1,4 +1,4 @@
-const opacityManager = ({opacityVariable, opacityValue}, cssVar) => {
+const opacityManager = ({ opacityVariable, opacityValue }, cssVar) => {
   if (opacityValue !== undefined) {
     return `rgba(${cssVar}, ${opacityValue})`;
   }
@@ -76,6 +76,31 @@ module.exports = {
       rotate: {
         250: '250deg',
         360: '360deg',
+      },
+      transitionProperty: {
+        'opacity-transform': 'opacity, transform',
+      },
+      transitionDuration: {
+        '500': '500ms',
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        slideIn: {
+          '0%': { transform: 'translateX(-100%)', opacity: '0' },
+          '100%': { transform: 'translateX(0)', opacity: '1' },
+        },
+        slideOut: {
+          '0%': { transform: 'translateX(0)', opacity: '1' },
+          '100%': { transform: 'translateX(100%)', opacity: '0' },
+        },
+      },
+      animation: {
+        fadeIn: 'fadeIn 500ms ease-in-out',
+        slideIn: 'slideIn 500ms ease-in-out',
+        slideOut: 'slideOut 500ms ease-in-out',
       },
     },
   },

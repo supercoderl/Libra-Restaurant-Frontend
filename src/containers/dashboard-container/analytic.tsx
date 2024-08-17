@@ -170,28 +170,28 @@ export default function DashboardContainer() {
                     title={"Nguyên liệu"}
                     tagColor={"cyan"}
                     prefix={"Tháng này"}
-                    tagContent={"34,000,000 VND"}
+                    tagContent={"34,000,000 ₫"}
                     isFullWidth={width <= 767}
                 />
                 <TopCard
                     title={"Đơn hàng"}
                     tagColor={"purple"}
                     prefix={"Tháng này"}
-                    tagContent={"780,000,000 VND"}
+                    tagContent={"780,000,000 ₫"}
                     isFullWidth={width <= 767}
                 />
                 <TopCard
                     title={"Nhân viên"}
                     tagColor={"green"}
                     prefix={"Tháng này"}
-                    tagContent={"150,000,000 VND"}
+                    tagContent={"150,000,000 ₫"}
                     isFullWidth={width <= 767}
                 />
                 <TopCard
                     title={"Doanh thu"}
                     tagColor={"red"}
                     prefix={"Cả năm"}
-                    tagContent={"1,720,490,000 VND"}
+                    tagContent={"1,720,490,000 ₫"}
                     isFullWidth={width <= 767}
                 />
             </Row>

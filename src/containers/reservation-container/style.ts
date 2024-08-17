@@ -20,23 +20,23 @@ export const OrderContainer = tw.div`mt-4 hidden md:flex col-span-1 flex-col gap
 
 export const ModalHeader = tw.h3`font-bold text-xl`;
 
-export const ModalBody = tw.div`w-[300px] py-3`
+export const ModalBody = tw.div`w-[400px] py-3`
 
 export const ModalBodyStatus = tw.i`text-secondary`;
 
-export const ModalBodyFormContainer = tw.form`flex flex-col gap-3`
+export const ModalBodyFormContainer = tw.form`flex flex-col gap-3 justify-center items-center py-5`
 
-export const ModalBodyFormGroup = tw.div`flex flex-col items-baseline`;
+export const ModalBodyFormGroup = tw.div`flex flex-col items-baseline w-full`;
 
 export const ModalBodyFormLabel = tw.label`font-[600] my-[5px]`
 
 export const ModalBodyFormInput = tw.input`outline-0 border-2 border-[#E99F4C] w-full py-[12px] px-[10px] rounded-[4px] text-[15px] focus:translate-y-modalFocusInput shadow-modalInput focus:shadow-modalFocusInput`;
 
-export const ModalActionContainer = tw.div`mt-5 flex items-center justify-between gap-2`
+export const ModalActionContainer = tw.div`mt-5 flex items-center justify-between gap-2 w-full`
 
 export const ModalActionButton = styled.button<ActionProps>`
-${({ isOutlined }) => !isOutlined && tw`bg-main`}
-${tw`flex justify-center items-center py-[6px] w-[50%] gap-1 rounded-[5px] border-2 border-main cursor-pointer transition duration-500 hover:bg-transparent active:scale-95`}
+${({ isOutlined }) => !isOutlined && tw`bg-main`};
+${tw`flex justify-center items-center py-[10px] gap-1 w-[50%] rounded-[5px] border-2 border-main cursor-pointer transition duration-500 hover:bg-transparent active:scale-95`}
 `
 
 export const ModalActionText = styled.p<ActionProps>`

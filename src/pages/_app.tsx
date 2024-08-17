@@ -12,6 +12,16 @@ import 'react-toastify/dist/ReactToastify.css';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
 import { ToastContainer } from 'react-toastify';
+import { ConfigProvider } from 'antd';
+import 'dayjs/locale/vi';
+import locale from 'antd/locale/vi_VN';
+import localeData from 'dayjs/plugin/localeData';
+import dayjs from 'dayjs';
+import advancedFormat from 'dayjs/plugin/advancedFormat'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
+import weekday from 'dayjs/plugin/weekday'
+import weekOfYear from 'dayjs/plugin/weekOfYear'
+import weekYear from 'dayjs/plugin/weekYear'
 
 let persistor = persistStore(store);
 
@@ -27,18 +37,28 @@ export default class MyApp extends App {
   }
 
   render() {
-    const { Component, pageProps } = this.props
+    const { Component, pageProps } = this.props;
+    dayjs.extend(customParseFormat);
+    dayjs.extend(advancedFormat);
+    dayjs.extend(weekday);
+    dayjs.extend(weekOfYear);
+    dayjs.extend(weekYear);
+    dayjs.extend(localeData);
+    dayjs.locale("vi_VN");
+
     return (
-      <Provider store={store}>
-        <GlobalStyles />
-        <ThemeStyles />
-        <ToastContainer position="top-center" />
-        <ThemeProvider>
-          <PersistGate loading={null} persistor={persistor}>
-            <Component {...pageProps} />
-          </PersistGate>
-        </ThemeProvider>
-      </Provider>
+      <ConfigProvider locale={locale}>
+        <Provider store={store}>
+          <GlobalStyles />
+          <ThemeStyles />
+          <ToastContainer position="top-center" />
+          <ThemeProvider>
+            <PersistGate loading={null} persistor={persistor}>
+              <Component {...pageProps} />
+            </PersistGate>
+          </ThemeProvider>
+        </Provider>
+      </ConfigProvider>
     );
   }
 }

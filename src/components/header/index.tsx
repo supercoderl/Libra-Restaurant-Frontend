@@ -34,7 +34,7 @@ export default function Header() {
         <InputHeader />
       </RightSideContainer>
       {width < 1600 && (
-        <IconContainer>
+        <IconContainer onClick={clickHandler}>
           <BagIcon fill={theme`textColor.primary`} height="35%"></BagIcon>
           <Link href='scan'><ScanIcon fill={theme`textColor.primary`} height="50%"></ScanIcon></Link>
         </IconContainer>
