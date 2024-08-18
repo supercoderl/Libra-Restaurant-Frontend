@@ -203,3 +203,18 @@
   width: 200px !important;
   height: 200px !important;
 }
+
+.type.selected::after {
+  font-weight: 900;
+  position: absolute;
+  height: 2.5rem; /* 40px */
+  width: 2.5rem; /* 40px */
+  top: -1.3125rem; /* -21px */
+  right: -1.3125rem; /* -21px */
+  background-color: #fff;
+  border: 2px solid #D12121;
+  border-radius: 9999px; /* Full circle */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

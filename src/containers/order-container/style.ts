@@ -1,3 +1,4 @@
+import styled from "styled-components";
 import tw from "twin.macro";
 
 export const Container = tw.div`flex w-full flex-col justify-between items-center`
@@ -32,7 +33,7 @@ export const InformationContainer = tw.div`flex flex-col justify-start items-sta
 
 export const Email = tw.div`flex justify-center text-gray-800 dark:text-white md:justify-start items-center space-x-4 py-4 border-b border-gray-200 w-full`;
 
-export const EmailText= tw.p`cursor-pointer text-sm leading-5`;
+export const EmailText = tw.p`cursor-pointer text-sm leading-5`;
 
 export const Information = tw.div`flex justify-center w-full md:justify-start items-center space-x-4 py-8 border-b border-gray-200`;
 
@@ -93,3 +94,41 @@ export const ItemInfoPriceDiscount = tw.span`text-red-300 line-through`;
 export const ItemContainer = tw.div`flex justify-between items-center space-y-4 md:space-y-0 w-full py-5 border-b-[1px]`
 
 export const ButtonContainer = tw.div`flex gap-3 w-full m-0!`
+
+export const PaymentCard = tw.div`p-10 bg-white rounded-[6px] shadow-[0px_24px_60px_-1px_rgba(37,_44,_54,_0.14)]`;
+
+export const PaymentCardTitle = tw.div`mb-4 text-2xl`;
+
+type PaymentCardTypeProps = {
+    isSelected?: boolean;
+}
+
+export const PaymentCardType = styled.div<PaymentCardTypeProps>`
+${tw`w-48 relative bg-[#f2f4f7] flex flex-col justify-center items-center gap-5 border-2 border-[#e8ebed] p-5 rounded-[6px] cursor-pointer text-center transition duration-500 hover:border-main`},
+${({isSelected}) => isSelected && tw`border-main bg-[rgb(237_77_96_/_10%)] after:content-['✔'] after:text-main`}
+`
+
+export const PaymentCardTypeText = tw.p`group-hover:text-[#28333b] text-sm`;
+
+export const PaymentCardContainer = tw.div`flex gap-8 justify-between mt-6 mb-20`;
+
+export const PaymentCardButtonContainer = tw.div`flex justify-between`;
+
+type PaymentCardButtonProps = {
+    isLink?: boolean;
+    isPrimary?: boolean;
+    isSecondary?: boolean;
+}
+
+export const PaymentCardButton = styled.button<PaymentCardButtonProps>`
+${tw`uppercase font-[600] text-xs px-6 py-2 rounded-2xl cursor-pointer transition duration-500 bg-transparent border-2 border-transparent`},
+${({ isLink }) => isLink && tw`pb-[2px]! mx-[25px] border-0 border-b-2 border-main rounded-none opacity-75 hover:border-[#40b3ff] hover:opacity-100`},
+${({ isPrimary }) => isPrimary && tw`bg-main text-white hover:bg-[#218fd9]`},
+${({ isSecondary }) => isSecondary && tw`bg-transparent border-main text-main hover:border-[#28333b] text-[#28333b]`}
+`
+
+export const PaymentCardImage = tw.img`w-16`
+
+export const PaymentCardFix = tw.div`max-w-[500px] mb-6`
+
+export const PaymentCartNotifyImg = tw.div`w-full flex items-center justify-center`

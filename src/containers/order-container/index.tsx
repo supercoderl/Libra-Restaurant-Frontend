@@ -11,6 +11,7 @@ import { Order } from "@/type/Order";
 import { toast } from "react-toastify";
 import { Loading } from "@/components/loading";
 import { Spinner } from "@/components/loading/spinner";
+import { Payment } from "./payment";
 
 type OrderProps = {
     storeId: string;
@@ -21,6 +22,7 @@ export default function OrderContainer({ storeId, reservationId }: OrderProps) {
     const router = useRouter();
     const orderId = get("orderId");
     const [loading, setLoading] = useState(false);
+    const [show, setShow] = useState(false);
 
     const { itemsInCart } = useStoreSelector(
         state => ({
@@ -39,39 +41,40 @@ export default function OrderContainer({ storeId, reservationId }: OrderProps) {
     }
 
     const onSubmit = async () => {
-        setLoading(true);
-        const body = {
-            orderId: orderId,
-            storeId,
-            reservationId,
-            priceCalculated: calculatePriceItems(),
-            subtotal: calculatePriceItems(),
-            tax: 0,
-            total: calculatePriceItems(),
-            latestStatus: OrderStatus.InPreperation,
-            latestStatusUpdate: new Date(),
-            isPaid: false,
-            isPreparationDelayed: false,
-            isCanceled: false,
-            isReady: false,
-            isCompleted: false
-        };
+        setShow(true);
+        // setLoading(true);
+        // const body = {
+        //     orderId: orderId,
+        //     storeId,
+        //     reservationId,
+        //     priceCalculated: calculatePriceItems(),
+        //     subtotal: calculatePriceItems(),
+        //     tax: 0,
+        //     total: calculatePriceItems(),
+        //     latestStatus: OrderStatus.InPreperation,
+        //     latestStatusUpdate: new Date(),
+        //     isPaid: false,
+        //     isPreparationDelayed: false,
+        //     isCanceled: false,
+        //     isReady: false,
+        //     isCompleted: false
+        // };
 
-        try {
-            const res = await actionOrder(body as Order, "edit");
-            if (res?.success) {
+        // try {
+        //     const res = await actionOrder(body as Order, "edit");
+        //     if (res?.success) {
 
-            }
-            else {
-                toast("Có lỗi xảy ra, vui lòng liên hệ nhân viên.", { type: "error" });
-            }
-        }
-        catch (error) {
-            console.log("Submit to pay: ", error);
-        }
-        finally {
-            setTimeout(() => setLoading(false), 600);
-        }
+        //     }
+        //     else {
+        //         toast("Có lỗi xảy ra, vui lòng liên hệ nhân viên.", { type: "error" });
+        //     }
+        // }
+        // catch (error) {
+        //     console.log("Submit to pay: ", error);
+        // }
+        // finally {
+        //     setTimeout(() => setLoading(false), 600);
+        // }
     }
 
     return (
@@ -87,7 +90,6 @@ export default function OrderContainer({ storeId, reservationId }: OrderProps) {
                         <LeftContainer>
                             <CartContainer>
                                 <CustomerCartText>Giỏ hàng</CustomerCartText>
-
                                 {
                                     itemsInCart && itemsInCart.length > 0 &&
                                     itemsInCart.map((e, index) => (
@@ -155,6 +157,8 @@ export default function OrderContainer({ storeId, reservationId }: OrderProps) {
                     </BodyContainer>
                 </FluidContainer>
             </CenterContainer>
+
+            <Payment show={show} setShow={setShow} router={router}/>
         </Container>
     )
 }
