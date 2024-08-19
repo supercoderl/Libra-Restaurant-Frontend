@@ -14,9 +14,14 @@ export const paymentMethods = [
         img: "https://cdn-icons-png.flaticon.com/512/250/250548.png",
         title: "Paypal"
     },
+    // {
+    //     id: 4,
+    //     img: "https://cdn-icons-png.flaticon.com/512/2125/2125014.png",
+    //     title: "Stripe"
+    // },
     {
-        id: 4,
+        id: 5,
         img: "https://cdn-icons-png.flaticon.com/512/2125/2125014.png",
-        title: "Stripe"
+        title: "PayOS"
     }
 ]

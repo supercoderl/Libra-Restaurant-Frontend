@@ -218,3 +218,12 @@
   align-items: center;
   justify-content: center;
 }
+
+@media only screen and (max-width: 767px) {
+  .type.selected::after {
+    height: 1.5rem;
+    width: 1.5rem;
+    top: -0.8rem; /* -21px */
+    right: -0.8rem; /* -21px */
+  }
+}

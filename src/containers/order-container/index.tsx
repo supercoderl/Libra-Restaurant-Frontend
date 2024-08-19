@@ -1,5 +1,5 @@
 import { formatDate } from "@/utils/date";
-import { BodyContainer, CartContainer, FluidContainer, CustomerCartText, HeaderContainer, HeaderText, HeaderTime, ImageDesktop, ImageItemContainer, ImageMobile, ItemContainer, ItemInfoContainer, ItemInfoMoreContainer, ItemInfoMoreText, ItemInfoPriceContainer, ItemInfoPriceDiscount, ItemInfoPriceText, ItemInfoPriceTotal, ItemInfoTextContainer, ItemInfoTitle, LeftContainer, Price, PriceCalculate, PriceCalculateContainer, PriceCalculateText, PriceCalculateTotal, PriceContainer, PriceTotal, PriceTotalNumber, PriceTotalText, RightContainer, ShippingText, Container, CenterContainer, Button, ButtonContainer } from "./style";
+import { BodyContainer, CartContainer, FluidContainer, CustomerCartText, HeaderContainer, HeaderText, HeaderTime, ImageDesktop, ImageItemContainer, ImageMobile, ItemContainer, ItemInfoContainer, ItemInfoMoreContainer, ItemInfoMoreText, ItemInfoPriceContainer, ItemInfoPriceDiscount, ItemInfoPriceText, ItemInfoPriceTotal, ItemInfoTextContainer, ItemInfoTitle, LeftContainer, Price, PriceCalculate, PriceCalculateContainer, PriceCalculateText, PriceCalculateTotal, PriceContainer, PriceTotal, PriceTotalNumber, PriceTotalText, RightContainer, ShippingText, Container, CenterContainer, Button, ButtonContainer, QuantityContainer, QuantityButton, ItemInfoPriceContainerMobile } from "./style";
 import { useStoreSelector } from "@/redux/store";
 import Header from "@/components/header";
 import { useRouter } from "next/navigation";
@@ -9,9 +9,10 @@ import { get } from "@/utils/sesstionStorage";
 import { actionOrder } from "@/api/business/orderApi";
 import { Order } from "@/type/Order";
 import { toast } from "react-toastify";
-import { Loading } from "@/components/loading";
 import { Spinner } from "@/components/loading/spinner";
 import { Payment } from "./payment";
+import AddIcon from '../../../public/assets/icons/add-icon.svg';
+import SubtractIcon from '../../../public/assets/icons/subtract-icon.svg';
 
 type OrderProps = {
     storeId: string;
@@ -41,40 +42,37 @@ export default function OrderContainer({ storeId, reservationId }: OrderProps) {
     }
 
     const onSubmit = async () => {
-        setShow(true);
-        // setLoading(true);
-        // const body = {
-        //     orderId: orderId,
-        //     storeId,
-        //     reservationId,
-        //     priceCalculated: calculatePriceItems(),
-        //     subtotal: calculatePriceItems(),
-        //     tax: 0,
-        //     total: calculatePriceItems(),
-        //     latestStatus: OrderStatus.InPreperation,
-        //     latestStatusUpdate: new Date(),
-        //     isPaid: false,
-        //     isPreparationDelayed: false,
-        //     isCanceled: false,
-        //     isReady: false,
-        //     isCompleted: false
-        // };
+        setLoading(true);
+        const body = {
+            orderId: orderId,
+            storeId,
+            reservationId,
+            priceCalculated: calculatePriceItems(),
+            subtotal: calculatePriceItems(),
+            tax: 0,
+            total: calculatePriceItems(),
+            latestStatus: OrderStatus.InPreperation,
+            latestStatusUpdate: new Date(),
+            isPaid: false,
+            isPreparationDelayed: false,
+            isCanceled: false,
+            isReady: false,
+            isCompleted: false
+        };
 
-        // try {
-        //     const res = await actionOrder(body as Order, "edit");
-        //     if (res?.success) {
-
-        //     }
-        //     else {
-        //         toast("Có lỗi xảy ra, vui lòng liên hệ nhân viên.", { type: "error" });
-        //     }
-        // }
-        // catch (error) {
-        //     console.log("Submit to pay: ", error);
-        // }
-        // finally {
-        //     setTimeout(() => setLoading(false), 600);
-        // }
+        try {
+            const res = await actionOrder(body as Order, "edit");
+            if (res?.success) setShow(true);
+            else {
+                toast("Có lỗi xảy ra, vui lòng liên hệ nhân viên.", { type: "error" });
+            }
+        }
+        catch (error) {
+            console.log("Submit to pay: ", error);
+        }
+        finally {
+            setTimeout(() => setLoading(false), 600);
+        }
     }
 
     return (
@@ -112,6 +110,18 @@ export default function OrderContainer({ storeId, reservationId }: OrderProps) {
                                                     <ItemInfoPriceText>{e.quantityOrder}</ItemInfoPriceText>
                                                     <ItemInfoPriceTotal>{e.item.price * e.quantityOrder} ₫</ItemInfoPriceTotal>
                                                 </ItemInfoPriceContainer>
+                                                <ItemInfoPriceContainerMobile>
+                                                    <ItemInfoPriceTotal>{e.item.price * e.quantityOrder} ₫</ItemInfoPriceTotal>
+                                                    <QuantityContainer>
+                                                        <QuantityButton>
+                                                            <AddIcon width={16} fill="white" />
+                                                        </QuantityButton>
+                                                        <ItemInfoPriceText>{e.quantityOrder}</ItemInfoPriceText>
+                                                        <QuantityButton>
+                                                            <SubtractIcon width={16} fill="white" />
+                                                        </QuantityButton>
+                                                    </QuantityContainer>
+                                                </ItemInfoPriceContainerMobile>
                                             </ItemInfoContainer>
                                         </ItemContainer>
                                     ))
@@ -158,7 +168,13 @@ export default function OrderContainer({ storeId, reservationId }: OrderProps) {
                 </FluidContainer>
             </CenterContainer>
 
-            <Payment show={show} setShow={setShow} router={router}/>
+            <Payment
+                show={show}
+                setShow={setShow}
+                router={router}
+                orderId={orderId || ""}
+                amount={calculatePriceItems() + calculatePriceItems() * 10 / 100}
+            />
         </Container>
     )
 }

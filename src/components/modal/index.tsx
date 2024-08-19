@@ -6,9 +6,10 @@ interface ModalProps {
     onOpenChange: () => void;
     open: boolean;
     children?: React.ReactNode;
+    isTransparent?: boolean;
 }
 
-export const ModalSection: React.FC<ModalProps> = ({ onOpenChange, open, children }) => {
+export const ModalSection: React.FC<ModalProps> = ({ onOpenChange, open, children, isTransparent }) => {
     const customStyles = {
         content: {
             top: '50%',
@@ -17,8 +18,9 @@ export const ModalSection: React.FC<ModalProps> = ({ onOpenChange, open, childre
             bottom: 'auto',
             marginRight: '-50%',
             transform: 'translate(-50%, -50%)',
-            backgroundColor: 'white',
-            textAlign: 'center'
+            backgroundColor: isTransparent ? 'transparent' : 'white',
+            textAlign: 'center',
+            border: isTransparent && 'none'
         },
         overlay: {
             backgroundColor: 'rgba(0, 0, 0, 0.4)',
