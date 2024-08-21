@@ -38,7 +38,7 @@ ${tw`bg-white shadow-md p-6 mb-4 flex items-center justify-between`}
 
 export const AlignContainer = tw.div`text-[#595959] flex flex-wrap md:flex-nowrap items-center gap-3`;
 
-export const ActionContainer = tw.div`flex items-center`;
+export const ActionContainer = tw.div`flex items-center justify-center`;
 
 export const HeaderText = tw.h2`text-xl font-semibold`
 

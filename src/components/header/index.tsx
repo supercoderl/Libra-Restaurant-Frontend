@@ -15,18 +15,20 @@ import { useStoreDispatch } from 'src/redux/store';
 import { theme } from 'twin.macro';
 import useWindowDimensions from 'src/hooks/use-window-dimensions';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function Header() {
   const dispatch = useStoreDispatch();
   const clickHandler = () => {
     dispatch(toggleCart());
   };
+  const router = useRouter();
 
   const { width } = useWindowDimensions();
   return (
     <Container>
       <LeftSideContainer>
-        <TitleContainer>
+        <TitleContainer onClick={() => router.replace("/")}>
           <TitleLogo>Libra <SpanLogo>Restaurant</SpanLogo></TitleLogo>
         </TitleContainer>
       </LeftSideContainer>

@@ -107,7 +107,7 @@ export const MenuContainer: React.FC<MenuProps> = ({ result, loading, onReload, 
         },
         {
             title: 'Chi nhánh',
-            dataIndex: 'storeId',
+            dataIndex: 'storeName',
         },
         {
             title: 'Trạng thái',

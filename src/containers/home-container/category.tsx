@@ -2,16 +2,16 @@ import { Title } from "@/components/title";
 import { FoodCategoriesContainer, MidContainer } from "./style";
 import { ArrowButton } from "@/components/arrow-button";
 import FoodCategory from "@/components/food-category";
-import { categoriesType } from "src/redux/slices/products-slice";
 import { EmblaCarouselType, EmblaOptionsType } from "embla-carousel";
 import React, { useCallback, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
+import Category from "@/type/Category";
 
 interface CategoryProps {
-    categories: categoriesType[];
+    categories: Category[];
 }
 
-export const Category: React.FC<CategoryProps> = ({ categories }) => {
+export const CategorySlide: React.FC<CategoryProps> = ({ categories }) => {
     const OPTIONS: EmblaOptionsType = { slidesToScroll: 2, containScroll: 'trimSnaps', align: 'start' };
     const [emblaApi, setEmblaApi] = useState<EmblaCarouselType | null>(null);
     
@@ -27,8 +27,8 @@ export const Category: React.FC<CategoryProps> = ({ categories }) => {
                     setEmbla={setEmblaApi}
                 >
                     {categories.map(e => (
-                        <div className='embla__slide__1' key={e.id}>
-                            <FoodCategory {...e}></FoodCategory>
+                        <div className='embla__slide__1' key={e.categoryId}>
+                            <FoodCategory category={e}></FoodCategory>
                         </div>
                     ))}
                 </Carousel>

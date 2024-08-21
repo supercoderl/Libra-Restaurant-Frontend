@@ -1,7 +1,6 @@
 import { ModalSection } from "@/components/modal"
 import React, { useState } from "react";
 import { ContinueContainer, PaymentCard, PaymentCardButton, PaymentCardButtonContainer, PaymentCardContainer, PaymentCardFix, PaymentCardImage, PaymentCardTitle, PaymentCardType, PaymentCardTypeText, PaymentCartNotifyImg } from "./style";
-import { paymentMethods } from "./item";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import go from "../../../public/assets/animation/go.json";
 import { Loading } from "@/components/loading";
@@ -9,6 +8,8 @@ import Lottie from "lottie-react";
 import { pay } from "@/api/business/paymentApi";
 import { convertVNDToUSD } from "@/utils/currency";
 import useWindowDimensions from "@/hooks/use-window-dimensions";
+import { useStoreSelector } from "@/redux/store";
+import { toast } from "react-toastify";
 
 type PaymentProps = {
     show: boolean;
@@ -19,18 +20,25 @@ type PaymentProps = {
 }
 
 export const Payment: React.FC<PaymentProps> = ({ show, setShow, router, orderId, amount }) => {
-    const [selected, setSelected] = useState(paymentMethods[0].id);
+    const [selected, setSelected] = useState(0);
     const [type, setType] = useState("payment");
     const { width } = useWindowDimensions();
+    const { paymentMethods } = useStoreSelector(
+        state => ({
+            paymentMethods: state.mainPaymentMethodSlice.paymentMethods
+        }),
+    );
 
     const onSubmit = () => {
-        if (selected !== paymentMethods[0].id) {
+        const payment = paymentMethods.find(x => x.paymentMethodId === selected);
+        if (selected === 0) {
+            toast("Vui lòng chọn một phương thức thanh toán!", { type: "warning" });
+            return;
+        }
+        else if (payment && payment.name != "Trực tiếp tại quầy") {
             setType("loading");
             setTimeout(async () => {
-                const method = paymentMethods.find(x => x.id === selected);
-                if (method) {
-                    await onPost(method.title)
-                };
+                await onPost(payment.name, payment.paymentMethodId);
             }, 600);
         }
         else {
@@ -38,14 +46,15 @@ export const Payment: React.FC<PaymentProps> = ({ show, setShow, router, orderId
         }
     }
 
-    const onPost = async (type: string) => {
+    const onPost = async (type: string, paymentMethodId: number) => {
         var body = {};
         switch (type) {
             case "Paypal":
                 body = {
                     reference: orderId, //Đổi order id,
                     currency: "USD",
-                    value: convertVNDToUSD(amount)
+                    value: convertVNDToUSD(amount),
+                    paymentMethodId
                 };
                 break;
             case "VNPay":
@@ -55,7 +64,8 @@ export const Payment: React.FC<PaymentProps> = ({ show, setShow, router, orderId
                     isIntCard: false,
                     amount,
                     orderID: orderId, //Đổi order id,
-                    status: "0"
+                    status: "0",
+                    paymentMethodId
                 }
                 break;
             case "Stripe":
@@ -74,16 +84,15 @@ export const Payment: React.FC<PaymentProps> = ({ show, setShow, router, orderId
                     productName: "Ten san pham",
                     description: "Mo ta",
                     price: amount,
-                    orderID: orderId
+                    orderID: orderId,
+                    paymentMethodId
                 }
                 break;
         };
         try {
             const res = await pay(body, type);
-            if(res?.success && res.data)
-            {
-                switch (type)
-                {
+            if (res?.success && res.data) {
+                switch (type) {
                     case "Paypal":
                         window.open(res.data.links[1].href, "_blank");
                         break;
@@ -120,14 +129,14 @@ export const Payment: React.FC<PaymentProps> = ({ show, setShow, router, orderId
                                     {
                                         paymentMethods.map((item) => (
                                             <PaymentCardType
-                                                key={item.id}
-                                                className={`group type ${selected === item.id && 'selected'}`}
-                                                isSelected={selected === item.id}
-                                                onClick={() => setSelected(item.id)}
+                                                key={item.paymentMethodId}
+                                                className={`group type ${selected === item.paymentMethodId && 'selected'}`}
+                                                isSelected={selected === item.paymentMethodId}
+                                                onClick={() => setSelected(item.paymentMethodId)}
                                             >
-                                                <PaymentCardImage src={item.img} alt={item.title} />
+                                                <PaymentCardImage src={item.picture || ''} alt={item.name} />
                                                 <PaymentCardTypeText>
-                                                    <p>{item.title}</p>
+                                                    <p>{item.name}</p>
                                                 </PaymentCardTypeText>
                                             </PaymentCardType>
                                         ))

@@ -1,11 +1,12 @@
 import React, { useContext, useState } from 'react';
 import { CategoryContentContainer, CategoryImageContainer, Container, StyledImage, Text, TextQuantity } from './style';
-import { categoriesType } from 'src/redux/slices/products-slice';
 import { ThemeContext } from 'src/theme/theme-provider';
 import { useStoreDispatch, useStoreSelector } from 'src/redux/store';
-import { setCurrentCategory } from 'src/redux/slices/products-slice';
+import Category from '@/type/Category';
+import { setCurrentCategory } from '@/redux/slices/categories-slice';
 
-export default function FoodCategory({ name, icon, id }: categoriesType) {
+export default function FoodCategory({ category }: { category: Category }) {
+  console.log(category);
   const currentCategory = useStoreSelector(
     (state: any) => state.mainStoreSlice.currentCategory,
   );
@@ -13,7 +14,7 @@ export default function FoodCategory({ name, icon, id }: categoriesType) {
   const themeContext = useContext(ThemeContext);
 
   const handleClick = () => {
-    dispatch(setCurrentCategory(id));
+    dispatch(setCurrentCategory(category.categoryId));
   };
 
   return (
@@ -22,9 +23,9 @@ export default function FoodCategory({ name, icon, id }: categoriesType) {
         <StyledImage
           decoding="async"
           fill
-          data-src="https://modinatheme.com/foodking/wp-content/uploads/2024/03/french-fry.png"
+          data-src={category.picture || "https://modinatheme.com/foodking/wp-content/uploads/2024/03/french-fry.png"}
           alt="Image"
-          src="https://modinatheme.com/foodking/wp-content/uploads/2024/03/french-fry.png"
+          src={category.picture || "https://modinatheme.com/foodking/wp-content/uploads/2024/03/french-fry.png"}
           className="lazyloaded"
         />
       </CategoryImageContainer>
@@ -33,7 +34,7 @@ export default function FoodCategory({ name, icon, id }: categoriesType) {
 
         </div>
         <Text>
-          <a href="https://modinatheme.com/foodking/product-category/pro-pasta/">Pro Pasta</a>
+          <a href="https://modinatheme.com/foodking/product-category/pro-pasta/">{category.name}</a>
         </Text>
         <TextQuantity>3 Products</TextQuantity>
       </CategoryContentContainer>

@@ -4,4 +4,5 @@ export default interface Menu {
     name: string;
     description?: string | null;
     isActive: boolean;
+    storeName?: string | null;
 }

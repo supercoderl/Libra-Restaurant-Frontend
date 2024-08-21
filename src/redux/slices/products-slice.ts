@@ -11,58 +11,39 @@ export const fetchData = createAsyncThunk(
 
       if (response?.success && response?.data) {
         return {
-          categories: [],  // Or any other default value
           items: response?.data?.items,
         }
       }
       return {
-        categories: [],
         items: []
       };
     } catch (error) {
       console.log(error);
       return {
-        categories: [],
         items: []
       }
     }
   }
 )
 
-export type categoriesType = {
-  id: number;
-  name: string;
-  icon: string;
-}
-
 type sliceType = {
-  categories: categoriesType[]
   items: Item[]
-  currentCategory: number;
 }
 
 const initialState: sliceType = {
-  items: [], categories: [],
-  currentCategory: 1
+  items: []
 }
 
 const mainStoreSlice = createSlice({
   name: 'main-store',
   initialState: initialState,
-  reducers: {
-    setCurrentCategory: (state: Draft<typeof initialState>, action: PayloadAction<number>) => {
-      state.currentCategory = action.payload
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchData.fulfilled, (state, action) => {
-      state.categories = action.payload.categories;
       state.items = action.payload.items;
     })
   },
 
 })
-export const { setCurrentCategory } = mainStoreSlice.actions;
-
 
 export default mainStoreSlice.reducer;

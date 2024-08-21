@@ -7,12 +7,16 @@ import storage from 'redux-persist/lib/storage';
 import { persistReducer } from 'redux-persist';
 import emblaSlice from './slices/embla-slice';
 import reservationSlice, { getStatus } from './slices/reservation-slice';
+import mainPaymentMethodSlice, { fetchDataPaymentMethod } from './slices/paymentMethod-slice';
+import mainCategorySlice, { fetchCategoryData } from './slices/categories-slice';
 
 const reducers = combineReducers({
   cart:cartSlice,
   mainStoreSlice:mainStoreSlice,
   emblaStore: emblaSlice,
-  reservation:reservationSlice
+  reservation:reservationSlice,
+  mainPaymentMethodSlice: mainPaymentMethodSlice,
+  mainCategorySlice: mainCategorySlice
 });
 
 
@@ -40,5 +44,7 @@ export const useStoreDispatch = () => useDispatch<AppDispatch>()
 export const useStoreSelector: TypedUseSelectorHook<RootState> = useSelector
 
 store.dispatch(fetchData());
+store.dispatch(fetchDataPaymentMethod());
+store.dispatch(fetchCategoryData());
 
 export default store

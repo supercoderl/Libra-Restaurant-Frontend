@@ -26,4 +26,5 @@ export interface Order {
     readyTime?: Date | null;
     isCompleted: boolean;
     completedTime?: Date | null;
+    storeName?: string | null;
 }

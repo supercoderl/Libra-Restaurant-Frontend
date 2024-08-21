@@ -3,4 +3,5 @@ export default interface Category {
   name: string
   description?: string | null;
   isActive: boolean;
+  picture?: string | null;
 }

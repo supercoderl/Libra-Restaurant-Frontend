@@ -12,17 +12,16 @@ import {
 } from './style';
 import useWindowDimensions from 'src/hooks/use-window-dimensions';
 import Banner from '@/components/banner';
-import { Category } from './category';
 import { Food } from './food';
 import ReadMoreButton from '@/components/readmore-button';
+import { CategorySlide } from './category';
 
 export default function HomeContainer() {
-  const { isCartOpen, categories, items, currentCategory } = useStoreSelector(
+  const { categories, items, currentCategory } = useStoreSelector(
     state => ({
-      isCartOpen: state.cart.isOpen,
       items: state.mainStoreSlice.items,
-      categories: state.mainStoreSlice.categories,
-      currentCategory: state.mainStoreSlice.currentCategory,
+      categories: state.mainCategorySlice.categories,
+      currentCategory: state.mainCategorySlice.currentCategory,
     }),
     shallowEqual,
   );
@@ -35,16 +34,11 @@ export default function HomeContainer() {
         <CenterContainer>
           <Header />
           <Banner />
-          <Category categories={categories} />
+          <CategorySlide categories={categories} />
           <Food currentCategory={currentCategory} items={items} showTitle isReservation={false} />
           <ReadMoreButton />
         </CenterContainer>
       </BodyContainer>
-      {(isCartOpen || width > 1600) && (
-        <CartContainer>
-          <Cart />
-        </CartContainer>
-      )}
       <DarkThemeToggler />
     </Container>
   );

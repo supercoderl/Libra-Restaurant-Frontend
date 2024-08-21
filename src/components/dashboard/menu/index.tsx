@@ -36,7 +36,7 @@ export default function MenuComponent() {
                     </span>
                 }
             >
-                <Menu.Item key="7">In bill</Menu.Item>
+                <Menu.Item key="7">Danh sách đơn</Menu.Item>
                 <Menu.Item key="8">Lịch sử thanh toán</Menu.Item>
             </SubMenu>
             <SubMenu

@@ -7,7 +7,7 @@ export default function useCartProducts() {
 
   const {productsInCart} = useStoreSelector(
     state => ({
-      productsInCart: state.cart.productsInCart,
+      productsInCart: state.cart.itemsInCart,
     }),
     shallowEqual,
   );

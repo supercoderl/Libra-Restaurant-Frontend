@@ -24,6 +24,19 @@ export const OrderStatus = {
     Refunded: 9
 }
 
+export const OrderStatusText = {
+    0: "Nháp",
+    1: "Xác nhận",
+    2: "Chuẩn bị",
+    3: "Sẵn sàng",
+    4: "Hoàn thành",
+    5: "Bị hủy",
+    6: "Bị hoãn",
+    7: "Đã thanh toán",
+    8: "Lỗi",
+    9: "Hoàn tiền"
+}
+
 export const CustomerLikeStatus = {
     NotSet: 0,
     Liked: 1,
