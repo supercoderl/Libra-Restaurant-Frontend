@@ -32,7 +32,7 @@ export const ModalSection: React.FC<ModalProps> = ({ onOpenChange, open, childre
         <Modal
             isOpen={open}
             onRequestClose={onOpenChange}
-            style={customStyles}
+            style={customStyles as Modal.Styles}
             contentLabel="Example Modal"
         >
             {children}

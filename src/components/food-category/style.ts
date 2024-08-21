@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 
 type textType = {
-  color: string
+  color?: string
 }
 
 type imageType = {
@@ -21,12 +21,12 @@ export const CategoryContentContainer = tw.div`text-center relative before:absol
 
 export const Text = styled.p<textType>`
  ${tw`text-3xl mt-[-40px] mb-2 font-bold group-hover:text-white transition duration-500`}
-  color:${({ color }: any) => color} 
+ ${({ color }: any) => tw`text-[${color}]`}]
 `
 
 export const TextQuantity = styled.p<textType>`
  ${tw`text-lg font-semibold text-productQuantity group-hover:text-white transition duration-500`}
-  color:${({ color }: any) => color} 
+ ${({ color }: any) => tw`text-[${color}]`}]
 `
 
 export const StyledImage = styled(Image) <imageType>`
