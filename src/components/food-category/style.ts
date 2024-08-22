@@ -21,18 +21,14 @@ export const CategoryContentContainer = tw.div`text-center relative before:absol
 
 export const Text = styled.p<textType>`
  ${tw`text-3xl mt-[-40px] mb-2 font-bold group-hover:text-white transition duration-500`}
- ${({ color }: any) => tw`text-[${color}]`}]
 `
 
 export const TextQuantity = styled.p<textType>`
  ${tw`text-lg font-semibold text-productQuantity group-hover:text-white transition duration-500`}
- ${({ color }: any) => tw`text-[${color}]`}]
 `
 
 export const StyledImage = styled(Image) <imageType>`
-  filter:${({ isDarkTheme }: any) => isDarkTheme ? 'invert(1);' : ' invert(0)'}
   ${tw`border-0 opacity-100 transition duration-300 delay-0 object-contain`}
-  
 `
 
 export const SecondaryContainer = tw.div`w-full md:w-fit md:px-20 mb-10 bg-[rgba(255,_255,_255,_0.75)] rounded-md border-2 border-[rgba(255, 255, 255, 0.3)] shadow-secondaryCategory`;
