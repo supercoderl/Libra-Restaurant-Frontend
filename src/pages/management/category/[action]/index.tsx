@@ -1,6 +1,7 @@
 
 import { actionCategory, category } from "@/api/business/categoryApi";
 import { CategoryForm } from "@/forms/category";
+import Category from "@/type/Category";
 import { NextPage } from "next";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -37,14 +38,21 @@ const CategoryAction: NextPage = () => {
         }
     };
 
-    const onFinish = async (values: any) => {
+    const onFinish = async () => {
         setLoading(true);
+        let values = fields.reduce((acc, field) => {
+            if (Array.isArray(field.name) && typeof field.name[0] === 'string') {
+                acc[field.name[0]] = field.value;
+            }
+            return acc;
+        }, {} as { [key: string]: any });
+
         try {
             if (searchParams.get('categoryId')) {
                 values = { ...values, categoryId: Number(searchParams.get('categoryId')) };
             }
 
-            const res = await actionCategory(values, searchParams.get('categoryId') ? 'edit' : 'create');
+            const res = await actionCategory(values as Category, searchParams.get('categoryId') ? 'edit' : 'create');
             if (res && res.success) {
                 toast(`${searchParams.get('categoryId') ? 'Cập nhật' : 'Tạo mới'} thành công`, {
                     type: "success"

@@ -34,8 +34,8 @@ const initialState: sliceType = {
   items: []
 }
 
-const mainStoreSlice = createSlice({
-  name: 'main-store',
+const mainProductSlice = createSlice({
+  name: 'main-product',
   initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -46,4 +46,4 @@ const mainStoreSlice = createSlice({
 
 })
 
-export default mainStoreSlice.reducer;
+export default mainProductSlice.reducer;

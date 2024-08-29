@@ -1,6 +1,7 @@
 import { actionReservation, reservation } from "@/api/business/reservationApi";
 import { stores } from "@/api/business/storeApi";
 import { ReservationForm } from "@/forms/reservation";
+import { Reservation } from "@/type/Reservation";
 import { Store } from "@/type/Store";
 import dayjs from "dayjs";
 import { NextPage } from "next";
@@ -53,15 +54,22 @@ const ReservationAction: NextPage = () => {
     const getStoresAsync = async () => {
         try {
             const res = await stores();
-            if(res?.success && res?.data && res?.data.count > 0) setStores(res?.data.items); 
+            if (res?.success && res?.data && res?.data.count > 0) setStores(res?.data.items);
         }
         catch (error) {
             console.log("Get stores: ", error);
         }
     }
 
-    const onFinish = async (values: any) => {
+    const onFinish = async () => {
         setLoading(true);
+        let values = fields.reduce((acc, field) => {
+            if (Array.isArray(field.name) && typeof field.name[0] === 'string') {
+                acc[field.name[0]] = field.value;
+            }
+            return acc;
+        }, {} as { [key: string]: any });
+
         try {
             if (searchParams.get('reservationId')) {
                 values = { ...values, reservationId: Number(searchParams.get('reservationId')) };
@@ -78,8 +86,8 @@ const ReservationAction: NextPage = () => {
                     customerPhone: values.customerPhone === '' ? null : values.customerPhone
                 }
             }
-            
-            const res = await actionReservation(values, searchParams.get('reservationId') ? 'edit' : 'create');
+
+            const res = await actionReservation(values as Reservation, searchParams.get('reservationId') ? 'edit' : 'create');
             if (res && res.success) {
                 toast(`${searchParams.get('reservationId') ? 'Cập nhật' : 'Tạo mới'} thành công`, {
                     type: "success"

@@ -100,12 +100,25 @@ export const StoreContainer: React.FC<StoreProps> = ({ result, loading, onReload
             render: (text: string) => <a>{text}</a>,
         },
         {
-            title: 'Địa chỉ',
-            dataIndex: 'address',
-        },
-        {
             title: 'Mã số thuế',
             dataIndex: 'taxCode',
+        },
+        {
+            title: 'Địa chỉ',
+            dataIndex: 'address',
+            width: "20%",
+        },
+        {
+            title: 'Số điện thoại',
+            dataIndex: 'phone',
+        },
+        {
+            title: 'Số tài khoản',
+            dataIndex: 'bankAccount',
+        },
+        {
+            title: 'Ngân hàng',
+            dataIndex: 'bankBranch',
         },
         {
             title: 'Trạng thái',

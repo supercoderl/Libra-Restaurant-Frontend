@@ -20,4 +20,5 @@ export default interface Query {
   page?: number
   pageSize?: number
   searchTerm?: string | null
+  isAll?: boolean
 }

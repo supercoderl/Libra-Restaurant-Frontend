@@ -1,5 +1,6 @@
 import { actionItem, item } from "@/api/business/itemApi";
 import { ItemForm } from "@/forms/item";
+import Item from "@/type/Item";
 import { NextPage } from "next";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -49,8 +50,15 @@ const ItemAction: NextPage = () => {
         }
     };
 
-    const onFinish = async (values: any) => {
+    const onFinish = async () => {
         setLoading(true);
+        let values = fields.reduce((acc, field) => {
+            if (Array.isArray(field.name) && typeof field.name[0] === 'string') {
+                acc[field.name[0]] = field.value;
+            }
+            return acc;
+        }, {} as { [key: string]: any });
+
         try {
             if (searchParams.get('itemId')) {
                 values = { ...values, itemId: Number(searchParams.get('itemId')) };
@@ -59,7 +67,7 @@ const ItemAction: NextPage = () => {
                 values = { ...values, base64: values.picture[0]?.thumbUrl };
             }
 
-            const res = await actionItem(values, searchParams.get('itemId') ? 'edit' : 'create');
+            const res = await actionItem(values as Item, searchParams.get('itemId') ? 'edit' : 'create');
             if (res && res.success) {
                 toast(`${searchParams.get('itemId') ? 'Cập nhật' : 'Tạo mới'} thành công`, {
                     type: "success"

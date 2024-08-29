@@ -156,7 +156,6 @@ export default function DashboardContainer() {
 
     const getItems = async () => {
         const res = await items();
-        console.log(res);
     }
 
     useEffect(() => {

@@ -8,7 +8,6 @@ export const fetchDataPaymentMethod = createAsyncThunk(
   async () => {
     try {
       const response = await paymentMethods();
-      console.log(response);
       if (response?.success && response?.data) {
         return {
           paymentMethods: response?.data?.items,

@@ -26,7 +26,7 @@ export default function ReservationContainer({ tableNumber, storeId, reservation
 
     const { items } = useStoreSelector(
         state => ({
-            items: state.mainStoreSlice.items
+            items: state.mainProductSlice.items
         }),
         shallowEqual,
     );

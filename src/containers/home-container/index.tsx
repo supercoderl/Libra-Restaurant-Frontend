@@ -19,7 +19,7 @@ import { CategorySlide } from './category';
 export default function HomeContainer() {
   const { categories, items, currentCategory } = useStoreSelector(
     state => ({
-      items: state.mainStoreSlice.items,
+      items: state.mainProductSlice.items,
       categories: state.mainCategorySlice.categories,
       currentCategory: state.mainCategorySlice.currentCategory,
     }),

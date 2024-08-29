@@ -9,7 +9,7 @@ type FormProps = {
     onChange: (fields: FieldData[]) => void;
     fields: FieldData[];
     title: string;
-    onFinish: (values: any) => void;
+    onFinish: () => void;
     src?: string | null;
     loading: boolean;
 };
@@ -28,7 +28,7 @@ export const ItemForm: React.FC<FormProps> = ({ onChange, fields, title, onFinis
 
     return (
         <DashboardLayout>
-            <HeaderTitle title={title} isShowText={width > 767} />
+            <HeaderTitle title={title} isShowText={width > 767} onSubmit={onFinish} loading={loading} />
             <Container>
                 <Form
                     form={form}
@@ -110,9 +110,6 @@ export const ItemForm: React.FC<FormProps> = ({ onChange, fields, title, onFinis
                     </Form.Item>
                     <Form.Item label="Hướng dẫn sử dụng" name="instruction">
                         <Input.TextArea rows={5} placeholder="Nhập hướng dẫn sử dụng" />
-                    </Form.Item>
-                    <Form.Item>
-                        <Button type="primary" htmlType="submit" loading={loading}>Xác nhận</Button>
                     </Form.Item>
                 </Form>
             </Container>

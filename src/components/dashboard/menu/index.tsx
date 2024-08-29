@@ -1,18 +1,24 @@
 import React from 'react'
 import { Menu } from 'antd'
-import { AppstoreOutlined, MailOutlined, SettingOutlined, ShopOutlined, SolutionOutlined } from '@ant-design/icons'
+import { AppstoreOutlined, SettingOutlined, ShopOutlined, SolutionOutlined } from '@ant-design/icons'
+import Link from 'next/link'
 
 const SubMenu = Menu.SubMenu
 
 export default function MenuComponent() {
+
     return (
         <Menu
             style={{ textAlign: 'left' }}
             defaultSelectedKeys={['1']}
             mode="inline"
         >
-            <Menu.Item key="1">Trang quản trị</Menu.Item>
-            <Menu.Item key="2">QL chi nhánh</Menu.Item>
+            <Menu.Item key="1">
+                <Link href="/management/dashboard">Trang quản trị</Link>
+            </Menu.Item>
+            <Menu.Item key="2">
+                <Link href="/management/store/general">QL chi nhánh</Link>
+            </Menu.Item>
             <SubMenu
                 key="sub2"
                 title={
@@ -22,10 +28,18 @@ export default function MenuComponent() {
                     </span>
                 }
             >
-                <Menu.Item key="3">QL đặt chỗ</Menu.Item>
-                <Menu.Item key="4">QL thức ăn</Menu.Item>
-                <Menu.Item key="5">QL danh mục</Menu.Item>
-                <Menu.Item key="6">QL thực đơn</Menu.Item>
+                <Menu.Item key="3">
+                    <Link href="/management/reservation/general">QL đặt chỗ</Link>
+                </Menu.Item>
+                <Menu.Item key="4">
+                    <Link href="/management/item/general">QL thức ăn</Link>
+                </Menu.Item>
+                <Menu.Item key="5">
+                    <Link href="/management/category/general">QL danh mục</Link>
+                </Menu.Item>
+                <Menu.Item key="6">
+                    <Link href="/management/menu/general">QL thực đơn</Link>
+                </Menu.Item>
             </SubMenu>
             <SubMenu
                 key="sub3"
@@ -36,7 +50,9 @@ export default function MenuComponent() {
                     </span>
                 }
             >
-                <Menu.Item key="7">Danh sách đơn</Menu.Item>
+                <Menu.Item key="7">
+                    <Link href="/management/order/general">Danh sách đơn</Link>
+                </Menu.Item>
                 <Menu.Item key="8">Lịch sử thanh toán</Menu.Item>
             </SubMenu>
             <SubMenu

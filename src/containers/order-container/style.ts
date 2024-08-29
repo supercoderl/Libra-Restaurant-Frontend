@@ -95,7 +95,7 @@ export const ItemInfoPriceDiscount = tw.span`text-red-300 line-through`;
 
 export const ItemContainer = tw.div`flex justify-between items-center space-y-4 md:space-y-0 w-full py-5 border-b-[1px]`
 
-export const ButtonContainer = tw.div`flex gap-3 w-full m-0!`
+export const ButtonContainer = tw.div`flex gap-3 w-full m-0! md:pt-4`
 
 export const QuantityContainer = tw.div`flex items-center gap-2`;
 

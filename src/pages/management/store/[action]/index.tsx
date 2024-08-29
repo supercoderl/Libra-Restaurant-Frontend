@@ -1,6 +1,7 @@
 
 import { actionStore, store } from "@/api/business/storeApi";
 import { StoreForm } from "@/forms/store";
+import { Store } from "@/type/Store";
 import { NextPage } from "next";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -65,14 +66,21 @@ const StoreAction: NextPage = () => {
         }
     };
 
-    const onFinish = async (values: any) => {
+    const onFinish = async () => {
         setLoading(true);
+        let values = fields.reduce((acc, field) => {
+            if (Array.isArray(field.name) && typeof field.name[0] === 'string') {
+                acc[field.name[0]] = field.value;
+            }
+            return acc;
+        }, {} as { [key: string]: any });
+
         try {
             if (searchParams.get('storeId')) {
                 values = { ...values, storeId: searchParams.get('storeId') };
             }
 
-            const res = await actionStore(values, searchParams.get('storeId') ? 'edit' : 'create');
+            const res = await actionStore(values as Store, searchParams.get('storeId') ? 'edit' : 'create');
             if (res && res.success) {
                 toast(`${searchParams.get('storeId') ? 'Cập nhật' : 'Tạo mới'} thành công`, {
                     type: "success"

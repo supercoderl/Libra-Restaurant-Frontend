@@ -1,5 +1,6 @@
 import { actionMenu, menu } from "@/api/business/menuApi";
 import { MenuForm } from "@/forms/menu";
+import Menu from "@/type/Menu";
 import { NextPage } from "next";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -38,14 +39,21 @@ const MenuAction: NextPage = () => {
         }
     };
 
-    const onFinish = async (values: any) => {
+    const onFinish = async () => {
         setLoading(true);
+        let values = fields.reduce((acc, field) => {
+            if (Array.isArray(field.name) && typeof field.name[0] === 'string') {
+                acc[field.name[0]] = field.value;
+            }
+            return acc;
+        }, {} as { [key: string]: any });
+
         try {
             if (searchParams.get('menuId')) {
                 values = { ...values, menuId: Number(searchParams.get('menuId')) };
             }
 
-            const res = await actionMenu(values, searchParams.get('menuId') ? 'edit' : 'create');
+            const res = await actionMenu(values as Menu, searchParams.get('menuId') ? 'edit' : 'create');
             if (res && res.success) {
                 toast(`${searchParams.get('menuId') ? 'Cập nhật' : 'Tạo mới'} thành công`, {
                     type: "success"

@@ -10,6 +10,7 @@ import { convertVNDToUSD } from "@/utils/currency";
 import useWindowDimensions from "@/hooks/use-window-dimensions";
 import { useStoreSelector } from "@/redux/store";
 import { toast } from "react-toastify";
+import { v4 as uuid } from 'uuid';
 
 type PaymentProps = {
     show: boolean;
@@ -51,10 +52,11 @@ export const Payment: React.FC<PaymentProps> = ({ show, setShow, router, orderId
         switch (type) {
             case "Paypal":
                 body = {
-                    reference: orderId, //Đổi order id,
+                    reference: uuid(), //Đổi order id,
                     currency: "USD",
                     value: convertVNDToUSD(amount),
-                    paymentMethodId
+                    paymentMethodId,
+                    orderId
                 };
                 break;
             case "VNPay":
@@ -63,20 +65,25 @@ export const Payment: React.FC<PaymentProps> = ({ show, setShow, router, orderId
                     isVNBank: true,
                     isIntCard: false,
                     amount,
-                    orderID: orderId, //Đổi order id,
+                    orderId, //Transaction id,
+                    transactionId: uuid(),
                     status: "0",
-                    paymentMethodId
+                    paymentMethodId,
+                    locale: "vn"
                 }
                 break;
             case "Stripe":
                 body = {
-                    amount,
-                    currency: "VND",
+                    amount: convertVNDToUSD(amount),
+                    currency: "USD",
                     name: "Thanh toan hoa don",
                     description: "text",
                     quantity: 1,
-                    mode: "",
-                    customerEmail: ""
+                    mode: "payment",
+                    customerEmail: "mzi23844@tccho.com",
+                    paymentMethodId,
+                    transactionId: uuid(),
+                    orderId
                 }
                 break;
             case "PayOS":
@@ -84,12 +91,14 @@ export const Payment: React.FC<PaymentProps> = ({ show, setShow, router, orderId
                     productName: "Ten san pham",
                     description: "Mo ta",
                     price: amount,
-                    orderID: orderId,
-                    paymentMethodId
+                    orderId,
+                    paymentMethodId,
+                    transactionId: uuid(),
                 }
                 break;
         };
         try {
+            console.log(body);
             const res = await pay(body, type);
             if (res?.success && res.data) {
                 switch (type) {
@@ -101,6 +110,9 @@ export const Payment: React.FC<PaymentProps> = ({ show, setShow, router, orderId
                         break;
                     case "PayOS":
                         window.open(res.data.checkoutUrl, "_blank");
+                        break;
+                    case "Stripe":
+                        window.open(res.data.url, "_blank");
                         break;
                 }
             }

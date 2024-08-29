@@ -10,7 +10,7 @@ type FormProps = {
     onChange: (fields: FieldData[]) => void;
     fields: FieldData[];
     title: string;
-    onFinish: (values: any) => void;
+    onFinish: () => void;
     loading: boolean;
     stores: Store[];
 };
@@ -22,7 +22,7 @@ export const ReservationForm: React.FC<FormProps> = ({ onChange, fields, title, 
 
     return (
         <DashboardLayout>
-            <HeaderTitle title={title} isShowText={width > 767} />
+            <HeaderTitle title={title} isShowText={width > 767} onSubmit={onFinish} loading={loading} />
             <Container>
                 <Form
                     form={form}
@@ -31,7 +31,6 @@ export const ReservationForm: React.FC<FormProps> = ({ onChange, fields, title, 
                     onFieldsChange={(_, allFields) => {
                         onChange(allFields);
                     }}
-                    onFinish={onFinish}
                 >
                     <Form.Item
                         label="Số bàn"
@@ -102,9 +101,6 @@ export const ReservationForm: React.FC<FormProps> = ({ onChange, fields, title, 
                         name="customerPhone"
                     >
                         <Input placeholder="Nhập số điện thoại khách..." />
-                    </Form.Item>
-                    <Form.Item>
-                        <Button type="primary" htmlType="submit" loading={loading}>Xác nhận</Button>
                     </Form.Item>
                 </Form>
             </Container>

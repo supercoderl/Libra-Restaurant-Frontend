@@ -6,9 +6,8 @@ import Category from '@/type/Category';
 import { setCurrentCategory } from '@/redux/slices/categories-slice';
 
 export default function FoodCategory({ category }: { category: Category }) {
-  console.log(category);
   const currentCategory = useStoreSelector(
-    (state: any) => state.mainStoreSlice.currentCategory,
+    (state: any) => state.mainCategorySlice.currentCategory,
   );
   const dispatch = useStoreDispatch();
   const themeContext = useContext(ThemeContext);

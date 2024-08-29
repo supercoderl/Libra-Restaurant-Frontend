@@ -24,6 +24,11 @@ export const OrderStatus = {
     Refunded: 9
 }
 
+export const PaymentStatus = {
+    Success: 0,
+    Fail: 1
+}
+
 export const OrderStatusText = {
     0: "Nháp",
     1: "Xác nhận",
@@ -41,4 +46,11 @@ export const CustomerLikeStatus = {
     NotSet: 0,
     Liked: 1,
     Disliked: 2
+}
+
+export const PaymentMethod = {
+    Paypal: 3,
+    VNPay: 4,
+    Stripe: 5,
+    PayOS: 6,
 }
