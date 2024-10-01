@@ -1,5 +1,6 @@
 import { categories } from '@/api/business/categoryApi';
 import Category from '@/type/Category';
+import Query from '@/type/Query';
 import { createAsyncThunk, createSlice, Draft, PayloadAction } from '@reduxjs/toolkit';
 
 

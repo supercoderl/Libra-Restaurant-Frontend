@@ -11,6 +11,10 @@ type imageType = {
   isDarkTheme?: boolean
 }
 
+type categoryItemType = {
+  isActive?: boolean
+}
+
 export const Container = styled.div`
 ${tw`bg-no-repeat border-4 bg-cover cursor-pointer relative bg-center opacity-100 transition duration-300 delay-0 rounded-md pt-5 px-5 pb-10 bg-catagoryBackground hover:bg-main`}
 `
@@ -31,13 +35,16 @@ export const StyledImage = styled(Image) <imageType>`
   ${tw`border-0 opacity-100 transition duration-300 delay-0 object-contain`}
 `
 
-export const SecondaryContainer = tw.div`w-full md:w-fit md:px-20 mb-10 bg-[rgba(255,_255,_255,_0.75)] rounded-md border-2 border-[rgba(255, 255, 255, 0.3)] shadow-secondaryCategory`;
+export const SecondaryContainer = tw.div`w-full md:w-fit md:px-20 mb-10`;
 
-export const CategoryFood = tw.ul`list-none grid grid-cols-3 md:flex md:flex-nowrap justify-center p-0`;
+export const CategoryFood = tw.ul`list-none md:flex md:flex-nowrap justify-center p-0`;
 
-export const CategoryFoodItem = tw.li`relative flex flex-col items-center px-[10px] py-3`;
+export const CategoryFoodItem = styled.li<categoryItemType>`
+${tw`relative flex flex-col items-center justify-center cursor-pointer w-20 h-20 md:w-28 md:h-28 rounded-md border-2 border-[rgba(255, 255, 255, 0.3)] shadow-secondaryCategory transition duration-500 hover:scale-90`}
+${({ isActive }) => isActive && tw`bg-main text-white`}
+`;
 
-export const CategoryFoodItemLink = tw.a`flex flex-col justify-center items-center w-auto px-[10px] transition duration-500 hover:scale-110`
+export const CategoryFoodItemLink = tw.a`flex flex-col justify-center items-center w-auto px-[10px]`
 
 export const CategoryFoodItemText = tw.span`text-center whitespace-nowrap`
 

@@ -34,4 +34,31 @@ ${({isReservation}) => isReservation ? tw`grid-cols-1 sm:grid-cols-2 lg:grid-col
 ${tw`grid place-items-center md:place-items-start mt-4 overflow-x-hidden overflow-y-scroll`}
 `
 
+export const ServiceContainer = tw.section`py-20 w-[90%]`;
+
+export const RowHeader = tw.div`grid grid-cols-1 md:grid-cols-10 lg:grid-cols-8 gap-4`
+
+export const RowHeaderCol = tw.div`col-span-full md:col-span-10 lg:col-span-8`
+
+export const Grid = tw.div`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6`
+
+export const ServiceHeader = tw.div`mb-[35px]`;
+
+export const HeaderTitle = tw.h2`relative text-3xl mb-5 text-center pb-5 uppercase font-[700] before:content-[''] before:absolute before:bottom-0 before:left-1/2 before:-translate-x-1/2 before:w-[140px] before:bg-[#f70037] after:content-[''] after:absolute after:bottom-[-1px] after:left-1/2 after:-translate-x-1/2 after:w-[45px] after:h-[3px] after:bg-[#f70037]`;
+
+export const TitleSpan = tw.span`text-[#f70037]`;
+
+export const Description = tw.p`text-[#6f6f71] text-center`;
+
+export const SingleService = tw.div`shadow-[0_0_10px_0_rgba(0,_0,_0,_0.1)] hover:scale-90 transition duration-500 cursor-pointer`;
+
+export const Part1 = tw.div`pt-[40px] pb-[25px] px-[40px] border-b-2 border-[rgba(0, 0, 0, 0.08)]`;
+
+export const Part1Title = tw.h3`text-[17px] font-[700]`
+
+export const Part2 = tw.div`pt-[30px] pb-[40px] px-[40px]`
+
+export const Part2Description = tw.p`mb-[22px] text-[#6f6f71]`;
+
+export const Part2Link = tw.a`no-underline`;
 

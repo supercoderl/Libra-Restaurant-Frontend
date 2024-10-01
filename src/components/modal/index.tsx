@@ -1,4 +1,5 @@
 
+import useWindowDimensions from "@/hooks/use-window-dimensions";
 import React from "react";
 import Modal from 'react-modal';
 
@@ -10,6 +11,7 @@ interface ModalProps {
 }
 
 export const ModalSection: React.FC<ModalProps> = ({ onOpenChange, open, children, isTransparent }) => {
+    const { width } = useWindowDimensions();
     const customStyles = {
         content: {
             top: '50%',
@@ -20,7 +22,8 @@ export const ModalSection: React.FC<ModalProps> = ({ onOpenChange, open, childre
             transform: 'translate(-50%, -50%)',
             backgroundColor: isTransparent ? 'transparent' : 'white',
             textAlign: 'center',
-            border: isTransparent && 'none'
+            border: isTransparent && 'none',
+            width: width <= 767 && "95%"
         },
         overlay: {
             backgroundColor: 'rgba(0, 0, 0, 0.4)',

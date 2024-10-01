@@ -23,9 +23,11 @@ export const StatusText = tw.h3`font-bold text-2xl`
 
 export const BillContainer = tw.div`w-full shadow-[rgba(99,_99,_99,_0.2)_0px_2px_8px_0px] mt-4 rounded-md py-6 px-5 flex flex-col gap-3`
 
-export const Title = tw.h4`font-semibold`
+export const Title = tw.h4`font-semibold text-xl`
 
-export const ItemContainer = tw.div`border-y-[1px] py-2 flex flex-col gap-1`
+export const FlexContainer = tw.div`flex items-center justify-center gap-1`
+
+export const ItemContainer = tw.div`border-y-[1px] py-2 flex flex-col gap-1.5`
 
 export const TextItemContainer = tw.div`flex justify-between items-center`
 
@@ -37,4 +39,6 @@ export const TextItem = styled.p<TextItemProps>`
 ${({ isBold }) => isBold ? tw`font-bold text-gray-700` : tw`text-gray-500`}
 `
 
-export const TextFooter = tw.p`mt-4 text-xs text-gray-500`
+export const TextFooter = tw.p`mt-4 text-xs text-gray-500 px-4`
+
+export const HomeButton = tw.button`uppercase w-fit self-center font-[600] flex-1 md:flex-none text-xs cursor-pointer transition duration-500 bg-transparent pb-[2px]! border-0 border-b-2 border-main opacity-75 hover:border-[#40b3ff] hover:opacity-100`

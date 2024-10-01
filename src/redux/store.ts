@@ -10,6 +10,11 @@ import reservationSlice, { getStatus } from './slices/reservation-slice';
 import mainPaymentMethodSlice, { fetchDataPaymentMethod } from './slices/paymentMethod-slice';
 import mainCategorySlice, { fetchCategoryData } from './slices/categories-slice';
 import mainLocationSlice, { fetchLocationData } from './slices/locations-slice';
+import mainDashboardSlice, { fetchDataDashboard } from './slices/dashboard-slice';
+import mainAuthSlice from './slices/auth-slice';
+import mainStoreSlice, { fetchStoreData } from './slices/store-slice';
+import mainRoleSlice, { fetchRoleData } from './slices/roles-slice';
+import mainEmployeeSlice, { fetchEmployeeData } from './slices/employee-slice';
 
 const reducers = combineReducers({
   cart: cartSlice,
@@ -18,7 +23,12 @@ const reducers = combineReducers({
   reservation: reservationSlice,
   mainPaymentMethodSlice: mainPaymentMethodSlice,
   mainCategorySlice: mainCategorySlice,
-  mainLocationSlice: mainLocationSlice
+  mainLocationSlice: mainLocationSlice,
+  mainDashboardSlice: mainDashboardSlice,
+  mainAuthSlice: mainAuthSlice,
+  mainStoreSlice: mainStoreSlice,
+  mainRoleSlice: mainRoleSlice,
+  mainEmployeeSlice: mainEmployeeSlice
 });
 
 
@@ -49,5 +59,9 @@ store.dispatch(fetchData());
 store.dispatch(fetchDataPaymentMethod());
 store.dispatch(fetchCategoryData());
 store.dispatch(fetchLocationData());
+store.dispatch(fetchDataDashboard());
+store.dispatch(fetchStoreData());
+store.dispatch(fetchRoleData());
+store.dispatch(fetchEmployeeData());
 
 export default store

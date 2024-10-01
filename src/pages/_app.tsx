@@ -8,6 +8,7 @@ import '../global.css';
 import store from 'src/redux/store';
 import { Provider } from 'react-redux';
 import 'react-toastify/dist/ReactToastify.css';
+import '@fortawesome/fontawesome-svg-core/styles.css'
 
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
@@ -22,6 +23,11 @@ import customParseFormat from 'dayjs/plugin/customParseFormat'
 import weekday from 'dayjs/plugin/weekday'
 import weekOfYear from 'dayjs/plugin/weekOfYear'
 import weekYear from 'dayjs/plugin/weekYear'
+
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/scrollbar';
 
 let persistor = persistStore(store);
 

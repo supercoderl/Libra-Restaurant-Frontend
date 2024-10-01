@@ -3,15 +3,18 @@ import { FoodContainer, MidContainer } from "./style"
 import React from "react";
 import FoodItem from "@/components/food-item";
 import Item from "@/type/Item";
+import { FoodItemSkeleton } from "@/components/food-item/skeleton";
+import { Empty } from "@/components/empty";
 
 interface FoodProps {
     currentCategory: number;
     items: Item[];
     showTitle?: boolean;
     isReservation?: boolean;
+    loading: boolean;
 }
 
-export const Food: React.FC<FoodProps> = ({ currentCategory, items, showTitle, isReservation }) => {
+export const Food: React.FC<FoodProps> = ({ items, showTitle, isReservation, loading }) => {
     return (
         <>
             {
@@ -21,10 +24,23 @@ export const Food: React.FC<FoodProps> = ({ currentCategory, items, showTitle, i
                 </MidContainer>
             }
 
+            {
+                !loading && items.length <= 0 && (
+                    <Empty title="Không có món ăn nào!" />
+                )
+            }
+
             <FoodContainer isReservation={isReservation} className="food-container">
-                {items.map(e => (
-                    <FoodItem {...e} key={e.itemId}></FoodItem>
-                ))}
+                {
+                    loading ?
+                        Array.from({ length: 8 }).map((_, index) => (
+                            <FoodItemSkeleton key={index} />
+                        ))
+                        :
+                        items.map(e => (
+                            <FoodItem {...e} key={e.itemId}></FoodItem>
+                        ))
+                }
             </FoodContainer>
         </>
     )

@@ -1,18 +1,32 @@
 import { DashboardLayout } from "@/layouts/DashboardLayout"
 import { Button, Checkbox, CheckboxProps, DatePicker, DatePickerProps, Divider, Image, Input, Select, Table, TableColumnsType, Tag, Tooltip } from "antd";
 import { ActionContainer, AlignContainer, HeaderText, TableContainer, ToolbarContainer } from "./style";
-import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined, ReloadOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined, ReloadOutlined, RollbackOutlined } from "@ant-design/icons";
 import useWindowDimensions from "@/hooks/use-window-dimensions";
-import { MobileTable } from "@/components/dashboard/branch/mobile-table";
 import { ListRep } from "@/type/objectTypes";
 import { useState } from "react";
 import { Reservation } from "@/type/Reservation";
 import { Status } from "@/enums";
+import { MobileTable } from "@/components/mobile/tables/mobile-table";
+import { useRouter } from "next/navigation";
 
-const Header = () => {
+type HeaderProps = {
+    isShowText?: boolean;
+}
+
+const Header: React.FC<HeaderProps> = ({ isShowText }) => {
+    const router = useRouter();
     return (
         <ToolbarContainer isRow={true}>
             <HeaderText>Quản lý đặt chỗ</HeaderText>
+            <Button
+                icon={<RollbackOutlined />}
+                type="primary"
+                danger
+                onClick={() => router.back()}
+            >
+                {isShowText && 'Quay lại'}
+            </Button>
         </ToolbarContainer>
     )
 }
@@ -176,7 +190,7 @@ export const ReservationContainer: React.FC<ReservationProps> = ({ result, loadi
 
     return (
         <DashboardLayout>
-            <Header />
+            <Header isShowText={width > 767} />
             <Toolbar isRow={width > 767} onReload={onReload} onSearch={onSearch} />
             {
                 width > 767 ?
@@ -195,7 +209,16 @@ export const ReservationContainer: React.FC<ReservationProps> = ({ result, loadi
                         />
                     </TableContainer>
                     :
-                    <MobileTable data={result ? result.items : []} />
+                    result && result.items &&
+                    result.items.map((item, index) => (
+                        <MobileTable
+                            key={index}
+                            title={`Bàn số ${item.tableNumber}`}
+                            subTitle={item.storeName}
+                            description={String(Status[item.status as keyof typeof Status])}
+                            image="https://cdn-icons-png.flaticon.com/512/11138/11138514.png"
+                        />
+                    ))
             }
             {/* <ItemDetail
                 isOpen={isOpen}

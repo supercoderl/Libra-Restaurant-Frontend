@@ -20,11 +20,11 @@ export const OrderContainer = tw.div`mt-4 hidden md:flex col-span-1 flex-col gap
 
 export const ModalHeader = tw.h3`font-bold text-xl`;
 
-export const ModalBody = tw.div`w-[400px] py-3`
+export const ModalBody = tw.div`w-full md:w-[400px] py-3`
 
 export const ModalBodyStatus = tw.i`text-secondary`;
 
-export const ModalBodyFormContainer = tw.form`flex flex-col gap-3 justify-center items-center py-5`
+export const ModalBodyFormContainer = tw.form`flex flex-col gap-3 justify-center items-center pt-5`
 
 export const ModalBodyFormGroup = tw.div`flex flex-col items-baseline w-full`;
 

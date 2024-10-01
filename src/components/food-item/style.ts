@@ -9,15 +9,24 @@ type textProps ={
   isEnd?: boolean;
 }
 
+type titleProps = {
+  isSkeleton?: boolean;
+}
+
 export const Container = tw.div`flex relative flex-col h-72 md:h-64 w-full md:w-72 cursor-pointer transform transition duration-300 hover:scale-105`
 
 export const ImageContainer = tw.div`w-full h-2/3 rounded-xl relative overflow-hidden`
+
+export const ImageSkeleton = tw.div`w-full h-full rounded-md bg-[rgba(130,_130,_130,_0.2)] bg-[length:800px_100px] animate-[wave-squares_2s_infinite_ease-out]`
 
 export const TimeContainer = tw.div`flex items-center justify-center absolute transition duration-300 left-0 top-0 w-24 h-10 rounded-br-xl bg-secondary group-hover:scale-105`
 
 export const TimeText = tw.p`text-sm text-primary`
 
-export const Title = tw.p`text-lg font-semibold text-primary`
+export const Title = styled.p<titleProps>`
+${({isSkeleton}) => isSkeleton ? tw`bg-[rgba(130,_130,_130,_0.2)] bg-[length:800px_100px] animate-[wave-squares_2s_infinite_ease-out] text-[transparent]` : tw`text-primary`}
+${tw`text-lg font-semibold`}
+`
 
 export const DetailContainer = tw.div`w-full h-1/3 mt-4`;
 

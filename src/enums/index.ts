@@ -54,3 +54,8 @@ export const PaymentMethod = {
     Stripe: 5,
     PayOS: 6,
 }
+
+export const UserStatus = {
+    Active: 0,
+    InActive: 1
+}

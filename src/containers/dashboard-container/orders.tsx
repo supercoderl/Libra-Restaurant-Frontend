@@ -1,19 +1,33 @@
 import { DashboardLayout } from "@/layouts/DashboardLayout"
 import { Button, Checkbox, CheckboxProps, DatePicker, DatePickerProps, Divider, Input, Modal, Select, Table, TableColumnsType, Tag, Tooltip } from "antd";
 import { ActionContainer, AlignContainer, HeaderText, TableContainer, ToolbarContainer } from "./style";
-import { DeleteOutlined, EditOutlined, EyeOutlined, FileDoneOutlined, PlusOutlined, ReloadOutlined } from "@ant-design/icons";
+import { EyeOutlined, FileDoneOutlined, PlusOutlined, ReloadOutlined, RollbackOutlined } from "@ant-design/icons";
 import useWindowDimensions from "@/hooks/use-window-dimensions";
-import { MobileTable } from "@/components/dashboard/branch/mobile-table";
 import { ListRep } from "@/type/objectTypes";
 import { useState } from "react";
 import { Order } from "@/type/Order";
 import { getOrderStatus } from "@/utils/status";
 import { Invoice } from "@/components/invoice";
+import { MobileTable } from "@/components/mobile/tables/mobile-table";
+import { useRouter } from "next/navigation";
 
-const Header = () => {
+type HeaderProps = {
+    isShowText?: boolean;
+}
+
+const Header: React.FC<HeaderProps> = ({ isShowText }) => {
+    const router = useRouter();
     return (
         <ToolbarContainer isRow={true}>
             <HeaderText>Quản lý đơn</HeaderText>
+            <Button
+                icon={<RollbackOutlined />}
+                type="primary"
+                danger
+                onClick={() => router.back()}
+            >
+                {isShowText && 'Quay lại'}
+            </Button>
         </ToolbarContainer>
     )
 }
@@ -170,7 +184,7 @@ export const OrderContainer: React.FC<OrderProps> = ({ result, loading, onReload
 
     return (
         <DashboardLayout>
-            <Header />
+            <Header isShowText={width > 767} />
             <Toolbar isRow={width > 767} onReload={onReload} onSearch={onSearch} />
             {
                 width > 767 ?
@@ -189,7 +203,16 @@ export const OrderContainer: React.FC<OrderProps> = ({ result, loading, onReload
                         />
                     </TableContainer>
                     :
-                    <MobileTable data={result ? result.items : []} />
+                    result && result.items &&
+                    result.items.map((item, index) => (
+                        <MobileTable
+                            key={index}
+                            title={item.orderNo}
+                            subTitle={item.customerName}
+                            description={item.total}
+                            image="https://cdn-icons-png.flaticon.com/512/3338/3338579.png"
+                        />
+                    ))
             }
             {/* <ItemDetail
                 isOpen={isOpen}

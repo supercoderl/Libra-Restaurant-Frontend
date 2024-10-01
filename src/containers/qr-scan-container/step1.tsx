@@ -59,9 +59,9 @@ const Step1: React.FC<Step1Props> = ({ onNext, status, onClose }) => {
             }
         }
         return {
-            title: "asdasdasd",
+            title: "Có lỗi xảy ra!",
             animation: outOfService,
-            allowNext: true
+            allowNext: false
         }
     }
 

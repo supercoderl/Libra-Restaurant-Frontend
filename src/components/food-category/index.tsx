@@ -1,19 +1,19 @@
-import React, { useContext, useState } from 'react';
+import React from 'react';
 import { CategoryContentContainer, CategoryImageContainer, Container, StyledImage, Text, TextQuantity } from './style';
-import { ThemeContext } from 'src/theme/theme-provider';
 import { useStoreDispatch, useStoreSelector } from 'src/redux/store';
 import Category from '@/type/Category';
 import { setCurrentCategory } from '@/redux/slices/categories-slice';
+import { useRouter } from 'next/navigation';
+import { fetchData } from '@/redux/slices/products-slice';
 
 export default function FoodCategory({ category }: { category: Category }) {
-  const currentCategory = useStoreSelector(
-    (state: any) => state.mainCategorySlice.currentCategory,
-  );
   const dispatch = useStoreDispatch();
-  const themeContext = useContext(ThemeContext);
+  const router = useRouter();
 
   const handleClick = () => {
     dispatch(setCurrentCategory(category.categoryId));
+    dispatch(fetchData({ categoryId: category.categoryId }));
+    router.push("/food");
   };
 
   return (
@@ -35,7 +35,7 @@ export default function FoodCategory({ category }: { category: Category }) {
         <Text>
           <a href="https://modinatheme.com/foodking/product-category/pro-pasta/">{category.name}</a>
         </Text>
-        <TextQuantity>3 Products</TextQuantity>
+        <TextQuantity>{category.itemNumber} món</TextQuantity>
       </CategoryContentContainer>
     </Container>
   );

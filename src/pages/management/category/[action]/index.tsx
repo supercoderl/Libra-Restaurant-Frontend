@@ -14,8 +14,11 @@ const CategoryAction: NextPage = () => {
     const [fields, setFields] = useState<FieldData[]>([
         { name: ['name'], value: '' },
         { name: ['description'], value: '' },
-        { name: ['isActive'], value: true }
+        { name: ['isActive'], value: true },
+        { name: ['picture'], value: null },
+        { name: ['base64'], value: null },
     ]);
+    const [src, setSrc] = useState("");
     const [loading, setLoading] = useState(false);
     const [state, setState] = useState("Thêm mới danh mục");
 
@@ -27,8 +30,10 @@ const CategoryAction: NextPage = () => {
                     setFields([
                         { name: 'name', value: res.data?.name },
                         { name: 'description', value: res.data?.description || '' },
-                        { name: 'isActive', value: res.data?.isActive }
+                        { name: 'isActive', value: res.data?.isActive },
+                        { name: 'picture', value: res.data?.picture }
                     ]);
+                    setSrc(res.data?.picture || "")
                     setState("Cập nhật danh mục");
                 }
             }
@@ -50,6 +55,10 @@ const CategoryAction: NextPage = () => {
         try {
             if (searchParams.get('categoryId')) {
                 values = { ...values, categoryId: Number(searchParams.get('categoryId')) };
+            }
+
+            if (values.base64 && values.base64.length > 0) {
+                values = { ...values, base64: Array.isArray(values.base64) ? values.base64[0]?.thumbUrl : null };
             }
 
             const res = await actionCategory(values as Category, searchParams.get('categoryId') ? 'edit' : 'create');
@@ -78,6 +87,7 @@ const CategoryAction: NextPage = () => {
             setFields(newFields);
         }}
         title={state}
+        src={src}
         onFinish={onFinish}
         loading={loading}
     />

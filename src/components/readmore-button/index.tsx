@@ -1,8 +1,9 @@
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { Button, Icon, Svg } from "./style";
 
-export default function ReadMoreButton() {
+export default function ReadMoreButton({ router }: { router: AppRouterInstance }) {
     return (
-        <Button className="group">
+        <Button className="group" onClick={() => router.push("/food")}>
             Xem thêm
             <Icon className="icon">
                 <Svg

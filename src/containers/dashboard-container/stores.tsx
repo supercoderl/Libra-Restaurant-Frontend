@@ -1,17 +1,32 @@
 import { DashboardLayout } from "@/layouts/DashboardLayout"
 import { Button, Checkbox, CheckboxProps, DatePicker, DatePickerProps, Divider, Input, Select, Table, TableColumnsType, Tag, Tooltip } from "antd";
 import { ActionContainer, AlignContainer, HeaderText, TableContainer, ToolbarContainer } from "./style";
-import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined, ReloadOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined, ReloadOutlined, RollbackOutlined } from "@ant-design/icons";
 import useWindowDimensions from "@/hooks/use-window-dimensions";
-import { MobileTable } from "@/components/dashboard/branch/mobile-table";
 import { ListRep } from "@/type/objectTypes";
 import { useState } from "react";
 import { Store } from "@/type/Store";
+import { useRouter } from "next/navigation";
+import { MobileTable } from "@/components/mobile/tables/mobile-table";
 
-const Header = () => {
+type HeaderProps = {
+    isShowText?: boolean;
+}
+
+const Header: React.FC<HeaderProps> = ({ isShowText }) => {
+    const router = useRouter();
+
     return (
         <ToolbarContainer isRow={true}>
             <HeaderText>Quản lý chi nhánh</HeaderText>
+            <Button
+                icon={<RollbackOutlined />}
+                type="primary"
+                danger
+                onClick={() => router.back()}
+            >
+                {isShowText && 'Quay lại'}
+            </Button>
         </ToolbarContainer>
     )
 }
@@ -181,7 +196,7 @@ export const StoreContainer: React.FC<StoreProps> = ({ result, loading, onReload
 
     return (
         <DashboardLayout>
-            <Header />
+            <Header isShowText={width > 767} />
             <Toolbar isRow={width > 767} onReload={onReload} onSearch={onSearch} />
             {
                 width > 767 ?
@@ -200,7 +215,16 @@ export const StoreContainer: React.FC<StoreProps> = ({ result, loading, onReload
                         />
                     </TableContainer>
                     :
-                    <MobileTable data={result ? result.items : []} />
+                    result && result.items &&
+                    result.items.map((item, index) => (
+                        <MobileTable
+                            key={index}
+                            title={item.name}
+                            subTitle={`MST: ${item.taxCode}`}
+                            description={item.address}
+                            image="https://cdn-icons-png.flaticon.com/512/5811/5811316.png"
+                        />
+                    ))
             }
             {/* <ItemDetail
                 isOpen={isOpen}

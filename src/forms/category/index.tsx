@@ -1,5 +1,5 @@
-import { Button, Form, Input, Select } from "antd"
-import { Container } from "../style"
+import { Image, Form, Input, Select, Upload } from "antd"
+import { Container, ImageContainer } from "../style"
 import { DashboardLayout } from "@/layouts/DashboardLayout";
 import HeaderTitle from "@/components/dashboard/headerTitle";
 import useWindowDimensions from "@/hooks/use-window-dimensions";
@@ -9,27 +9,35 @@ type FormProps = {
     onChange: (fields: FieldData[]) => void;
     fields: FieldData[];
     title: string;
+    src?: string | null;
     onFinish: () => void;
     loading: boolean;
 };
 
-export const CategoryForm: React.FC<FormProps> = ({ onChange, fields, title, onFinish, loading }) => {
+export const CategoryForm: React.FC<FormProps> = (props: FormProps) => {
     const [form] = Form.useForm();
 
     const { width } = useWindowDimensions();
 
+    const normFile = (e: any) => {
+        if (Array.isArray(e)) {
+            return e;
+        }
+        return e?.fileList;
+    };
+
     return (
         <DashboardLayout>
-            <HeaderTitle title={title} isShowText={width > 767} onSubmit={onFinish} loading={loading} />
+            <HeaderTitle title={props.title} isShowText={width > 767} onSubmit={props.onFinish} loading={props.loading} />
             <Container>
                 <Form
                     form={form}
                     layout="vertical"
-                    fields={fields}
+                    fields={props.fields}
                     onFieldsChange={(_, allFields) => {
-                        onChange(allFields);
+                        props.onChange(allFields);
                     }}
-                    onFinish={onFinish}
+                    onFinish={props.onFinish}
                 >
                     <Form.Item
                         label="Tên danh mục"
@@ -46,7 +54,7 @@ export const CategoryForm: React.FC<FormProps> = ({ onChange, fields, title, onF
                     >
                         <Select
                             showSearch
-                            placeholder="Chọn trang thái"
+                            placeholder="Chọn trạng thái"
                             optionFilterProp="label"
                             options={[
                                 {
@@ -60,6 +68,30 @@ export const CategoryForm: React.FC<FormProps> = ({ onChange, fields, title, onF
                             ]}
                         />
                     </Form.Item>
+                    <Form.Item name="picture" noStyle />
+                    <ImageContainer>
+                        <Form.Item
+                            label="Hình ảnh"
+                            name="base64"
+                            valuePropName="fileList"
+                            getValueFromEvent={normFile}
+                        >
+                            <Upload
+                                listType="picture-card"
+                                multiple={false}
+                                className="customSizedUpload"
+                            >
+                                {props.src && props.src !== '' ? 'Đổi hình' : 'Thêm hình'}
+                            </Upload>
+                        </Form.Item>
+                        {
+                            props.src && props.src !== '' && <Image
+                                width={200}
+                                style={{ borderRadius: 5, border: 1, borderStyle: 'solid', borderColor: 'rgba(0, 0, 0, 0.1)', marginTop: 6, padding: 5 }}
+                                src={props.src}
+                            />
+                        }
+                    </ImageContainer>
                     <Form.Item label="Mô tả" name="description">
                         <Input.TextArea rows={5} placeholder="Nhập mô tả..." />
                     </Form.Item>

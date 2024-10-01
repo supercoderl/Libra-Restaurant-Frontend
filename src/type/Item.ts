@@ -11,4 +11,5 @@ export default interface Item {
     instruction?: string | null;
     createdAt: Date;
     lastUpdatedAt?: Date | null;
+    categoryIds: number[];
 }

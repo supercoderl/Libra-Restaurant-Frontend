@@ -1,8 +1,9 @@
-import { Button, Form, Input, Upload, Image } from "antd"
+import { Form, Input, Upload, Image, Select } from "antd"
 import { Container, ImageContainer } from "../style"
 import { DashboardLayout } from "@/layouts/DashboardLayout";
 import HeaderTitle from "@/components/dashboard/headerTitle";
 import useWindowDimensions from "@/hooks/use-window-dimensions";
+import { useStoreSelector } from "@/redux/store";
 
 
 type FormProps = {
@@ -14,8 +15,11 @@ type FormProps = {
     loading: boolean;
 };
 
-export const ItemForm: React.FC<FormProps> = ({ onChange, fields, title, onFinish, src, loading }) => {
+export const ItemForm: React.FC<FormProps> = (props) => {
     const [form] = Form.useForm();
+    const { width } = useWindowDimensions();
+
+    const { categories } = useStoreSelector(state => state.mainCategorySlice);
 
     const normFile = (e: any) => {
         if (Array.isArray(e)) {
@@ -24,20 +28,18 @@ export const ItemForm: React.FC<FormProps> = ({ onChange, fields, title, onFinis
         return e?.fileList;
     };
 
-    const { width } = useWindowDimensions();
-
     return (
         <DashboardLayout>
-            <HeaderTitle title={title} isShowText={width > 767} onSubmit={onFinish} loading={loading} />
+            <HeaderTitle title={props.title} isShowText={width > 767} onSubmit={props.onFinish} loading={props.loading} />
             <Container>
                 <Form
                     form={form}
                     layout="vertical"
-                    fields={fields}
+                    fields={props.fields}
                     onFieldsChange={(_, allFields) => {
-                        onChange(allFields);
+                        props.onChange(allFields);
                     }}
-                    onFinish={onFinish}
+                    onFinish={props.onFinish}
                 >
                     <Form.Item
                         label="Tên món"
@@ -59,17 +61,30 @@ export const ItemForm: React.FC<FormProps> = ({ onChange, fields, title, onFinis
                         <Input.TextArea rows={5} placeholder="Nhập mô tả..." />
                     </Form.Item>
                     <Form.Item
-                        label="Mã sản phẩm"
-                        tooltip="Mã sản phẩm bắt đầu bằng FD (thức ăn) hoặc DK (đồ uống)"
+                        label="Mã món ăn"
+                        tooltip="Mã món ăn bắt đầu bằng FD (thức ăn) hoặc DK (đồ uống)"
                         name="sku"
-                        rules={[{ required: true, message: "Mã sản phẩm là bắt buộc" }]}
+                        rules={[{ required: true, message: "Mã món ăn là bắt buộc" }]}
                     >
                         <Input placeholder="Nhập mã..." />
                     </Form.Item>
+                    <Form.Item
+                        label="Danh mục"
+                        name="categoryIds"
+                    >
+                        <Select
+                            showSearch
+                            mode="multiple"
+                            placeholder="Chọn danh mục"
+                            optionFilterProp="label"
+                            options={categories.map((item) => ({ value: item.categoryId, label: item.name }))}
+                        />
+                    </Form.Item>
+                    <Form.Item name="picture" noStyle />
                     <ImageContainer>
                         <Form.Item
                             label="Hình ảnh"
-                            name="picture"
+                            name="base64"
                             valuePropName="fileList"
                             getValueFromEvent={normFile}
                         >
@@ -78,14 +93,14 @@ export const ItemForm: React.FC<FormProps> = ({ onChange, fields, title, onFinis
                                 multiple={false}
                                 className="customSizedUpload"
                             >
-                                {src && src !== '' ? 'Đổi hình' : 'Thêm hình'}
+                                {props.src && props.src !== '' ? 'Đổi hình' : 'Thêm hình'}
                             </Upload>
                         </Form.Item>
                         {
-                            src && src !== '' && <Image
+                            props.src && props.src !== '' && <Image
                                 width={200}
                                 style={{ borderRadius: 5, border: 1, borderStyle: 'solid', borderColor: 'rgba(0, 0, 0, 0.1)', marginTop: 6, padding: 5 }}
-                                src={src}
+                                src={props.src}
                             />
                         }
                     </ImageContainer>
@@ -113,6 +128,6 @@ export const ItemForm: React.FC<FormProps> = ({ onChange, fields, title, onFinis
                     </Form.Item>
                 </Form>
             </Container>
-        </DashboardLayout>
+        </DashboardLayout >
     )
 }

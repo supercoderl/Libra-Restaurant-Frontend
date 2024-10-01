@@ -1,4 +1,4 @@
-import { BillContainer, Card, Container, ContentContainer, Curved, Icon, IconContainer, ItemContainer, Logo, LogoImg, LogoRed, StatusText, TextFooter, TextItem, TextItemContainer, Title } from "./style";
+import { BillContainer, Card, Container, ContentContainer, Curved, FlexContainer, HomeButton, Icon, IconContainer, ItemContainer, Logo, LogoImg, LogoRed, StatusText, TextFooter, TextItem, TextItemContainer, Title } from "./style";
 import logo from "../../../public/assets/images/logo-no-bg.png";
 import { Loading } from "@/components/loading";
 import useWindowDimensions from "@/hooks/use-window-dimensions";
@@ -9,10 +9,13 @@ import { useRouter } from "next/router";
 import { checkStripe, checkVNPay } from "@/utils/payment";
 import { updatePayment } from "@/api/business/paymentHistoryApi";
 import { toast } from "react-toastify";
+import HandIcon from "../../../public/assets/icons/hand-icon.svg";
+import { v4 as uuid } from "uuid";
 
 export default function Cart() {
     const { width } = useWindowDimensions();
     const [loading, setLoading] = useState(true);
+    const [response, setResponse] = useState({});
     const searchParams = useSearchParams();
     const router = useRouter();
 
@@ -78,23 +81,31 @@ export default function Cart() {
                             <StatusText>Đã thanh toán</StatusText>
 
                             <BillContainer className="receipt">
-                                <Title>Thanh toán hóa đơn tại nhà hàng Libra</Title>
+                                <FlexContainer>
+                                    <Title>Cảm ơn quý khách</Title>
+                                    <HandIcon fill="none" width="6%"></HandIcon>
+                                </FlexContainer>
                                 <ItemContainer>
                                     <TextItemContainer>
-                                        <TextItem>Merchant</TextItem>
-                                        <TextItem>Libra Restaurant</TextItem>
+                                        <TextItem>Quầy giao dịch</TextItem>
+                                        <TextItem>Nhà hàng Libra</TextItem>
                                     </TextItemContainer>
                                     <TextItemContainer>
-                                        <TextItem>Payment ID</TextItem>
-                                        <TextItem>123456789</TextItem>
+                                        <TextItem>Mã giao dịch</TextItem>
+                                        <TextItem>{uuid().substring(0, 8)}</TextItem>
                                     </TextItemContainer>
                                     <TextItemContainer>
-                                        <TextItem>Order ID</TextItem>
-                                        <TextItem>123456789</TextItem>
+                                        <TextItem>Mã hóa đơn</TextItem>
+                                        <TextItem>{uuid().substring(0, 8)}</TextItem>
                                     </TextItemContainer>
                                     <TextItemContainer>
                                         <TextItem>Phương thức thanh toán</TextItem>
-                                        <TextItem>VN Pay</TextItem>
+                                        <TextItem>
+                                            {
+                                                checkVNPay(searchParams.entries()) ? "VNPay" :
+                                                checkStripe(searchParams.entries()) ? "Stripe" : null
+                                            }
+                                        </TextItem>
                                     </TextItemContainer>
                                     <TextItemContainer>
                                         <TextItem>Thời gian</TextItem>
@@ -105,6 +116,11 @@ export default function Cart() {
                                         <TextItem isBold>100,000 đ</TextItem>
                                     </TextItemContainer>
                                 </ItemContainer>
+                                <HomeButton
+                                    onClick={() => router.replace("/")}
+                                >
+                                    Về trang chủ
+                                </HomeButton>
                             </BillContainer>
                         </ContentContainer>
                         <TextFooter>Khoản thanh toán này được đảm bảo an toàn nhờ giải pháp G Pay</TextFooter>

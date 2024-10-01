@@ -10,6 +10,8 @@ import RecentTable from "@/components/recent-table";
 import { Container, PreviewContainer, PreviewContentContainer, PreviewStateContainer, PreviewText, PreviewTextContainer, PreviewTextProgress, RecentContainer, RecentText, Space, Text, TextContainer } from "./style";
 import useWindowDimensions from "@/hooks/use-window-dimensions";
 import { items } from "@/api/business/itemApi";
+import dayjs from "dayjs";
+import { useStoreSelector } from "@/redux/store";
 
 type TopCardProps = {
     title: string;
@@ -112,6 +114,9 @@ const PreviewState: React.FC<PreviewStateProps> = ({ tag, color, value }) => {
 };
 export default function DashboardContainer() {
     const { width } = useWindowDimensions();
+    const { data } = useStoreSelector(state => ({
+        data: state.mainDashboardSlice.data
+    }));
 
     const leadColumns = [
         {
@@ -166,31 +171,31 @@ export default function DashboardContainer() {
         <DashboardLayout>
             <Row gutter={[24, 24]} style={{ flexDirection: width > 767 ? 'row' : 'column' }}>
                 <TopCard
-                    title={"Nguyên liệu"}
+                    title={"Chi nguyên liệu"}
                     tagColor={"cyan"}
-                    prefix={"Tháng này"}
+                    prefix={`Tháng ${dayjs(new Date).get('month') + 1}`}
                     tagContent={"34,000,000 ₫"}
                     isFullWidth={width <= 767}
                 />
                 <TopCard
                     title={"Đơn hàng"}
                     tagColor={"purple"}
-                    prefix={"Tháng này"}
-                    tagContent={"780,000,000 ₫"}
+                    prefix={`Tổng số`}
+                    tagContent={`${data.orderCount} đơn`}
                     isFullWidth={width <= 767}
                 />
                 <TopCard
                     title={"Nhân viên"}
                     tagColor={"green"}
-                    prefix={"Tháng này"}
-                    tagContent={"150,000,000 ₫"}
+                    prefix={`Ca tối`}
+                    tagContent={"12 người đang làm"}
                     isFullWidth={width <= 767}
                 />
                 <TopCard
                     title={"Doanh thu"}
                     tagColor={"red"}
-                    prefix={"Cả năm"}
-                    tagContent={"1,720,490,000 ₫"}
+                    prefix={`Tháng ${dayjs(new Date).get('month') + 1}`}
+                    tagContent={`${data.paymentAmount} ₫`}
                     isFullWidth={width <= 767}
                 />
             </Row>
@@ -258,12 +263,12 @@ export default function DashboardContainer() {
                         <TextContainer>
                             <PreviewTextProgress>Lợi nhuận từ khách hàng</PreviewTextProgress>
 
-                            <Progress type="dashboard" percent={25} width={148} />
+                            <Progress type="dashboard" percent={data?.customer?.customerCountInThisMonth} width={148} format={(percent) => `${percent}`}/>
                             <p>Số lượng khách trong tháng</p>
                             <Divider />
                             <Statistic
-                                title="Tăng"
-                                value={11.28}
+                                title={data?.customer?.percentage > 0 ? "Tăng" : "Giảm"}
+                                value={Math.abs(data?.customer?.percentage)}
                                 precision={2}
                                 valueStyle={{ color: "#3f8600" }}
                                 prefix={<ArrowUpOutlined />}

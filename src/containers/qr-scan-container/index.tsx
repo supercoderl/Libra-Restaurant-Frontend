@@ -1,5 +1,5 @@
 import Header from "@/components/header";
-import { BodyContainer, CenterContainer, Container, TitleContainer } from "./style";
+import { BodyContainer, CenterContainer, Container, ContinueButton, ContinueSvg, ContinueText, TitleContainer } from "./style";
 import { Scanner } from "@yudiel/react-qr-scanner";
 import { Title } from "@/components/title";
 import { useRouter } from "next/navigation";
@@ -73,12 +73,19 @@ export default function QRScanContainer() {
                                 container: { width: 350, height: 350 }
                             }}
                         />
+                        {
+                            pause &&
+                            <ContinueButton className="group" onClick={() => setPause(false)}>
+                                <ContinueSvg width="24px" height="24px" fill="white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 4v5h2V5h4V3H4a1 1 0 0 0-1 1zm18 5V4a1 1 0 0 0-1-1h-5v2h4v4h2zm-2 10h-4v2h5a1 1 0 0 0 1-1v-5h-2v4zM9 21v-2H5v-4H3v5a1 1 0 0 0 1 1h5zM2 11h20v2H2z" /></ContinueSvg>
+                                <ContinueText>Tiếp tục quét</ContinueText>
+                            </ContinueButton>
+                        }
                     </CenterContainer>
                 </BodyContainer>
             </Container>
             <ModalSection onOpenChange={() => { }} open={show}>
-                {step === 1 && <Step1 onNext={handleNextStep} status={status} onClose={onSubmit}/>}
-                {step === 2 && <Step2 onPrevious={handlePreviousStep} status={status} onSubmit={onSubmit}/>}
+                {step === 1 && <Step1 onNext={handleNextStep} status={status} onClose={onSubmit} />}
+                {step === 2 && <Step2 onPrevious={handlePreviousStep} status={status} onSubmit={onSubmit} />}
             </ModalSection>
         </>
     );

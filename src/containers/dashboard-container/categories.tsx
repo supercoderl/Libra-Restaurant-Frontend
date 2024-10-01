@@ -1,17 +1,32 @@
 import { DashboardLayout } from "@/layouts/DashboardLayout"
-import { Button, Checkbox, CheckboxProps, DatePicker, DatePickerProps, Divider, Input, Select, Table, TableColumnsType, Tag, Tooltip } from "antd";
+import { Button, Checkbox, CheckboxProps, DatePicker, DatePickerProps, Divider, Input, Select, Table, TableColumnsType, Tag, Tooltip, Image } from "antd";
 import { ActionContainer, AlignContainer, HeaderText, TableContainer, ToolbarContainer } from "./style";
-import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined, ReloadOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined, ReloadOutlined, RollbackOutlined } from "@ant-design/icons";
 import useWindowDimensions from "@/hooks/use-window-dimensions";
-import { MobileTable } from "@/components/dashboard/branch/mobile-table";
 import { ListRep } from "@/type/objectTypes";
 import { useState } from "react";
 import Category from "@/type/Category";
+import { MobileTable } from "@/components/mobile/tables/mobile-table";
+import { useRouter } from "next/navigation";
 
-const Header = () => {
+type HeaderProps = {
+    isShowText?: boolean;
+}
+
+const Header: React.FC<HeaderProps> = ({ isShowText }) => {
+    const router = useRouter();
+
     return (
         <ToolbarContainer isRow={true}>
             <HeaderText>Quản lý danh mục thức ăn</HeaderText>
+            <Button
+                icon={<RollbackOutlined />}
+                type="primary"
+                danger
+                onClick={() => router.back()}
+            >
+                {isShowText && 'Quay lại'}
+            </Button>
         </ToolbarContainer>
     )
 }
@@ -95,6 +110,13 @@ type CategoryProps = {
 export const CategoryContainer: React.FC<CategoryProps> = ({ result, loading, onReload, onPaginationChange, onSearch }) => {
     const columns: TableColumnsType<Category> = [
         {
+            title: 'Hình ảnh',
+            dataIndex: 'picture',
+            align: 'center',
+            width: '5%',
+            render: (url?: string | null) => <Image width={80} src={url || process.env.NEXT_PUBLIC_DUMMY_PICTURE} />
+        },
+        {
             title: 'Tên danh mục',
             dataIndex: 'name',
             render: (text: string) => <a>{text}</a>,
@@ -160,7 +182,7 @@ export const CategoryContainer: React.FC<CategoryProps> = ({ result, loading, on
 
     return (
         <DashboardLayout>
-            <Header />
+            <Header isShowText={width > 767} />
             <Toolbar isRow={width > 767} onReload={onReload} onSearch={onSearch} />
             {
                 width > 767 ?
@@ -179,7 +201,16 @@ export const CategoryContainer: React.FC<CategoryProps> = ({ result, loading, on
                         />
                     </TableContainer>
                     :
-                    <MobileTable data={result ? result.items : []} />
+                    result && result.items &&
+                    result.items.map((item, index) => (
+                        <MobileTable
+                            key={index}
+                            title={item.name}
+                            subTitle={item.isActive ? "Đang hoạt động" : "Bị khóa"}
+                            description={item.description}
+                            image="https://cdn-icons-png.flaticon.com/512/11618/11618642.png"
+                        />
+                    ))
             }
             {/* <ItemDetail
                 isOpen={isOpen}

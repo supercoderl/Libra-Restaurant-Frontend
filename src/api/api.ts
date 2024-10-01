@@ -1,6 +1,7 @@
 import HttpClient from './iHttpImp'
-import { keys, get } from '../utils/localStorage'
+import { keys, get, set } from '../utils/localStorage'
 import { HTTP_METHODS, RequestConfig } from './interface/iHttp'
+import { toast } from 'react-toastify';
 
 const isLog = false
 const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
@@ -29,9 +30,38 @@ function _buildRequestConfig({
     }
 }
 
-const errorHanding = (err: any) => {
+async function refreshToken() {
+    try {
+        const refreshToken = get(keys.KEY_REFRESH_TOKEN);
+        const res = await HttpClient.request(
+            baseUrl.concat('/refresh'), // Đường dẫn API refresh token
+            {},
+            { refreshToken }, // Gửi refreshToken để lấy accessToken mới
+            _buildRequestConfig({ method: HTTP_METHODS.POST }) // HTTP POST method
+        );
+
+        if (res?.data && res?.data?.success && res?.data?.data?.accessToken) {
+            // Lưu lại token mới
+            set(keys.KEY_CURRENT_USER, res?.data?.data?.accessToken);
+            set(keys.KEY_REFRESH_TOKEN, res?.data?.data?.refreshToken);
+            return res?.data?.data?.accessToken;
+        } else {
+            throw new Error('Failed to refresh token');
+        }
+    } catch (error) {
+        console.error('Error refreshing token:', error);
+        throw error;
+    }
+}
+
+const errorHanding = async (err: any) => {
     isLog && console.log('-------- error --------')
     isLog && console.error(err)
+    if (err?.response && err?.response?.data && err?.response?.data?.errors) {
+        toast(err?.response?.data?.errors.join(", "), {
+            type: "error",
+        });
+    }
 }
 
 function _wrapperResponse<T>(data: any): T {
@@ -69,7 +99,25 @@ async function _api<T>(params: APIParams, data: object, method: HTTP_METHODS) {
             _buildRequestConfig({ method })
         )
         return _wrapperResponse<T>(res.data)
-    } catch (error) {
-        errorHanding(error)
+    } catch (error: any) {
+        if (error.response && error.response.status === 401) {
+            try {
+                await refreshToken();
+                // Thực hiện lại request với access token mới
+                let res = await HttpClient.request(
+                    baseUrl.concat(params.url),
+                    params.params,
+                    data,
+                    _buildRequestConfig({ method })
+                )
+                return _wrapperResponse<T>(res.data)
+            } catch (refreshError) {
+                // Xử lý khi không refresh được token (ví dụ: chuyển hướng về trang đăng nhập)
+                console.error('Error during token refresh:', refreshError);
+                errorHanding(refreshError);
+            }
+        }
+        else
+            errorHanding(error)
     }
 }

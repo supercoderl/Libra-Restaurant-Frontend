@@ -3,21 +3,29 @@ import { Button, Checkbox, CheckboxProps, DatePicker, DatePickerProps, Divider, 
 import { ActionContainer, AlignContainer, HeaderText, TableContainer, ToolbarContainer } from "./style";
 import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined, ReloadOutlined, RollbackOutlined } from "@ant-design/icons";
 import useWindowDimensions from "@/hooks/use-window-dimensions";
-import { MobileTable } from "@/components/dashboard/branch/mobile-table";
 import { ListRep } from "@/type/objectTypes";
-import { formatCurrency } from "@/utils/currency";
 import { useState } from "react";
-import ItemDetail from "./item/item-detail";
 import Menu from "@/type/Menu";
+import { MobileTable } from "@/components/mobile/tables/mobile-table";
+import { useRouter } from "next/navigation";
 
 type HeaderProps = {
     isShowText?: boolean;
 }
 
 const Header: React.FC<HeaderProps> = ({ isShowText }) => {
+    const router = useRouter();
     return (
         <ToolbarContainer isRow={true}>
             <HeaderText>Quản lý thực đơn</HeaderText>
+            <Button
+                icon={<RollbackOutlined />}
+                type="primary"
+                danger
+                onClick={() => router.back()}
+            >
+                {isShowText && 'Quay lại'}
+            </Button>
         </ToolbarContainer>
     )
 }
@@ -189,7 +197,16 @@ export const MenuContainer: React.FC<MenuProps> = ({ result, loading, onReload, 
                         />
                     </TableContainer>
                     :
-                    <MobileTable data={result ? result.items : []} />
+                    result && result.items &&
+                    result.items.map((item, index) => (
+                        <MobileTable
+                            key={index}
+                            title={item.name}
+                            subTitle={item.isActive ? "Đang hoạt động" : "Bị khóa"}
+                            description={item.description}
+                            image="https://cdn-icons-png.flaticon.com/512/9557/9557988.png"
+                        />
+                    ))
             }
             {/* <ItemDetail
                 isOpen={isOpen}

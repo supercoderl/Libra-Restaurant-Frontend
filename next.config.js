@@ -23,6 +23,10 @@ module.exports = {
       'png.pngtree.com',
       'www.pngkey.com',
       'r2.erweima.ai',
-      'pngimg.com'],
+      'pngimg.com',
+      'encrypted-tbn0.gstatic.com',
+      'www.freeiconspng.com',
+      'www.pngplay.com',
+      'rakuen.com.vn'],
   },
 };

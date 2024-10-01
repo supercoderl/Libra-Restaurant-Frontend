@@ -1,32 +1,33 @@
 import React from 'react';
 import Header from '@/components/header';
-import Cart from '../cart-container';
 import { useStoreSelector } from 'src/redux/store';
 import { shallowEqual } from 'react-redux';
 import DarkThemeToggler from '@/components/dark-theme-toggler';
 import {
   BodyContainer,
-  CartContainer,
   CenterContainer,
   Container,
 } from './style';
-import useWindowDimensions from 'src/hooks/use-window-dimensions';
 import Banner from '@/components/banner';
 import { Food } from './food';
 import ReadMoreButton from '@/components/readmore-button';
 import { CategorySlide } from './category';
+import Footer from '@/components/footer';
+import { Service } from './service';
+import { useRouter } from 'next/navigation';
 
 export default function HomeContainer() {
-  const { categories, items, currentCategory } = useStoreSelector(
+  const { categories, items, currentCategory, loading } = useStoreSelector(
     state => ({
       items: state.mainProductSlice.items,
       categories: state.mainCategorySlice.categories,
       currentCategory: state.mainCategorySlice.currentCategory,
+      loading: state.mainProductSlice.loading
     }),
     shallowEqual,
   );
 
-  const { width } = useWindowDimensions();
+  const router = useRouter();
 
   return (
     <Container>
@@ -35,9 +36,17 @@ export default function HomeContainer() {
           <Header />
           <Banner />
           <CategorySlide categories={categories} />
-          <Food currentCategory={currentCategory} items={items} showTitle isReservation={false} />
-          <ReadMoreButton />
+          <Food
+            currentCategory={currentCategory}
+            items={items}
+            showTitle
+            isReservation={false}
+            loading={loading}
+          />
+          <ReadMoreButton router={router} />
+          <Service />
         </CenterContainer>
+        <Footer />
       </BodyContainer>
       <DarkThemeToggler />
     </Container>

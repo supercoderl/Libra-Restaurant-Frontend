@@ -19,7 +19,9 @@ const ItemAction: NextPage = () => {
         { name: ['quantity'], value: '' },
         { name: ['recipe'], value: '' },
         { name: ['instruction'], value: '' },
-        { name: ['picture'], value: [] }
+        { name: ['picture'], value: null },
+        { name: ['base64'], value: null },
+        { name: ['categoryIds'], value: [] }
     ]);
     const [src, setSrc] = useState("");
     const [loading, setLoading] = useState(false);
@@ -38,7 +40,9 @@ const ItemAction: NextPage = () => {
                         { name: 'price', value: res.data?.price },
                         { name: 'quantity', value: res.data?.quantity },
                         { name: 'recipe', value: res.data?.recipe || '' },
-                        { name: 'instruction', value: res.data?.instruction || '' }
+                        { name: 'instruction', value: res.data?.instruction || '' },
+                        { name: 'categoryIds', value: res.data?.categoryIds || [] },
+                        { name: 'picture', value: res.data?.picture }
                     ]);
                     setSrc(res.data?.picture || "")
                     setState("Cập nhật sản phẩm");
@@ -52,8 +56,13 @@ const ItemAction: NextPage = () => {
 
     const onFinish = async () => {
         setLoading(true);
+
         let values = fields.reduce((acc, field) => {
-            if (Array.isArray(field.name) && typeof field.name[0] === 'string') {
+            if (typeof field.name === 'string') {
+                acc[field.name] = field.value;
+            }
+
+            else if (Array.isArray(field.name) && typeof field.name[0] === 'string') {
                 acc[field.name[0]] = field.value;
             }
             return acc;
@@ -63,8 +72,8 @@ const ItemAction: NextPage = () => {
             if (searchParams.get('itemId')) {
                 values = { ...values, itemId: Number(searchParams.get('itemId')) };
             }
-            if (values.picture && values.picture.length > 0) {
-                values = { ...values, base64: values.picture[0]?.thumbUrl };
+            if (values.base64 && values.base64.length > 0) {
+                values = { ...values, base64: Array.isArray(values.base64) ? values.base64[0]?.thumbUrl : null };
             }
 
             const res = await actionItem(values as Item, searchParams.get('itemId') ? 'edit' : 'create');

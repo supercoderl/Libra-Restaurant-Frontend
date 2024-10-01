@@ -1,13 +1,14 @@
 import { items } from '@/api/business/itemApi';
 import Item from '@/type/Item';
-import { createAsyncThunk, createSlice, Draft, PayloadAction } from '@reduxjs/toolkit';
+import Query from '@/type/Query';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 
 export const fetchData = createAsyncThunk(
   'items/getData',
-  async () => {
+  async (data?: Query) => {
     try {
-      const response = await items();
+      const response = await items(data);
 
       if (response?.success && response?.data) {
         return {
@@ -27,11 +28,13 @@ export const fetchData = createAsyncThunk(
 )
 
 type sliceType = {
-  items: Item[]
+  items: Item[],
+  loading: boolean
 }
 
 const initialState: sliceType = {
-  items: []
+  items: [],
+  loading: false
 }
 
 const mainProductSlice = createSlice({
@@ -39,9 +42,17 @@ const mainProductSlice = createSlice({
   initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchData.fulfilled, (state, action) => {
-      state.items = action.payload.items;
-    })
+    builder
+      .addCase(fetchData.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchData.fulfilled, (state, action) => {
+        state.items = action.payload.items;
+        state.loading = false;
+      })
+      .addCase(fetchData.rejected, (state) => {
+        state.loading = false;
+      })
   },
 
 })

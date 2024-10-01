@@ -38,9 +38,13 @@ module.exports = {
         order:
           '0.6px 5.3px 6.6px rgba(0, 0, 0, 0.025), 5px 42px 53px rgba(0, 0, 0, 0.05)',
         buttonCheckout: '5px 5px 10px rgba(0, 0, 0, 0.116)',
-        secondaryCategory: '0 4px 30px rgba(0, 0, 0, 0.1)',
+        secondaryCategory: 'rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
         modalFocusInput: '1px 2px 0px 0px #D12121',
-        modalInput: '3px 4px 0px 1px #D12121'
+        modalInput: '3px 4px 0px 1px #D12121',
+        moon: `1.8em 1.5em 0 0em #d9fbff inset, rgba(255, 255, 255, 0.1) 0em -4.2em 0 -2.7em, rgba(255, 255, 255, 0.1) 1.8em 4.2em 0 -2.7em, rgba(255, 255, 255, 0.1) 1.2em 7.8em 0 -2.4em, rgba(255, 255, 255, 0.1) 3.6em 1.2em 0 -2.46em, rgba(255, 255, 255, 0.1) 4.8em 4.8em 0 -2.7em, rgba(255, 255, 255, 0.1) 3.6em 7.8em 0 -2.7em, rgba(255, 255, 255, 0.1) -2.4em 4.2em 0 -2.7em, rgba(255, 255, 255, 0.1) -0.6em 6em 0 -2.7em`,
+        sun: '0.45em 0.45em 0 0.75em #fff inset, 0 -0.75em 0 -0.405em #fff, 0.525em -0.525em 0 -0.45em #fff, 0.75em 0 0 -0.405em #fff, 0.525em 0.525em 0 -0.45em #fff, 0 0.75em 0 -0.405em #fff, -0.525em 0.525em 0 -0.45em #fff, -0.75em 0 0 -0.405em #fff, -0.525em -0.525em 0 -0.45em #fff',
+        switchInput: '0 0 0 0.125em hsla(223,90%,50%,0), 0.125em 0.125em 0.25em hsla(223,90%,10%,0.2)',
+        focusVisible: '0 0 0 0.125em hsl(223,90%,50%), 0.125em 0.125em 0.25em hsla(223,90%,10%,0.2)',
       },
       textColor: {
         primary: 'var(--text-primary)',
@@ -82,6 +86,10 @@ module.exports = {
       },
       transitionDuration: {
         '500': '500ms',
+      },
+      transitionTimingFunction: {
+        'custom-bezier-out': 'cubic-bezier(0.05, 0.76, 0.06, 0.86)',
+        'custom-bezier-in': 'cubic-bezier(0.76,0.05,0.86,0.06)'
       },
       keyframes: {
         fadeIn: {

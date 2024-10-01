@@ -4,15 +4,10 @@ import { createAsyncThunk, createSlice, Draft, PayloadAction } from "@reduxjs/to
 export const getStatus = createAsyncThunk(
     'reservations/getStatus',
     async (reservationId: number) => {
-        try {
-            const response = await reservationStatus(reservationId);
-            if (response?.success)
-                return response?.data;
-            return null;
-        } catch (error) {
-            console.log(error);
-            return null;
-        }
+        const response = await reservationStatus(reservationId);
+        if (response?.success)
+            return response?.data;
+        return null;
     }
 )
 
