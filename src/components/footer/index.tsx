@@ -1,4 +1,4 @@
-import { BottomDetail, BottomText, BottomTextA, BottomTextSpan, Box, Button, Content, ContentTop, Footer, Input, InputBox, LinkBoxes, LinkName, LinkNameText, MediaIcon, MediaText, SpanLogo, TitleDetail, TitleImage, TitleLogo } from "./style"
+import { BottomDetail, BottomText, BottomTextA, BottomTextSpan, Box, Button, Content, ContentTop, FooterContainer, Input, InputBox, LinkBoxes, LinkName, LinkNameText, MediaIcon, MediaText, SpanLogo, TitleDetail, TitleImage, TitleLogo } from "./style"
 import logo from "../../../public/assets/images/logo-no-bg.png";
 import FacebookIcon from "../../../public/assets/icons/facebook-icon.svg";
 import TwitterIcon from "../../../public/assets/icons/twitter-icon.svg";
@@ -6,9 +6,9 @@ import InstagramIcon from "../../../public/assets/icons/instagram-icon.svg";
 import LinkedInIcon from "../../../public/assets/icons/linkedin-icon.svg";
 import YoutubeIcon from "../../../public/assets/icons/youtube-icon.svg";
 
-export default () => {
+export default function Footer() {
     return (
-        <Footer>
+        <FooterContainer>
             <Content>
                 <ContentTop>
                     <TitleDetail>
@@ -78,6 +78,6 @@ export default () => {
                     </BottomTextSpan>
                 </BottomText>
             </BottomDetail>
-        </Footer>
+        </FooterContainer>
     )
 }

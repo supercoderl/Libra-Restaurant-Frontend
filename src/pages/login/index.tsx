@@ -10,11 +10,11 @@ import { useRouter } from "next/navigation";
 import { useStoreDispatch, useStoreSelector } from "@/redux/store";
 import { login, setMessage, validateUser } from "@/redux/slices/auth-slice";
 import { message } from "antd";
-import { Loading } from "@/components/loading";
 import { Spinner } from "@/components/loading/spinner";
 import { get } from "@/utils/localStorage";
+import { NextPage } from "next";
 
-export default () => {
+const Login: NextPage = () => {
     const [loginInput, setLoginInput] = useState({
         email: "",
         password: ""
@@ -180,3 +180,5 @@ export default () => {
         </>
     )
 }
+
+export default Login;

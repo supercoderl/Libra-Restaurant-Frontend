@@ -1,6 +1,6 @@
 import tw from "twin.macro";
 
-export const Footer = tw.footer`md:px-20 relative bg-[rgb(83_83_83)] w-full before:content-[''] before:absolute before:left-0 before:top-[150px] md:before:top-[100px] before:h-[1px] before:w-full before:bg-[#afafb6]`;
+export const FooterContainer = tw.footer`md:px-20 relative bg-[rgb(83_83_83)] w-full before:content-[''] before:absolute before:left-0 before:top-[150px] md:before:top-[100px] before:h-[1px] before:w-full before:bg-[#afafb6]`;
 
 export const TitleDetail = tw.div`flex items-center gap-3`
 
