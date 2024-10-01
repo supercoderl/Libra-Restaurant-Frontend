@@ -7,29 +7,45 @@ export const keys = {
 }
 
 export function set(key: string, data: string) {
-  localStorage.setItem(key, data)
+  if (typeof window !== 'undefined' && window.localStorage) {
+    window.localStorage.setItem(key, data)
+  }
 }
 
 export function get(key: string): string | null {
-  return localStorage.getItem(key)
+  if (typeof window !== 'undefined' && window.localStorage) {
+    return window.localStorage.getItem(key)
+  }
+  return null;
 }
 
 export function remove(key: string) {
-  return localStorage.removeItem(key);
+  if (typeof window !== 'undefined' && window.localStorage) {
+    return window.localStorage.removeItem(key);
+  }
+  return;
 }
 
 export function clear() {
-  return localStorage.clear();
+  if (typeof window !== 'undefined' && window.localStorage) {
+    return window.localStorage.clear();
+  }
+  return;
 }
 
 export function getUser(): Employee | undefined {
-  const userString = localStorage.getItem(keys.KEY_CURRENT_USER)
-  if (userString) {
-    return JSON.parse(userString)
+  if (typeof window !== 'undefined' && window.localStorage) {
+    const userString = window.localStorage.getItem(keys.KEY_CURRENT_USER)
+    if (userString) {
+      return JSON.parse(userString)
+    }
+    return undefined
   }
   return undefined
 }
 
 export function setUser(user: Employee) {
-  localStorage.setItem(keys.KEY_CURRENT_USER, JSON.stringify(user))
+  if (typeof window !== 'undefined' && window.localStorage) {
+    window.localStorage.setItem(keys.KEY_CURRENT_USER, JSON.stringify(user))
+  }
 }

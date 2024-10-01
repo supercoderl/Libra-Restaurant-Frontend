@@ -12,6 +12,7 @@ import { login, setMessage, validateUser } from "@/redux/slices/auth-slice";
 import { message } from "antd";
 import { Loading } from "@/components/loading";
 import { Spinner } from "@/components/loading/spinner";
+import { get } from "@/utils/localStorage";
 
 export default () => {
     const [loginInput, setLoginInput] = useState({
@@ -40,7 +41,7 @@ export default () => {
 
     // On Load Validate User by Token
     useEffect(() => {
-        const token = localStorage.getItem('token')
+        const token = get('token')
         dispatch(validateUser(token))
     }, [])
 
