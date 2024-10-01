@@ -24,6 +24,7 @@ export default function FoodContainer() {
                     <SecondCategory />
                     <ContentContainer>
                         <Food
+                            loading={false}
                             showTitle={false}
                             currentCategory={1}
                             items={items}
