@@ -83,6 +83,7 @@ export default function ReservationContainer({ tableNumber, storeId, reservation
                         <SecondCategory />
                         <ContentContainer>
                             <Food
+                                loading={false}
                                 showTitle={false}
                                 currentCategory={1}
                                 items={items}
