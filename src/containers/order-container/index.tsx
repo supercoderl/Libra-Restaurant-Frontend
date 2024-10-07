@@ -1,33 +1,31 @@
 import { formatDate } from "@/utils/date";
-import { BodyContainer, CartContainer, FluidContainer, CustomerCartText, HeaderContainer, HeaderText, HeaderTime, ImageDesktop, ImageItemContainer, ImageMobile, ItemContainer, ItemInfoContainer, ItemInfoMoreContainer, ItemInfoMoreText, ItemInfoPriceContainer, ItemInfoPriceDiscount, ItemInfoPriceText, ItemInfoPriceTotal, ItemInfoTextContainer, ItemInfoTitle, LeftContainer, Price, PriceCalculate, PriceCalculateContainer, PriceCalculateText, PriceCalculateTotal, PriceContainer, PriceTotal, PriceTotalNumber, PriceTotalText, RightContainer, ShippingText, Container, CenterContainer, Button, ButtonContainer, QuantityContainer, QuantityButton, ItemInfoPriceContainerMobile } from "./style";
+import { BodyContainer, CartContainer, FluidContainer, CustomerCartText, HeaderContainer, HeaderText, HeaderTime, ImageDesktop, ImageItemContainer, ImageMobile, ItemContainer, ItemInfoContainer, ItemInfoMoreContainer, ItemInfoMoreText, ItemInfoPriceContainer, ItemInfoPriceDiscount, ItemInfoPriceText, ItemInfoPriceTotal, ItemInfoTextContainer, ItemInfoTitle, LeftContainer, Price, PriceCalculate, PriceCalculateContainer, PriceCalculateText, PriceCalculateTotal, PriceContainer, PriceTotal, PriceTotalNumber, PriceTotalText, RightContainer, ShippingText, Container, CenterContainer, Button, ButtonContainer, QuantityContainer, QuantityButton, ItemInfoPriceContainerMobile, PromoContainer, PromoInput, PromoButtonContainer, PromoButton, PromoSvg } from "./style";
 import { useStoreSelector } from "@/redux/store";
 import Header from "@/components/header";
 import { useRouter } from "next/navigation";
 import { OrderStatus } from "@/enums";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { get } from "@/utils/sesstionStorage";
-import { actionOrder } from "@/api/business/orderApi";
+import { actionOrder, order } from "@/api/business/orderApi";
 import { Order } from "@/type/Order";
-import { toast } from "react-toastify";
 import { Spinner } from "@/components/loading/spinner";
 import { Payment } from "./payment";
 import AddIcon from '../../../public/assets/icons/add-icon.svg';
 import SubtractIcon from '../../../public/assets/icons/subtract-icon.svg';
 
-type OrderProps = {
-    storeId: string;
-    reservationId: number;
-}
-
-export default function OrderContainer({ storeId, reservationId }: OrderProps) {
+export default function OrderContainer() {
     const router = useRouter();
-    const orderId = get("orderId");
+    const [orderId, setOrderId] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [show, setShow] = useState(false);
+    const [orderS, setOrderS] = useState<Order | null>(null);
+    const [count, setCount] = useState(0);
 
-    const { itemsInCart } = useStoreSelector(
+    const { itemsInCart, id, storeId } = useStoreSelector(
         state => ({
-            itemsInCart: state.cart.itemsInCart
+            itemsInCart: state.cart.itemsInCart,
+            id: state.reservation.id,
+            storeId: state.reservation.storeId
         })
     );
 
@@ -44,9 +42,8 @@ export default function OrderContainer({ storeId, reservationId }: OrderProps) {
     const onSubmit = async () => {
         setLoading(true);
         const body = {
-            orderId: orderId,
             storeId,
-            reservationId,
+            reservationId: Number(id),
             priceCalculated: calculatePriceItems(),
             subtotal: calculatePriceItems(),
             tax: 0,
@@ -58,13 +55,18 @@ export default function OrderContainer({ storeId, reservationId }: OrderProps) {
             isCanceled: false,
             isReady: false,
             isCompleted: false
-        };
+        } as any;
 
         try {
-            const res = await actionOrder(body as Order, "edit");
-            if (res?.success) setShow(true);
+            let response;
+            if (orderId) {
+                body.orderId = orderId;
+                response = await actionOrder(body as Order, "edit");
+                setCount(count + 1);
+            }
             else {
-                toast("Có lỗi xảy ra, vui lòng liên hệ nhân viên.", { type: "error" });
+                response = await actionOrder(body as Order, "create");
+                setCount(count + 1);
             }
         }
         catch (error) {
@@ -75,13 +77,32 @@ export default function OrderContainer({ storeId, reservationId }: OrderProps) {
         }
     }
 
+    //? Init
+    useEffect(() => {
+        const id = get("orderId");
+        if (id) setOrderId(id);
+    }, []);
+
+    //? Focus On Mount
+    useEffect(() => {
+        const getOrder = async () => {
+            const res = await order(orderId || "");
+            console.log(res);
+            // if (res && res?.data && res?.data?.data) {
+            //     setOrderS(res?.data?.data);
+            // }
+        }
+
+        orderId && getOrder();
+    }, [count, orderId]);
+
     return (
         <Container>
             <CenterContainer>
                 <Header />
                 <FluidContainer>
                     <HeaderContainer>
-                        <HeaderText>Đã gọi món, mã đơn hàng: #13432</HeaderText>
+                        <HeaderText>Giỏ hàng của tôi, mã đơn hàng: #13432</HeaderText>
                         <HeaderTime>{formatDate(new Date())}</HeaderTime>
                     </HeaderContainer>
                     <BodyContainer>
@@ -146,15 +167,44 @@ export default function OrderContainer({ storeId, reservationId }: OrderProps) {
                                             <PriceCalculateText>Thuế</PriceCalculateText>
                                             <PriceCalculateTotal>10%</PriceCalculateTotal>
                                         </PriceCalculateContainer>
+                                        <PromoContainer>
+                                            <PromoInput
+                                                type="text"
+                                                placeholder="Nhập mã giảm giá"
+                                            />
+                                            <PromoButtonContainer>
+                                                <PromoButton
+                                                    type="submit"
+                                                    aria-label="Submit"
+                                                >
+                                                    <PromoSvg viewBox="0 0 16 6" aria-hidden="true">
+                                                        <path
+                                                            fill="currentColor"
+                                                            fill-rule="evenodd"
+                                                            clip-rule="evenodd"
+                                                            d="M16 3 10 .5v2H0v1h10v2L16 3Z"
+                                                        ></path>
+                                                    </PromoSvg>
+                                                </PromoButton>
+                                            </PromoButtonContainer>
+                                        </PromoContainer>
                                     </PriceCalculate>
                                     <PriceTotal>
                                         <PriceTotalText>Tổng cộng</PriceTotalText>
                                         <PriceTotalNumber>{calculatePriceItems() + calculatePriceItems() * 10 / 100} ₫</PriceTotalNumber>
                                     </PriceTotal>
+                                    <ButtonContainer>
+                                        <Button onClick={() => router.back()}>Hủy đơn</Button>
+                                        <Button onClick={onSubmit} className="group">
+                                            {
+                                                loading && <Spinner width={15} />
+                                            }
+                                            Gọi món
+                                        </Button>
+                                    </ButtonContainer>
                                 </Price>
 
                                 <ButtonContainer>
-                                    <Button onClick={() => router.back()}>Gọi tiếp</Button>
                                     <Button onClick={onSubmit} className="group">
                                         {
                                             loading && <Spinner width={15} />

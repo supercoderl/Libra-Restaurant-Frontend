@@ -55,7 +55,7 @@ export const ShippingText = tw.h3`text-xl dark:text-white font-semibold leading-
 
 export const PriceCalculate = tw.div`flex justify-center items-center w-full space-y-4 flex-col border-gray-200 border-b pb-4`;
 
-export const PriceTotal = tw.div`flex justify-between items-center w-full`;
+export const PriceTotal = tw.div`flex justify-between items-center w-full mb-12!`;
 
 export const PriceCalculateContainer = tw.div`flex justify-between items-center w-full`;
 
@@ -140,3 +140,13 @@ export const PaymentCardFix = tw.div`max-w-[500px] mb-6`
 export const PaymentCartNotifyImg = tw.div`w-full flex items-center justify-center`
 
 export const ContinueContainer = tw.div`flex items-center`
+
+export const PromoContainer = tw.div`relative mt-10! w-full`
+
+export const PromoInput = tw.input`transition duration-500 block w-full rounded-lg border border-neutral-300 bg-transparent py-3 pl-6 pr-20 text-base/6 text-neutral-950 ring-4 ring-transparent transition placeholder:text-neutral-500 focus:border-main focus:outline-none focus:ring-neutral-950/5`
+
+export const PromoButtonContainer = tw.div`absolute inset-y-1 right-1 flex justify-end`
+
+export const PromoButton = tw.button`transition duration-500 flex aspect-square h-full items-center justify-center rounded-lg bg-main text-white transition hover:bg-neutral-800`
+
+export const PromoSvg = tw.svg`w-4`

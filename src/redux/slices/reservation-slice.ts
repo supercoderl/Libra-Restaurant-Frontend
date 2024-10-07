@@ -13,19 +13,54 @@ export const getStatus = createAsyncThunk(
 
 type sliceType = {
     status: number;
+    id: any;
+    isChanged: boolean;
+    capacity: number;
+    customerName: string;
+    customerPhone: string;
+    storeId: any;
+    tableNumber: number
 }
 
 const initialState: sliceType = {
-    status: -1
+    status: -1,
+    id: null,
+    isChanged: false,
+    capacity: 0,
+    customerName: '',
+    customerPhone: '',
+    storeId: null,
+    tableNumber: -1
 }
 
 const mainReservationSlice = createSlice({
     name: 'main-reservation',
     initialState: initialState,
     reducers: {
-        setCurrentCategory: (state: Draft<typeof initialState>, action: PayloadAction<number>) => {
-            state.status = action.payload
+        updateReservation: (state, action) => {
+            const { reservationId, isChanged, capacity, storeId, tableNumber } = action.payload;
+            state.isChanged = isChanged
+            state.id = reservationId
+            state.capacity = capacity
+            state.storeId = storeId
+            state.tableNumber = tableNumber
         },
+        updateReservationStatus: (state, action) => {
+            const { status, tableNumber } = action.payload;
+            return {
+                ...state,
+                status,
+                tableNumber
+            }
+        },
+        updateReservationCustomer: (state, action) => {
+            const { customerName, customerPhone } = action.payload;
+            return {
+                ...state,
+                customerName,
+                customerPhone
+            }
+        }
     },
     extraReducers: (builder) => {
         builder.addCase(getStatus.fulfilled, (state, action) => {
@@ -34,5 +69,7 @@ const mainReservationSlice = createSlice({
     },
 
 })
+
+export const { updateReservation, updateReservationStatus, updateReservationCustomer } = mainReservationSlice.actions
 
 export default mainReservationSlice.reducer;

@@ -6,35 +6,42 @@ import { EmblaCarouselType, EmblaOptionsType } from "embla-carousel";
 import React, { useCallback, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import Category from "@/type/Category";
+import { Empty } from "@/components/empty";
 
 interface CategoryProps {
-    categories: Category[];
+  categories: Category[];
 }
 
 export const CategorySlide: React.FC<CategoryProps> = ({ categories }) => {
-    const OPTIONS: EmblaOptionsType = { slidesToScroll: 2, containScroll: 'trimSnaps', align: 'start' };
-    const [emblaApi, setEmblaApi] = useState<EmblaCarouselType | null>(null);
-    
-    return (
-        <>
-            <MidContainer>
-                <Title isBigger>Danh mục</Title>
-                <ArrowButton embla={emblaApi} />
-            </MidContainer>
-            <FoodCategoriesContainer>
-                <Carousel
-                    options={OPTIONS}
-                    setEmbla={setEmblaApi}
-                >
-                    {categories.map(e => (
-                        <div className='embla__slide__1' key={e.categoryId}>
-                            <FoodCategory category={e}></FoodCategory>
-                        </div>
-                    ))}
-                </Carousel>
-            </FoodCategoriesContainer>
-        </>
-    )
+  const OPTIONS: EmblaOptionsType = { slidesToScroll: 2, containScroll: 'trimSnaps', align: 'start' };
+  const [emblaApi, setEmblaApi] = useState<EmblaCarouselType | null>(null);
+
+  return (
+    <>
+      <MidContainer>
+        <Title isBigger>Danh mục</Title>
+        <ArrowButton embla={emblaApi} />
+      </MidContainer>
+      <FoodCategoriesContainer>
+        {
+          categories.length <= 0 ? (
+            <Empty title="Danh mục trống!" />
+          )
+            :
+            <Carousel
+              options={OPTIONS}
+              setEmbla={setEmblaApi}
+            >
+              {categories.map(e => (
+                <div className='embla__slide__1' key={e.categoryId}>
+                  <FoodCategory category={e}></FoodCategory>
+                </div>
+              ))}
+            </Carousel>
+        }
+      </FoodCategoriesContainer>
+    </>
+  )
 }
 
 type PropType = {
@@ -44,7 +51,7 @@ type PropType = {
 };
 
 const Carousel: React.FC<PropType> = (props) => {
-    const { options, children, setEmbla } = props
+  const { options, children, setEmbla } = props
   const [emblaRef, emblaApi] = useEmblaCarousel(options);
 
   const [visibleSlides, setVisibleSlides] = useState<React.ReactNode[]>([]);

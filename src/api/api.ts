@@ -10,6 +10,7 @@ export function getHeaders() {
     let token = get(keys.KEY_TOKEN)
     return {
         'Authorization': 'Bearer ' + token,
+        'ngrok-skip-browser-warning': '69420'
     }
 }
 interface APIParams {
@@ -58,7 +59,10 @@ const errorHanding = async (err: any) => {
     isLog && console.log('-------- error --------')
     isLog && console.error(err)
     if (err?.response && err?.response?.data && err?.response?.data?.errors) {
-        toast(err?.response?.data?.errors.join(", "), {
+        console.log(err?.response?.data);
+        const errorMessages = Object.entries(err?.response?.data?.errors)
+            .map(([key, messages]: [string, any]) => messages?.join(', ')).join(', ');
+        toast(errorMessages, {
             type: "error",
         });
     }

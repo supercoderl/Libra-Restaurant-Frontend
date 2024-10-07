@@ -10,10 +10,6 @@ import { OrderPrice } from "@/components/order/price";
 import { SecondCategory } from "@/components/food-category/second-category";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { actionOrder } from "@/api/business/orderApi";
-import { generateOrderNo } from "@/utils/date";
-import { OrderStatus } from "@/enums";
-import { get, set } from "@/utils/sesstionStorage";
 
 type ReservationContainerProps = {
     tableNumber?: string | null;
@@ -22,8 +18,6 @@ type ReservationContainerProps = {
 }
 
 export default function ReservationContainer({ tableNumber, storeId, reservationId }: ReservationContainerProps) {
-    const [orderId, setOrderId] = useState(get("orderId"));
-
     const { items } = useStoreSelector(
         state => ({
             items: state.mainProductSlice.items
@@ -31,45 +25,12 @@ export default function ReservationContainer({ tableNumber, storeId, reservation
         shallowEqual,
     );
 
-    const onCreateOrder = async () => {
-        const body = {
-            orderNo: generateOrderNo(Number(tableNumber)),
-            storeId: storeId,
-            reservationId: Number(reservationId),
-            priceCalculated: 0,
-            subtotal: 0,
-            tax: 0,
-            total: 0,
-            latestStatus: OrderStatus.Draft,
-            latestStatusUpdate: new Date(),
-            isPaid: false,
-            isPreparationDelayed: false,
-            isCanceled: false,
-            isReady: false,
-            isCompleted: false
-        }
-        try {
-            const res = await actionOrder(body as any, "create");
-            if (res?.success) {
-                setOrderId(res.data);
-                set("orderId", res.data);
-            }
-        }
-        catch (error) {
-            console.log("Create order: ", error);
-        }
-    }
-
     useEffect(() => {
         if (!tableNumber || tableNumber === null || !storeId || storeId === null || !reservationId || reservationId === null) {
             toast("Giá trị không tồn tại, vui lòng quét mã qr được dán trên bàn!", {
                 type: "error"
             });
             setTimeout(() => window.history.back(), 3000);
-        }
-        if (!orderId) {
-            console.log("Calling service!");
-            onCreateOrder();
         }
     }, []);
 
@@ -89,7 +50,7 @@ export default function ReservationContainer({ tableNumber, storeId, reservation
                                 items={items}
                                 isReservation
                             />
-                            {
+                            {/* {
                                 orderId &&
                                 <OrderContainer>
                                     <OrderPrice />
@@ -100,7 +61,7 @@ export default function ReservationContainer({ tableNumber, storeId, reservation
                                         reservationId={Number(reservationId) || 0}
                                     />
                                 </OrderContainer>
-                            }
+                            } */}
                         </ContentContainer>
                     </CenterContainer>
                 </BodyContainer>

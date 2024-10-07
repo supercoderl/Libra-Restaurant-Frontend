@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { Status } from "@/enums";
 import { useEffect, useState } from "react";
 import { ModalSection } from "@/components/modal";
-import { getStatus } from "@/redux/slices/reservation-slice";
+import { getStatus, updateReservation } from "@/redux/slices/reservation-slice";
 import { useStoreDispatch, useStoreSelector } from "@/redux/store";
 import Step1 from "./step1";
 import Step2 from "./step2";
@@ -15,7 +15,7 @@ export default function QRScanContainer() {
     const router = useRouter();
     const [show, setShow] = useState(false);
     const dispatch = useStoreDispatch();
-    const status = useStoreSelector(state => state.reservation.status);
+    const { status, isChanged, tableNumber } = useStoreSelector(state => state.reservation);
     const [jsonValue, setJsonValue] = useState<any>(null);
     const [step, setStep] = useState(1);
     const [pause, setPause] = useState(false);
@@ -34,6 +34,13 @@ export default function QRScanContainer() {
         setJsonValue(scannedValue);
         if (scannedValue?.reservationId) {
             dispatch(getStatus(Number(scannedValue.reservationId)));
+            dispatch(updateReservation({
+                reservationId: scannedValue?.reservationId,
+                isChanged: tableNumber !== -1 && tableNumber !== scannedValue?.tableNumber,
+                capacity: scannedValue?.capacity,
+                storeId: scannedValue?.storeId,
+                tableNumber: scannedValue?.tableNumber,
+            }));
         }
         setPause(true);
     };

@@ -27,5 +27,5 @@ export const SwitchIcon = styled.svg<themeType>`
 `
 
 export const SwitchPolyline = styled.polyline<themeType>`
-  ${({ isDark }) => isDark ? tw`` : tw`ease-custom-bezier-out`}
+  ${({ isDark }) => isDark && tw`ease-custom-bezier-out`}
 `

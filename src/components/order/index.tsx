@@ -47,9 +47,6 @@ export const Order: React.FC<OrderProps> = ({ tableNumber, orderId, storeId, res
             if (res?.success) {
                 router.push(`/myorder?tableNumber=${tableNumber}&reservationId=${reservationId}&storeId=${storeId}`);
             }
-            else {
-                toast("Có lỗi xảy ra, vui lòng liên hệ với nhân viên.", { type: "error" });
-            }
         }
         catch (error) {
             console.log("Create order line: ", error);
