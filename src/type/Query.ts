@@ -21,5 +21,6 @@ export default interface Query {
   pageSize?: number
   searchTerm?: string | null
   isAll?: boolean,
-  categoryId?: number
+  categoryId?: number,
+  type?: string
 }

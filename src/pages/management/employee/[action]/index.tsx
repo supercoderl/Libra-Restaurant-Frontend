@@ -4,11 +4,21 @@ import { Employee } from "@/type/Employee";
 import { NextPage } from "next";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useTranslation } from "next-i18next";
 import { toast } from "react-toastify";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
+export async function getStaticProps({ locale }: { locale: string }) {
+    return {
+        props: {
+            ...(await serverSideTranslations(locale, ['common'])),
+        },
+    };
+}
 
 const EmployeeAction: NextPage = () => {
     const searchParams = useSearchParams();
+    const { t } = useTranslation();
     const router = useRouter();
     const [fields, setFields] = useState<FieldData[]>([
         { name: ['firstName'], value: '' },
@@ -18,7 +28,7 @@ const EmployeeAction: NextPage = () => {
         { name: ['mobile'], value: '' },
     ]);
     const [loading, setLoading] = useState(false);
-    const [state, setState] = useState("Thêm mới nhân viên");
+    const [state, setState] = useState(t("employee-create"));
 
     const onLoad = async () => {
         if (searchParams.get('employeeId')) {
@@ -32,7 +42,7 @@ const EmployeeAction: NextPage = () => {
                         { name: 'email', value: res.data?.email },
                         { name: 'mobile', value: res.data?.mobile },
                     ]);
-                    setState("Cập nhật nhân viên");
+                    setState(t("employee-update"));
                 }
             }
             catch (error) {
@@ -57,7 +67,7 @@ const EmployeeAction: NextPage = () => {
 
             const res = await actionEmployee(values as Employee, searchParams.get('employeeId') ? 'edit' : 'create');
             if (res && res.success) {
-                toast(`${searchParams.get('employeeId') ? 'Cập nhật' : 'Tạo mới'} thành công`, {
+                toast(`${searchParams.get('employeeId') ? t("update") : t("create")} ${t("success")}`, {
                     type: "success"
                 });
                 router.push("general");
@@ -76,6 +86,7 @@ const EmployeeAction: NextPage = () => {
     }, []);
 
     return <EmployeeForm
+        t={t}
         fields={fields}
         onChange={(newFields) => {
             setFields(newFields);

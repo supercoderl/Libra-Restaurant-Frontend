@@ -7,11 +7,21 @@ import dayjs from "dayjs";
 import { NextPage } from "next";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useTranslation } from "next-i18next";
 import { toast } from "react-toastify";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
+export async function getStaticProps({ locale }: { locale: string }) {
+    return {
+        props: {
+            ...(await serverSideTranslations(locale, ['common'])),
+        },
+    };
+}
 
 const ReservationAction: NextPage = () => {
     const searchParams = useSearchParams();
+    const { t } = useTranslation();
     const router = useRouter();
     const [fields, setFields] = useState<FieldData[]>([
         { name: ['tableNumber'], value: '' },
@@ -25,7 +35,7 @@ const ReservationAction: NextPage = () => {
     ]);
     const [storeDatas, setStores] = useState<Store[]>([]);
     const [loading, setLoading] = useState(false);
-    const [state, setState] = useState("Thêm mới đặt chỗ");
+    const [state, setState] = useState(t("reservation-create"));
 
     const onLoad = async () => {
         if (searchParams.get('reservationId')) {
@@ -42,7 +52,7 @@ const ReservationAction: NextPage = () => {
                         { name: 'customerName', value: res.data?.customerName || '' },
                         { name: 'customerPhone', value: res.data?.customerPhone || '' }
                     ]);
-                    setState("Cập nhật đặt chỗ");
+                    setState(t("reservation-update"));
                 }
             }
             catch (error) {
@@ -89,7 +99,7 @@ const ReservationAction: NextPage = () => {
 
             const res = await actionReservation(values as Reservation, searchParams.get('reservationId') ? 'edit' : 'create');
             if (res && res.success) {
-                toast(`${searchParams.get('reservationId') ? 'Cập nhật' : 'Tạo mới'} thành công`, {
+                toast(`${searchParams.get('reservationId') ? t("update") : t("create")} ${t("success")}`, {
                     type: "success"
                 });
                 router.push("general");
@@ -109,6 +119,7 @@ const ReservationAction: NextPage = () => {
     }, []);
 
     return <ReservationForm
+        t={t}
         fields={fields}
         onChange={(newFields) => {
             setFields(newFields);

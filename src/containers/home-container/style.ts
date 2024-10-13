@@ -50,7 +50,7 @@ export const TitleSpan = tw.span`text-[#f70037]`;
 
 export const Description = tw.p`text-[#6f6f71] text-center`;
 
-export const SingleService = tw.div`shadow-[0_0_10px_0_rgba(0,_0,_0,_0.1)] hover:scale-90 transition duration-500 cursor-pointer`;
+export const SingleService = tw.div`shadow-[0_0_10px_0_rgba(0,_0,_0,_0.1)] rounded-md hover:scale-90 transition duration-500 cursor-pointer`;
 
 export const Part1 = tw.div`pt-[40px] pb-[25px] px-[40px] border-b-2 border-[rgba(0, 0, 0, 0.08)]`;
 

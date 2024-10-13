@@ -15,8 +15,10 @@ import { CategorySlide } from './category';
 import Footer from '@/components/footer';
 import { Service } from './service';
 import { useRouter } from 'next/navigation';
+import { TFunction } from 'i18next';
+import { LanguageSelector } from '@/components/language-selector';
 
-export default function HomeContainer() {
+export default function HomeContainer({ t }: { t: TFunction<"translation", undefined> }) {
   const { categories, items, currentCategory, loading } = useStoreSelector(
     state => ({
       items: state.mainProductSlice.items,
@@ -35,20 +37,20 @@ export default function HomeContainer() {
         <CenterContainer>
           <Header />
           <Banner />
-          <CategorySlide categories={categories} />
+          <CategorySlide t={t} categories={categories} />
           <Food
             currentCategory={currentCategory}
             items={items}
             showTitle
             isReservation={false}
             loading={loading}
+            t={t}
           />
-          <ReadMoreButton router={router} />
-          <Service />
+          <ReadMoreButton t={t} router={router} />
+          <Service t={t} />
         </CenterContainer>
-        <Footer />
+        <Footer t={t} />
       </BodyContainer>
-      <DarkThemeToggler />
     </Container>
   );
 }

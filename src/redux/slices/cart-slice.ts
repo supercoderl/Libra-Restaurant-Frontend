@@ -1,5 +1,6 @@
 import { createSlice, Draft, PayloadAction } from '@reduxjs/toolkit';
 import Item from '@/type/Item';
+import { toast } from 'react-toastify';
 
 //stateType
 type useCartType = {
@@ -45,16 +46,21 @@ export const cartSlice = createSlice({
         state.itemsInCart[index].quantityOrder = state.itemsInCart[index].quantityOrder + 1
         return
       }
-      state.itemsInCart.push({ item: action.payload, quantityOrder: 1 })
+      state.itemsInCart.push({ item: action.payload, quantityOrder: 1 });
+      toast(`Đã thêm món ${action.payload.title} vào giỏ`, { type: "success" });
     },
     removeItem: (state: Draft<typeof initialState>, action: PayloadAction<number>) => {
       state.itemsInCart = state.itemsInCart.filter((element) => element.item.itemId != action.payload)
     },
     changeQuantity: (state: Draft<typeof initialState>, action: PayloadAction<{ id: number, quantity: number }>) => {
       const index = state.itemsInCart.findIndex(element => element.item.itemId === action.payload.id)
-      state.itemsInCart[index].quantityOrder = action.payload.quantity
+      if(action.payload.quantity > 0)
+      {
+        state.itemsInCart[index].quantityOrder = action.payload.quantity
+      }
     },
     clearCart: (state: Draft<typeof initialState>) => {
+      state.isOpen = false
       state.itemsInCart = []
     }
   },

@@ -16,8 +16,10 @@ import { theme } from 'twin.macro';
 import useWindowDimensions from 'src/hooks/use-window-dimensions';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 export default function Header() {
+  const { t } = useTranslation();
   const dispatch = useStoreDispatch();
   const clickHandler = () => {
     dispatch(toggleCart());
@@ -33,12 +35,12 @@ export default function Header() {
         </TitleContainer>
       </LeftSideContainer>
       <RightSideContainer>
-        <InputHeader />
+        <InputHeader t={t} />
       </RightSideContainer>
       {width < 1600 && (
         <IconContainer onClick={clickHandler}>
-          <BagIcon fill={theme`textColor.primary`} height="35%"></BagIcon>
-          <Link href='scan'><ScanIcon fill={theme`textColor.primary`} height="50%"></ScanIcon></Link>
+          <Link href='myorder' style={{ width: 22 }}><BagIcon fill={theme`textColor.primary`}></BagIcon></Link>
+          <Link href='scan' style={{ width: 22 }}><ScanIcon fill={theme`textColor.primary`}></ScanIcon></Link>
         </IconContainer>
       )}
     </Container>

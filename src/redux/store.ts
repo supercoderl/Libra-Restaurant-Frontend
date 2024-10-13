@@ -15,6 +15,7 @@ import mainAuthSlice from './slices/auth-slice';
 import mainStoreSlice, { fetchStoreData } from './slices/store-slice';
 import mainRoleSlice, { fetchRoleData } from './slices/roles-slice';
 import mainEmployeeSlice, { fetchEmployeeData } from './slices/employee-slice';
+import mainNotificationSlice, { fetchNotifications } from './slices/message-slice';
 
 const reducers = combineReducers({
   cart: cartSlice,
@@ -28,14 +29,15 @@ const reducers = combineReducers({
   mainAuthSlice: mainAuthSlice,
   mainStoreSlice: mainStoreSlice,
   mainRoleSlice: mainRoleSlice,
-  mainEmployeeSlice: mainEmployeeSlice
+  mainEmployeeSlice: mainEmployeeSlice,
+  mainNotificationSlice: mainNotificationSlice
 });
 
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['cart']
+  whitelist: ['cart', 'reservation']
 };
 
 const persistedReducer = persistReducer(persistConfig, reducers);
@@ -63,5 +65,6 @@ store.dispatch(fetchDataDashboard());
 store.dispatch(fetchStoreData());
 store.dispatch(fetchRoleData());
 store.dispatch(fetchEmployeeData());
+store.dispatch(fetchNotifications());
 
 export default store

@@ -12,6 +12,8 @@ import useWindowDimensions from "@/hooks/use-window-dimensions";
 import { items } from "@/api/business/itemApi";
 import dayjs from "dayjs";
 import { useStoreSelector } from "@/redux/store";
+import { TFunction } from "i18next";
+import { useTranslation } from "next-i18next";
 
 type TopCardProps = {
     title: string;
@@ -112,7 +114,7 @@ const PreviewState: React.FC<PreviewStateProps> = ({ tag, color, value }) => {
         </PreviewStateContainer>
     );
 };
-export default function DashboardContainer() {
+export default function DashboardContainer({ t }: { t: TFunction<"translation", undefined> }) {
     const { width } = useWindowDimensions();
     const { data } = useStoreSelector(state => ({
         data: state.mainDashboardSlice.data
@@ -124,7 +126,7 @@ export default function DashboardContainer() {
             dataIndex: "client",
         },
         {
-            title: "phone",
+            title: "Phone",
             dataIndex: "phone",
         },
         {
@@ -168,31 +170,31 @@ export default function DashboardContainer() {
     }, []);
 
     return (
-        <DashboardLayout>
+        <DashboardLayout t={t}>
             <Row gutter={[24, 24]} style={{ flexDirection: width > 767 ? 'row' : 'column' }}>
                 <TopCard
-                    title={"Chi nguyên liệu"}
+                    title={t("buy-material")}
                     tagColor={"cyan"}
                     prefix={`Tháng ${dayjs(new Date).get('month') + 1}`}
                     tagContent={"34,000,000 ₫"}
                     isFullWidth={width <= 767}
                 />
                 <TopCard
-                    title={"Đơn hàng"}
+                    title={t("order")}
                     tagColor={"purple"}
                     prefix={`Tổng số`}
                     tagContent={`${data.orderCount} đơn`}
                     isFullWidth={width <= 767}
                 />
                 <TopCard
-                    title={"Nhân viên"}
+                    title={t("employee")}
                     tagColor={"green"}
                     prefix={`Ca tối`}
                     tagContent={"12 người đang làm"}
                     isFullWidth={width <= 767}
                 />
                 <TopCard
-                    title={"Doanh thu"}
+                    title={t("revenue")}
                     tagColor={"red"}
                     prefix={`Tháng ${dayjs(new Date).get('month') + 1}`}
                     tagContent={`${data.paymentAmount} ₫`}
@@ -208,7 +210,7 @@ export default function DashboardContainer() {
                             <Row className="pad10" gutter={[0, 0]}>
                                 <Col className="gutter-row" span={8}>
                                     <PreviewTextContainer>
-                                        <PreviewText>Đánh giá từ trực tiếp</PreviewText>
+                                        <PreviewText>{t("review-direct")}</PreviewText>
                                         <PreviewState tag={"Draft"} color={"grey"} value={3} />
                                         <PreviewState tag={"Pending"} color={"bleu"} value={5} />
                                         <PreviewState tag={"Not Paid"} color={"orange"} value={12} />
@@ -224,7 +226,7 @@ export default function DashboardContainer() {
                                 <Col className="gutter-row" span={8}>
                                     {" "}
                                     <PreviewTextContainer>
-                                        <PreviewText>Đánh giá trên google map</PreviewText>
+                                        <PreviewText>{t("review-google")}</PreviewText>
                                         <PreviewState tag={"Draft"} color={"grey"} value={3} />
                                         <PreviewState tag={"Pending"} color={"bleu"} value={5} />
                                         <PreviewState tag={"Not Paid"} color={"orange"} value={12} />
@@ -240,7 +242,7 @@ export default function DashboardContainer() {
                                 <Col className="gutter-row" span={8}>
                                     {" "}
                                     <PreviewTextContainer>
-                                        <PreviewText>Đánh giá từ đơn hàng</PreviewText>
+                                        <PreviewText>{t("review-order")}</PreviewText>
                                         <PreviewState tag={"Draft"} color={"grey"} value={3} />
                                         <PreviewState tag={"Pending"} color={"bleu"} value={5} />
                                         <PreviewState tag={"Not Paid"} color={"orange"} value={12} />
@@ -261,13 +263,13 @@ export default function DashboardContainer() {
                 <Col className="gutter-row" span={width > 767 ? 6 : 24}>
                     <PreviewContainer>
                         <TextContainer>
-                            <PreviewTextProgress>Lợi nhuận từ khách hàng</PreviewTextProgress>
+                            <PreviewTextProgress>{t("profit-from-cus")}</PreviewTextProgress>
 
-                            <Progress type="dashboard" percent={data?.customer?.customerCountInThisMonth} width={148} format={(percent) => `${percent}`}/>
-                            <p>Số lượng khách trong tháng</p>
+                            <Progress type="dashboard" percent={data?.customer?.customerCountInThisMonth} width={148} format={(percent) => `${percent}`} />
+                            <p>{t("quantity-cus-in-month")}</p>
                             <Divider />
                             <Statistic
-                                title={data?.customer?.percentage > 0 ? "Tăng" : "Giảm"}
+                                title={data?.customer?.percentage > 0 ? t("increase") : t("decrease")}
                                 value={Math.abs(data?.customer?.percentage)}
                                 precision={2}
                                 valueStyle={{ color: "#3f8600" }}
@@ -284,7 +286,7 @@ export default function DashboardContainer() {
                     <RecentContainer>
                         <PreviewTextContainer>
                             <RecentText>
-                                Khách hàng gần đây
+                                {t("cus-recent")}
                             </RecentText>
                         </PreviewTextContainer>
 
@@ -296,7 +298,7 @@ export default function DashboardContainer() {
                     <RecentContainer>
                         <PreviewTextContainer>
                             <RecentText>
-                                Sản phẩm gần đây
+                                {t("food-recent")}
                             </RecentText>
                         </PreviewTextContainer>
                         <RecentTable entity={"product"} dataTableColumns={productColumns} />

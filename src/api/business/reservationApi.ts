@@ -16,6 +16,12 @@ export function reservations(data?: Query): Promise<Response | undefined> {
     })
 }
 
+export function tableKeys(): Promise<SingleResponse | undefined> {
+    return apiGet<SingleResponse>({
+        url: `/${CLASS_ITEM_NAME}/tables?includeDeleted=false`,
+    })
+}
+
 export function reservation(id?: number): Promise<SingleResponse | undefined> {
     return apiGet<SingleResponse>({
         url: `/${CLASS_ITEM_NAME}/${id}`

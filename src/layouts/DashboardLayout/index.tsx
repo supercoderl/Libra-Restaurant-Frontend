@@ -7,6 +7,7 @@ import { SpanLogo } from '@/components/title'
 import useWindowDimensions from '@/hooks/use-window-dimensions'
 import { MenuOutlined } from '@ant-design/icons'
 import { useState } from 'react'
+import { TFunction } from 'i18next'
 
 const theme = 'light'
 
@@ -14,9 +15,10 @@ const { Header, Footer, Sider, Content } = Layout;
 
 type DashboardProps = {
     children?: React.ReactNode;
+    t: TFunction<"translation", undefined>
 }
 
-export const DashboardLayout: React.FC<DashboardProps> = ({ children }) => {
+export const DashboardLayout: React.FC<DashboardProps> = ({ children, t }) => {
 
     const { width } = useWindowDimensions();
     const [posLeft, setPosLeft] = useState('-100%');
@@ -46,7 +48,7 @@ export const DashboardLayout: React.FC<DashboardProps> = ({ children }) => {
             </Sider>
             <Layout style={{ marginLeft: width > 767 ? 200 : 0 }}>
                 <Header style={{ padding: 0 }}>
-                    <DashboardHeader isShowButton={width <= 767} onMenuClick={() => setPosLeft('0')} />
+                    <DashboardHeader t={t} isShowButton={width <= 767} onMenuClick={() => setPosLeft('0')} />
                 </Header>
                 <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
                     {children}

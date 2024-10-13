@@ -10,23 +10,25 @@ import { useState } from "react";
 import ItemDetail from "./item/item-detail";
 import { useRouter } from "next/navigation";
 import { MobileTable } from "@/components/mobile/tables/mobile-table";
+import { TFunction } from "i18next";
 
 type HeaderProps = {
     isShowText?: boolean;
+    t: TFunction<"translation", undefined>
 }
 
-const Header: React.FC<HeaderProps> = ({ isShowText }) => {
+const Header: React.FC<HeaderProps> = ({ isShowText, t }) => {
     const router = useRouter();
     return (
         <ToolbarContainer isRow={true}>
-            <HeaderText>Quản lý đồ ăn</HeaderText>
+            <HeaderText>{t("food-management-full")}</HeaderText>
             <Button
                 icon={<RollbackOutlined />}
                 type="primary"
                 danger
                 onClick={() => router.back()}
             >
-                {isShowText && 'Quay lại'}
+                {isShowText && t("back")}
             </Button>
         </ToolbarContainer>
     )
@@ -36,9 +38,10 @@ type ToolbarProps = {
     isRow?: boolean;
     onReload?: () => void;
     onSearch?: (text: string) => void;
+    t: TFunction<"translation", undefined>
 }
 
-const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch }) => {
+const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch, t }) => {
     const onChangeDate: DatePickerProps['onChange'] = (date, dateString) => {
         console.log(date, dateString);
     };
@@ -56,11 +59,11 @@ const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch }) => {
     return (
         <ToolbarContainer isRow={isRow}>
             <AlignContainer>
-                <DatePicker placeholder="Cập nhật lúc" onChange={onChangeDate} />
+                <DatePicker placeholder={t("update-at")} onChange={onChangeDate} />
 
                 <Select
                     showSearch
-                    placeholder="Lọc theo"
+                    placeholder={t("filter-by")}
                     optionFilterProp="label"
                     onChange={onChangeSelect}
                     onSearch={onSearch}
@@ -80,21 +83,21 @@ const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch }) => {
                     ]}
                 />
 
-                <Checkbox onChange={onChangeCheckbox}>Sản phẩm đã xóa</Checkbox>
+                <Checkbox onChange={onChangeCheckbox}>{t("food-deleted")}</Checkbox>
 
-                <Button>Lọc</Button>
+                <Button>{t("filter")}</Button>
 
-                <Button type="primary">Reset</Button>
+                <Button type="primary">{t("reset")}</Button>
 
-                <Button type="primary" danger icon={<PlusOutlined />} href="create">Thêm</Button>
+                <Button type="primary" danger icon={<PlusOutlined />} href="create">{t("create")}</Button>
             </AlignContainer>
 
             <Divider type="vertical" />
 
             <AlignContainer>
-                <Button type="primary" icon={<ReloadOutlined />} onClick={onReload}>Tải lại</Button>
+                <Button type="primary" icon={<ReloadOutlined />} onClick={onReload}>{t("reload")}</Button>
 
-                <Search placeholder="Tìm kiếm..." onSearch={onSearch} />
+                <Search placeholder={t("search")} onSearch={onSearch} />
             </AlignContainer>
         </ToolbarContainer>
     )
@@ -106,48 +109,49 @@ type ItemProps = {
     onReload?: () => void;
     onPaginationChange?: (page: number, pageSize: number) => void;
     onSearch?: (text: string) => void;
+    t: TFunction<"translation", undefined>
 }
 
-export const ItemContainer: React.FC<ItemProps> = ({ result, loading, onReload, onPaginationChange, onSearch }) => {
+export const ItemContainer: React.FC<ItemProps> = ({ result, loading, onReload, onPaginationChange, onSearch, t }) => {
     const columns: TableColumnsType<Item> = [
         {
-            title: 'Hình ảnh',
+            title: t("picture"),
             dataIndex: 'picture',
             align: 'center',
             render: (url?: string | null) => <Image width={80} src={url || process.env.NEXT_PUBLIC_DUMMY_PICTURE} />
         },
         {
-            title: 'Tên đồ ăn',
+            title: t("food-name"),
             dataIndex: 'title',
             render: (text: string) => <a>{text}</a>,
         },
         {
-            title: 'Slug',
+            title: t("slug"),
             dataIndex: 'slug',
         },
         {
-            title: 'Mã đồ ăn',
+            title: t("sku"),
             dataIndex: 'sku',
         },
         {
-            title: 'Đơn giá',
+            title: t("price"),
             dataIndex: 'price',
             render: (text: string) => <span>{formatCurrency(Number(text))}</span>,
         },
         {
-            title: 'Số lượng',
+            title: t("quantity"),
             dataIndex: 'quantity',
             render: (text: string) => <span>{text} món</span>,
         },
         {
-            title: 'Chức năng',
+            title: t("actions"),
             dataIndex: '',
             key: 'x',
             width: '10%',
             align: 'center',
             render: (row: Item) => (
                 <ActionContainer>
-                    <Tooltip title="Xem">
+                    <Tooltip title={t("see")}>
                         <Button
                             icon={<EyeOutlined />}
                             type="link"
@@ -158,7 +162,7 @@ export const ItemContainer: React.FC<ItemProps> = ({ result, loading, onReload, 
                             }}
                         />
                     </Tooltip>
-                    <Tooltip title="Sửa">
+                    <Tooltip title={t("edit")}>
                         <Button
                             icon={<EditOutlined />}
                             type="link"
@@ -166,7 +170,7 @@ export const ItemContainer: React.FC<ItemProps> = ({ result, loading, onReload, 
                             href={`edit?itemId=${row.itemId}`}
                         />
                     </Tooltip>
-                    <Tooltip title="Xóa">
+                    <Tooltip title={t("delete")}>
                         <Button
                             icon={<DeleteOutlined />}
                             type="link"
@@ -192,9 +196,9 @@ export const ItemContainer: React.FC<ItemProps> = ({ result, loading, onReload, 
     const { width } = useWindowDimensions();
 
     return (
-        <DashboardLayout>
-            <Header isShowText={width > 767} />
-            <Toolbar isRow={width > 767} onReload={onReload} onSearch={onSearch} />
+        <DashboardLayout t={t}>
+            <Header t={t} isShowText={width > 767} />
+            <Toolbar t={t} isRow={width > 767} onReload={onReload} onSearch={onSearch} />
             {
                 width > 767 ?
                     <TableContainer>
@@ -229,6 +233,7 @@ export const ItemContainer: React.FC<ItemProps> = ({ result, loading, onReload, 
                     setIsOpen(false);
                     setItemSelected(null);
                 }}
+                t={t}
                 item={itemSelected}
             />
         </DashboardLayout>

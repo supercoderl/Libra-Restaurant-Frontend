@@ -8,23 +8,25 @@ import { Role } from "@/type/Role";
 import { useState } from "react";
 import { MobileTable } from "@/components/mobile/tables/mobile-table";
 import { useRouter } from "next/navigation";
+import { TFunction } from "i18next";
 
 type HeaderProps = {
     isShowText?: boolean;
+    t: TFunction<"translation", undefined>
 }
 
-const Header: React.FC<HeaderProps> = ({ isShowText }) => {
+const Header: React.FC<HeaderProps> = ({ isShowText, t }) => {
     const router = useRouter();
     return (
         <ToolbarContainer isRow={true}>
-            <HeaderText>Quản lý đơn</HeaderText>
+            <HeaderText>{t("role-management-full")}</HeaderText>
             <Button
                 icon={<RollbackOutlined />}
                 type="primary"
                 danger
                 onClick={() => router.back()}
             >
-                {isShowText && 'Quay lại'}
+                {isShowText && t("back")}
             </Button>
         </ToolbarContainer>
     )
@@ -34,9 +36,10 @@ type ToolbarProps = {
     isRow?: boolean;
     onReload?: () => void;
     onSearch?: (text: string) => void;
+    t: TFunction<"translation", undefined>
 }
 
-const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch }) => {
+const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch, t }) => {
     const onChangeDate: DatePickerProps['onChange'] = (date, dateString) => {
         console.log(date, dateString);
     };
@@ -54,11 +57,11 @@ const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch }) => {
     return (
         <ToolbarContainer isRow={isRow}>
             <AlignContainer>
-                <DatePicker placeholder="Cập nhật lúc" onChange={onChangeDate} />
+                <DatePicker placeholder={t("update-at")} onChange={onChangeDate} />
 
                 <Select
                     showSearch
-                    placeholder="Lọc theo"
+                    placeholder={t("filter-by")}
                     optionFilterProp="label"
                     onChange={onChangeSelect}
                     onSearch={onSearch}
@@ -78,21 +81,21 @@ const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch }) => {
                     ]}
                 />
 
-                <Checkbox onChange={onChangeCheckbox}>Vai trò đã xóa</Checkbox>
+                <Checkbox onChange={onChangeCheckbox}>{t("role-deleted")}</Checkbox>
 
-                <Button>Lọc</Button>
+                <Button>{t("filter")}</Button>
 
-                <Button type="primary">Reset</Button>
+                <Button type="primary">{t("reset")}</Button>
 
-                <Button type="primary" danger icon={<PlusOutlined />} href="create">Thêm</Button>
+                <Button type="primary" danger icon={<PlusOutlined />} href="create">{t("create")}</Button>
             </AlignContainer>
 
             <Divider type="vertical" />
 
             <AlignContainer>
-                <Button type="primary" icon={<ReloadOutlined />} onClick={onReload}>Tải lại</Button>
+                <Button type="primary" icon={<ReloadOutlined />} onClick={onReload}>{t("reload")}</Button>
 
-                <Search placeholder="Tìm kiếm..." onSearch={onSearch} />
+                <Search placeholder={t("search")} onSearch={onSearch} />
             </AlignContainer>
         </ToolbarContainer>
     )
@@ -104,33 +107,34 @@ type RoleProps = {
     onReload?: () => void;
     onPaginationChange?: (page: number, pageSize: number) => void;
     onSearch?: (text: string) => void;
+    t: TFunction<"translation", undefined>
 }
 
-export const RoleContainer: React.FC<RoleProps> = ({ result, loading, onReload, onPaginationChange, onSearch }) => {
+export const RoleContainer: React.FC<RoleProps> = ({ result, loading, onReload, onPaginationChange, onSearch, t }) => {
 
     const columns: TableColumnsType<Role> = [
         {
-            title: 'Mã vai trò',
+            title: t("roleId"),
             dataIndex: 'roleId',
         },
         {
-            title: 'Tên vai trò',
+            title: t("role-name"),
             dataIndex: 'name',
             render: (text: string) => <a>{text}</a>,
         },
         {
-            title: 'Mô tả',
+            title: t("description"),
             dataIndex: 'description',
         },
         {
-            title: 'Chức năng',
+            title: t("actions"),
             dataIndex: '',
             key: 'x',
             width: '10%',
             align: 'center',
             render: (row: Role) => (
                 <ActionContainer>
-                    <Tooltip title="Quyền hạn">
+                    <Tooltip title={t("permission")}>
                         <Button
                             icon={<ApartmentOutlined />}
                             type="link"
@@ -138,7 +142,7 @@ export const RoleContainer: React.FC<RoleProps> = ({ result, loading, onReload, 
                             onClick={() => setIsOpen(true)}
                         />
                     </Tooltip>
-                    <Tooltip title="Sửa">
+                    <Tooltip title={t("edit")}>
                         <Button
                             icon={<EditOutlined />}
                             type="link"
@@ -146,7 +150,7 @@ export const RoleContainer: React.FC<RoleProps> = ({ result, loading, onReload, 
                             href={`edit?roleId=${row.roleId}`}
                         />
                     </Tooltip>
-                    <Tooltip title="Xóa">
+                    <Tooltip title={t("delete")}>
                         <Button
                             icon={<DeleteOutlined />}
                             type="link"
@@ -241,9 +245,9 @@ export const RoleContainer: React.FC<RoleProps> = ({ result, loading, onReload, 
     ];
 
     return (
-        <DashboardLayout>
-            <Header isShowText={width > 767} />
-            <Toolbar isRow={width > 767} onReload={onReload} onSearch={onSearch} />
+        <DashboardLayout t={t}>
+            <Header t={t} isShowText={width > 767} />
+            <Toolbar t={t} isRow={width > 767} onReload={onReload} onSearch={onSearch} />
             {
                 width > 767 ?
                     <TableContainer>
@@ -266,7 +270,7 @@ export const RoleContainer: React.FC<RoleProps> = ({ result, loading, onReload, 
                         <MobileTable
                             key={index}
                             title={item.name}
-                            subTitle={`Mã vai trò: ${item.roleId}`}
+                            subTitle={`${t("roleId")}: ${item.roleId}`}
                             description={item.description}
                             image="https://cdn-icons-png.flaticon.com/512/16784/16784025.png"
                         />
@@ -274,7 +278,7 @@ export const RoleContainer: React.FC<RoleProps> = ({ result, loading, onReload, 
             }
 
             <Modal title="Quyền hạn" open={isOpen} onOk={() => { }} onCancel={() => setIsOpen(false)}>
-                <Text>Chọn quyền hạn cho vai trò {roleSeleteced?.name}.</Text>
+                <Text>{t("choose-role-for")} {roleSeleteced?.name}.</Text>
                 <Tree
                     checkable
                     onExpand={onExpand}

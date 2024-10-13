@@ -25,6 +25,8 @@ export const BillContainer = tw.div`w-full shadow-[rgba(99,_99,_99,_0.2)_0px_2px
 
 export const Title = tw.h4`font-semibold text-xl`
 
+export const Subtitle = tw.p`text-sm text-red-500`
+
 export const FlexContainer = tw.div`flex items-center justify-center gap-1`
 
 export const ItemContainer = tw.div`border-y-[1px] py-2 flex flex-col gap-1.5`

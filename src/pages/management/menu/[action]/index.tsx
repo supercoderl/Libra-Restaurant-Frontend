@@ -4,11 +4,21 @@ import Menu from "@/type/Menu";
 import { NextPage } from "next";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useTranslation } from "next-i18next";
 import { toast } from "react-toastify";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
+export async function getStaticProps({ locale }: { locale: string }) {
+    return {
+        props: {
+            ...(await serverSideTranslations(locale, ['common'])),
+        },
+    };
+}
 
 const MenuAction: NextPage = () => {
     const searchParams = useSearchParams();
+    const { t } = useTranslation();
     const router = useRouter();
     const [fields, setFields] = useState<FieldData[]>([
         { name: ['name'], value: '' },
@@ -17,7 +27,7 @@ const MenuAction: NextPage = () => {
         { name: ['isActive'], value: true }
     ]);
     const [loading, setLoading] = useState(false);
-    const [state, setState] = useState("Thêm mới thực đơn");
+    const [state, setState] = useState(t("menu-create"));
 
     const onLoad = async () => {
         if (searchParams.get('menuId')) {
@@ -30,7 +40,7 @@ const MenuAction: NextPage = () => {
                         { name: 'description', value: res.data?.description || '' },
                         { name: 'isActive', value: res.data?.isActive }
                     ]);
-                    setState("Cập nhật thực đơn");
+                    setState(t("menu-update"));
                 }
             }
             catch (error) {
@@ -55,7 +65,7 @@ const MenuAction: NextPage = () => {
 
             const res = await actionMenu(values as Menu, searchParams.get('menuId') ? 'edit' : 'create');
             if (res && res.success) {
-                toast(`${searchParams.get('menuId') ? 'Cập nhật' : 'Tạo mới'} thành công`, {
+                toast(`${searchParams.get('menuId') ? t("update") : t("create")} ${t("success")}`, {
                     type: "success"
                 });
                 router.push("general");
@@ -74,6 +84,7 @@ const MenuAction: NextPage = () => {
     }, []);
 
     return <MenuForm
+        t={t}
         fields={fields}
         onChange={(newFields) => {
             setFields(newFields);

@@ -1,6 +1,6 @@
 import tw from "twin.macro";
 
-export const FooterContainer = tw.footer`md:px-20 relative bg-[rgb(83_83_83)] w-full before:content-[''] before:absolute before:left-0 before:top-[150px] md:before:top-[100px] before:h-[1px] before:w-full before:bg-[#afafb6]`;
+export const FooterContainer = tw.footer`md:px-20 relative bg-tertiary w-full before:content-[''] before:absolute before:left-0 before:top-[150px] md:before:top-[100px] before:h-[1px] before:w-full before:bg-[#afafb6]`;
 
 export const TitleDetail = tw.div`flex items-center gap-3`
 
@@ -30,11 +30,11 @@ export const LinkNameText = tw.a`text-white text-[14px] font-[400] no-underline 
 
 export const InputBox = tw.ul`w-full md:w-[calc(100%_/_5_-_10px)] md:mr-[55px]`;
 
-export const Input = tw.input`h-[40px] w-full outline-none border-2 border-[#afafb6] bg-[rgb(83_83_83)] rounded-[4px] px-[15px] text-[15px] text-white mt-[5px] placeholder-[#afafb6]`
+export const Input = tw.input`h-[40px] w-full outline-none border-2 border-[#afafb6] bg-tertiary rounded-[4px] px-[15px] text-[15px] text-white mt-[5px] placeholder-[#afafb6]`
 
 export const Button = tw.button`w-full py-2 rounded-sm bg-white text-[#140b5c] text-[18px] border-0 font-[500] my-4 opacity-80 cursor-pointer transition duration-500 hover:opacity-100`
 
-export const BottomDetail = tw.div`w-full bg-[rgb(83_83_83)]`
+export const BottomDetail = tw.div`w-full bg-tertiary`
 
 export const BottomText = tw.div`m-auto py-[20px] px-[40px] flex flex-col md:flex-row items-center gap-5 md:gap-0 justify-between`
 

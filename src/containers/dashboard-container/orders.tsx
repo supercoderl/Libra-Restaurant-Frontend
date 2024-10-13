@@ -1,7 +1,7 @@
 import { DashboardLayout } from "@/layouts/DashboardLayout"
 import { Button, Checkbox, CheckboxProps, DatePicker, DatePickerProps, Divider, Input, Modal, Select, Table, TableColumnsType, Tag, Tooltip } from "antd";
 import { ActionContainer, AlignContainer, HeaderText, TableContainer, ToolbarContainer } from "./style";
-import { EyeOutlined, FileDoneOutlined, PlusOutlined, ReloadOutlined, RollbackOutlined } from "@ant-design/icons";
+import { CheckOutlined, EyeOutlined, FileDoneOutlined, PlusOutlined, ReloadOutlined, RollbackOutlined } from "@ant-design/icons";
 import useWindowDimensions from "@/hooks/use-window-dimensions";
 import { ListRep } from "@/type/objectTypes";
 import { useState } from "react";
@@ -10,23 +10,30 @@ import { getOrderStatus } from "@/utils/status";
 import { Invoice } from "@/components/invoice";
 import { MobileTable } from "@/components/mobile/tables/mobile-table";
 import { useRouter } from "next/navigation";
+import { OrderStatus } from "@/enums";
+import { actionOrder } from "@/api/business/orderApi";
+import { toast } from "react-toastify";
+import { TFunction } from "i18next";
+import { OrderLine } from "@/type/OrderLine";
+import { OrderLog } from "@/type/OrderLog";
 
 type HeaderProps = {
     isShowText?: boolean;
+    t: TFunction<"translation", undefined>
 }
 
-const Header: React.FC<HeaderProps> = ({ isShowText }) => {
+const Header: React.FC<HeaderProps> = ({ isShowText, t }) => {
     const router = useRouter();
     return (
         <ToolbarContainer isRow={true}>
-            <HeaderText>Quản lý đơn</HeaderText>
+            <HeaderText>{t("order-management-full")}</HeaderText>
             <Button
                 icon={<RollbackOutlined />}
                 type="primary"
                 danger
                 onClick={() => router.back()}
             >
-                {isShowText && 'Quay lại'}
+                {isShowText && t("back")}
             </Button>
         </ToolbarContainer>
     )
@@ -36,9 +43,10 @@ type ToolbarProps = {
     isRow?: boolean;
     onReload?: () => void;
     onSearch?: (text: string) => void;
+    t: TFunction<"translation", undefined>
 }
 
-const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch }) => {
+const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch, t }) => {
     const onChangeDate: DatePickerProps['onChange'] = (date, dateString) => {
         console.log(date, dateString);
     };
@@ -56,11 +64,11 @@ const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch }) => {
     return (
         <ToolbarContainer isRow={isRow}>
             <AlignContainer>
-                <DatePicker placeholder="Cập nhật lúc" onChange={onChangeDate} />
+                <DatePicker placeholder={t("update-at")} onChange={onChangeDate} />
 
                 <Select
                     showSearch
-                    placeholder="Lọc theo"
+                    placeholder={t("filter-by")}
                     optionFilterProp="label"
                     onChange={onChangeSelect}
                     onSearch={onSearch}
@@ -80,21 +88,21 @@ const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch }) => {
                     ]}
                 />
 
-                <Checkbox onChange={onChangeCheckbox}>Đơn đã xóa</Checkbox>
+                <Checkbox onChange={onChangeCheckbox}>{t("order-deleted")}</Checkbox>
 
-                <Button>Lọc</Button>
+                <Button>{t("filter")}</Button>
 
-                <Button type="primary">Reset</Button>
+                <Button type="primary">{t("reset")}</Button>
 
-                <Button type="primary" danger icon={<PlusOutlined />} href="create">Thêm</Button>
+                <Button type="primary" danger icon={<PlusOutlined />} href="create">{t("create")}</Button>
             </AlignContainer>
 
             <Divider type="vertical" />
 
             <AlignContainer>
-                <Button type="primary" icon={<ReloadOutlined />} onClick={onReload}>Tải lại</Button>
+                <Button type="primary" icon={<ReloadOutlined />} onClick={onReload}>{t("reload")}</Button>
 
-                <Search placeholder="Tìm kiếm..." onSearch={onSearch} />
+                <Search placeholder={t("search")} onSearch={onSearch} />
             </AlignContainer>
         </ToolbarContainer>
     )
@@ -103,48 +111,89 @@ const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch }) => {
 type OrderProps = {
     result?: ListRep | null;
     loading: boolean;
-    onReload?: () => void;
+    onReload: () => void;
     onPaginationChange?: (page: number, pageSize: number) => void;
     onSearch?: (text: string) => void;
+    t: TFunction<"translation", undefined>
 }
 
-export const OrderContainer: React.FC<OrderProps> = ({ result, loading, onReload, onPaginationChange, onSearch }) => {
+export const OrderContainer: React.FC<OrderProps> = ({ result, loading, onReload, onPaginationChange, onSearch, t }) => {
     const [showModal, setShowModal] = useState(false);
+
+    const mergedData = (orderLines: OrderLine[], orderLogs: OrderLog[]) => {
+        return orderLines.map(line => {
+            // Tìm log tương ứng với ItemId
+            const log = orderLogs.find(log => log.itemId === line.itemId);
+
+            return {
+                itemId: line.itemId,
+                foodName: line.foodName,
+                quantityOrder: line.quantity,
+                quantityChanges: log && log.quantityChanges,
+                timeChanges: log && log.timeChanges
+            };
+        });
+    };
+
+    const expandColumns: TableColumnsType<any> = [
+        { title: 'Món ăn', dataIndex: 'foodName' },
+        { title: 'Số lượng', dataIndex: 'quantityOrder' },
+        { title: 'Số lượng gọi thêm', dataIndex: 'quantityChanges' },
+        { title: 'Thời gian gọi thêm', dataIndex: 'timeChanges' }
+    ];
+
+    const expandedRowRender = (record: Order) => (
+        <Table
+            columns={expandColumns}
+            dataSource={mergedData(record.orderLines, record.orderLogs)}
+            pagination={false}
+            bordered
+        />
+    );
 
     const columns: TableColumnsType<Order> = [
         {
-            title: 'Số hóa đơn',
+            title: t("bill-no"),
             dataIndex: 'orderNo',
             render: (text: string) => <a>{text}</a>,
         },
         {
-            title: 'Chi nhánh',
+            title: t("store"),
             dataIndex: 'storeName',
         },
         {
-            title: 'Số bàn',
+            title: t("table-number"),
             dataIndex: 'reservationId',
         },
         {
-            title: 'Tổng tiền',
+            title: t("total"),
             dataIndex: 'total',
         },
         {
-            title: 'Trạng thái',
+            title: t("status"),
             dataIndex: 'latestStatus',
             width: 100,
             align: 'center',
             render: (latestStatus: number) => <Tag color={getOrderStatus(latestStatus).color}>{getOrderStatus(latestStatus).title}</Tag>
         },
         {
-            title: 'Chức năng',
+            title: t("actions"),
             dataIndex: '',
             key: 'x',
             width: '10%',
             align: 'center',
             render: (row: Order) => (
                 <ActionContainer>
-                    <Tooltip title="Xem">
+                    {row.latestStatus === OrderStatus.Ready &&
+                        <Tooltip title={t("submit-paid")}>
+                            <Button
+                                icon={<CheckOutlined />}
+                                type="link"
+                                danger
+                                onClick={() => handleCheck(row)}
+                            />
+                        </Tooltip>}
+                    <Tooltip title={t("see")}>
                         <Button
                             icon={<EyeOutlined />}
                             type="link"
@@ -156,7 +205,7 @@ export const OrderContainer: React.FC<OrderProps> = ({ result, loading, onReload
                             }}
                         />
                     </Tooltip>
-                    <Tooltip title="In hóa đơn">
+                    <Tooltip title={t("print-invoice")}>
                         <Button
                             icon={<FileDoneOutlined />}
                             type="link"
@@ -182,10 +231,33 @@ export const OrderContainer: React.FC<OrderProps> = ({ result, loading, onReload
     const [itemSelected, setItemSelected] = useState<Order | null>(null);
     const { width } = useWindowDimensions();
 
+    const handleCheck = async (order: Order) => {
+        let body = {
+            ...order,
+            isPaid: true,
+            isCompleted: true,
+            isReady: false,
+            latestStatus: OrderStatus.Paid,
+            latestStatusUpdate: new Date(),
+            action: "pay"
+        };
+
+        try {
+            await actionOrder(body, "edit");
+        }
+        catch (err) {
+            console.log(err);
+        }
+        finally {
+            toast("Đã cập nhật xong.", { type: "success" });
+            onReload();
+        }
+    }
+
     return (
-        <DashboardLayout>
-            <Header isShowText={width > 767} />
-            <Toolbar isRow={width > 767} onReload={onReload} onSearch={onSearch} />
+        <DashboardLayout t={t}>
+            <Header t={t} isShowText={width > 767} />
+            <Toolbar t={t} isRow={width > 767} onReload={onReload} onSearch={onSearch} />
             {
                 width > 767 ?
                     <TableContainer>
@@ -197,6 +269,12 @@ export const OrderContainer: React.FC<OrderProps> = ({ result, loading, onReload
                             }}
                             columns={columns}
                             dataSource={result?.items}
+                            expandable={{
+                                expandedRowRender,
+                                rowExpandable: record => record.orderLines?.length > 0,
+                                expandRowByClick: true
+                            }}
+                            rowKey={(record) => record.orderId}
                             style={{ borderRadius: 0 }}
                             loading={loading}
                             pagination={{ pageSize: result?.pageSize, total: result?.count, onChange: onPaginationChange }}
@@ -223,14 +301,14 @@ export const OrderContainer: React.FC<OrderProps> = ({ result, loading, onReload
                 item={itemSelected}
             /> */}
             <Modal
-                title="Hóa đơn"
+                title={t("invoice")}
                 centered
                 open={showModal}
                 onCancel={() => setShowModal(false)}
                 footer={null}
                 width={700}
             >
-                <Invoice />
+                <Invoice t={t} />
             </Modal>
         </DashboardLayout>
     )

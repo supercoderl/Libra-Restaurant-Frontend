@@ -5,8 +5,11 @@ import TwitterIcon from "../../../public/assets/icons/twitter-icon.svg";
 import InstagramIcon from "../../../public/assets/icons/instagram-icon.svg";
 import LinkedInIcon from "../../../public/assets/icons/linkedin-icon.svg";
 import YoutubeIcon from "../../../public/assets/icons/youtube-icon.svg";
+import { TFunction } from "i18next";
+import React from "react";
+import Link from "next/link";
 
-export default function Footer() {
+export default function Footer({ t }: { t: TFunction<"translation", undefined> }) {
     return (
         <FooterContainer>
             <Content>
@@ -35,37 +38,37 @@ export default function Footer() {
                 </ContentTop>
                 <LinkBoxes>
                     <Box>
-                        <LinkName>Công ty</LinkName>
-                        <li><LinkNameText>Trang chủ</LinkNameText></li>
-                        <li><LinkNameText href="#">Liên hệ</LinkNameText></li>
-                        <li><LinkNameText href="#">Giới thiệu</LinkNameText></li>
-                        <li><LinkNameText href="#">Tuyển dụng</LinkNameText></li>
+                        <LinkName>{t("company")}</LinkName>
+                        <li><LinkNameText>{t("home")}</LinkNameText></li>
+                        <li><LinkNameText href="#">{t("contact")}</LinkNameText></li>
+                        <li><LinkNameText href="#">{t("intro")}</LinkNameText></li>
+                        <li><LinkNameText href="#">{t("hire")}</LinkNameText></li>
                     </Box>
                     <Box>
-                        <LinkName>Dịch vụ</LinkName>
-                        <li><LinkNameText href="#">Giữ chỗ</LinkNameText></li>
-                        <li><LinkNameText href="#">Đặt hàng online</LinkNameText></li>
-                        <li><LinkNameText href="#">Thiết kế website</LinkNameText></li>
-                        <li><LinkNameText href="#">Hướng dẫn sử dụng</LinkNameText></li>
+                        <LinkName>{t("service")}</LinkName>
+                        <li><LinkNameText href="#">{t("caretaker")}</LinkNameText></li>
+                        <li><LinkNameText href="#">{t("order-online")}</LinkNameText></li>
+                        <li><LinkNameText href="#">{t("web-design")}</LinkNameText></li>
+                        <li><LinkNameText href="#">{t("instruction")}</LinkNameText></li>
                     </Box>
                     <Box>
-                        <LinkName>Tài khoản</LinkName>
-                        <li><LinkNameText href="#">Đăng nhập</LinkNameText></li>
-                        <li><LinkNameText href="#">Trang cá nhân</LinkNameText></li>
-                        <li><LinkNameText href="#">Tùy chọn</LinkNameText></li>
-                        <li><LinkNameText href="#">Thanh toán</LinkNameText></li>
+                        <LinkName>{t("account")}</LinkName>
+                        <Link href="/login"><LinkNameText>{t("login")}</LinkNameText></Link>
+                        <li><LinkNameText href="#">{t("profile")}</LinkNameText></li>
+                        <li><LinkNameText href="#">{t("options")}</LinkNameText></li>
+                        <li><LinkNameText href="#">{t("pay")}</LinkNameText></li>
                     </Box>
                     <Box>
-                        <LinkName>Khóa học</LinkName>
-                        <li><LinkNameText href="#">Nấu ăn</LinkNameText></li>
-                        <li><LinkNameText href="#">Phục vụ</LinkNameText></li>
-                        <li><LinkNameText href="#">Lễ tân</LinkNameText></li>
-                        <li><LinkNameText href="#">Kỹ thuật</LinkNameText></li>
+                        <LinkName>{t("course")}</LinkName>
+                        <li><LinkNameText href="#">{t("cooking")}</LinkNameText></li>
+                        <li><LinkNameText href="#">{t("serve")}</LinkNameText></li>
+                        <li><LinkNameText href="#">{t("receptionist")}</LinkNameText></li>
+                        <li><LinkNameText href="#">{t("technique")}</LinkNameText></li>
                     </Box>
                     <InputBox>
-                        <LinkName>Đăng ký ngay</LinkName>
-                        <li><Input placeholder="Nhập email của bạn..." /></li>
-                        <li><Button>Subcribe</Button></li>
+                        <LinkName>{t("register-now")}</LinkName>
+                        <li><Input placeholder={t("input-email")} /></li>
+                        <li><Button>{t("subcribe")}</Button></li>
                     </InputBox>
                 </LinkBoxes>
             </Content>
@@ -73,8 +76,8 @@ export default function Footer() {
                 <BottomText>
                     <BottomTextSpan>Copyright © 2024 <BottomTextA href="#">Libra Restaurant.</BottomTextA>All rights reserved</BottomTextSpan>
                     <BottomTextSpan>
-                        <BottomTextA href="#">Chính sách bảo mật</BottomTextA>
-                        <BottomTextA href="#">Điểu khoản</BottomTextA>
+                        <BottomTextA href="#">{t("privacy")}</BottomTextA>
+                        <BottomTextA href="#">{t("terms")}</BottomTextA>
                     </BottomTextSpan>
                 </BottomText>
             </BottomDetail>

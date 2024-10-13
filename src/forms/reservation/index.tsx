@@ -4,6 +4,7 @@ import { DashboardLayout } from "@/layouts/DashboardLayout";
 import HeaderTitle from "@/components/dashboard/headerTitle";
 import useWindowDimensions from "@/hooks/use-window-dimensions";
 import { Store } from "@/type/Store";
+import { TFunction } from "i18next";
 
 
 type FormProps = {
@@ -13,16 +14,17 @@ type FormProps = {
     onFinish: () => void;
     loading: boolean;
     stores: Store[];
+    t: TFunction<"translation", undefined>
 };
 
-export const ReservationForm: React.FC<FormProps> = ({ onChange, fields, title, onFinish, loading, stores }) => {
+export const ReservationForm: React.FC<FormProps> = ({ onChange, fields, title, onFinish, loading, stores, t }) => {
     const [form] = Form.useForm();
 
     const { width } = useWindowDimensions();
 
     return (
-        <DashboardLayout>
-            <HeaderTitle title={title} isShowText={width > 767} onSubmit={onFinish} loading={loading} />
+        <DashboardLayout t={t}>
+            <HeaderTitle t={t} title={title} isShowText={width > 767} onSubmit={onFinish} loading={loading} />
             <Container>
                 <Form
                     form={form}
@@ -33,74 +35,74 @@ export const ReservationForm: React.FC<FormProps> = ({ onChange, fields, title, 
                     }}
                 >
                     <Form.Item
-                        label="Số bàn"
+                        label={t("table-number")}
                         name="tableNumber"
-                        rules={[{ required: true, message: "Số bàn là bắt buộc" }]}
+                        rules={[{ required: true, message: t("table-number-require")}]}
                     >
-                        <Input placeholder="Nhập số bàn..." />
+                        <Input placeholder={t("input-table-number")} />
                     </Form.Item>
                     <Form.Item
-                        label="Sức chứa"
+                        label={t("capacity")}
                         name="capacity"
-                        rules={[{ required: true, message: "Sức chứa là bắt buộc" }]}
+                        rules={[{ required: true, message: t("capacity-require") }]}
                     >
-                        <Input placeholder="Nhập sức chứa..." />
+                        <Input placeholder={t("input-capacity")} />
                     </Form.Item>
                     <Form.Item
-                        label="Chi nhánh"
-                        tooltip={{ title: 'Chọn chi nhánh có sẵn trên địa bàn' }}
+                        label={t("store")}
+                        tooltip={{ title: t("choose-available-store") }}
                         name="storeId"
-                        rules={[{ required: true, message: "Chi nhánh là bắt buộc" }]}
+                        rules={[{ required: true, message: t("store-require") }]}
                     >
                         <Select
                             showSearch
-                            placeholder="Chọn chi nhánh"
+                            placeholder={t("choose-store")}
                             optionFilterProp="label"
                             options={stores.map((item) => ({ value: item.storeId, label: item.name }))}
                         />
                     </Form.Item>
                     <Form.Item
-                        label="Trạng thái"
-                        tooltip={{ title: 'Hiển thị đặt chỗ hoặc ẩn đi' }}
+                        label={t("status")}
+                        tooltip={{ title: t("show-status") }}
                         name="status"
-                        rules={[{ required: true, message: "Trạng thái là bắt buộc" }]}
+                        rules={[{ required: true, message: t("status-require") }]}
                     >
                         <Select
                             showSearch
-                            placeholder="Chọn trang thái"
+                            placeholder={t("choose-status")}
                             optionFilterProp="label"
                             options={[
                                 {
                                     value: 0,
-                                    label: 'Hoạt động',
+                                    label: t("active"),
                                 },
                                 {
                                     value: 1,
-                                    label: 'Tạm khóa',
+                                    label: t("blocked"),
                                 }
                             ]}
                         />
                     </Form.Item>
-                    <Form.Item label="Mô tả" name="description">
-                        <Input.TextArea rows={5} placeholder="Nhập mô tả..." />
+                    <Form.Item label={t("description")} name="description">
+                        <Input.TextArea rows={5} placeholder={t("input-description")} />
                     </Form.Item>
                     <Form.Item
-                        label="Thời gian đặt chỗ"
+                        label={t("reservation-time")}
                         name="reservationTime"
                     >
-                        <DatePicker placeholder="Chọn thời gian..." />
+                        <DatePicker placeholder={t("choose-time")} />
                     </Form.Item>
                     <Form.Item
-                        label="Tên khách hàng"
+                        label={t("customer-name")}
                         name="customerName"
                     >
-                        <Input placeholder="Nhập tên khách hàng..." />
+                        <Input placeholder={t("input-customer-name")} />
                     </Form.Item>
                     <Form.Item
-                        label="Số điện thoại khách"
+                        label={t("customer-phone")}
                         name="customerPhone"
                     >
-                        <Input placeholder="Nhập số điện thoại khách..." />
+                        <Input placeholder={t("input-customer-phone")} />
                     </Form.Item>
                 </Form>
             </Container>

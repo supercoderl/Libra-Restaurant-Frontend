@@ -1,12 +1,13 @@
 import { Avatar, Image } from "antd"
 import { Address, Container, HorizontalLine, InvoiceItems, InvoiceItem, ItemTable, Price, PriceTable, Section, Title, TotalTable } from "./style"
 import useWindowDimensions from "@/hooks/use-window-dimensions"
+import { TFunction } from "i18next"
 
 type InvoiceProps = {
-
+    t: TFunction<"translation", undefined>
 }
 
-export const Invoice = () => {
+export const Invoice: React.FC<InvoiceProps> = ({ t }) => {
     const { width } = useWindowDimensions();
 
     return (
@@ -19,53 +20,53 @@ export const Invoice = () => {
                 />
 
                 <Title>
-                    Hóa đơn thanh toán
+                    {t("invoice")}
                 </Title>
                 <Address>
-                    52 Đ. Nguyễn Thị Minh Khai, Bến Nghé, Quận 1, Hồ Chí Minh, Việt Nam
+                    {t("my-address")}
                 </Address>
                 <p>
-                    <b>Số hóa đơn:</b> 0987653456789
+                    <b>{t("bill-no")}:</b> 0987653456789
                 </p>
                 <p>
-                    <b>Số đơn hàng:</b> 0987653456789
+                    <b>{t("order-no")}:</b> 0987653456789
                 </p>
                 <p>
-                    <b>Mã số thuế:</b> 0987653456789
+                    <b>{t("tax-code")}:</b> 0987653456789
                 </p>
                 <HorizontalLine />
             </Container>
             <ItemTable>
                 <thead>
                     <tr>
-                        <InvoiceItem style={{ width: 60, textAlign: 'center', fontWeight: '700' }}>STT</InvoiceItem>
-                        <InvoiceItem style={{ textAlign: 'left', fontWeight: '700'}}>Tên món</InvoiceItem>
-                        <InvoiceItem style={{ width: 120, textAlign: 'center', fontWeight: '700' }}>Số lượng</InvoiceItem>
-                        <InvoiceItem style={{ textAlign: 'right', fontWeight: '700'}}>Đơn giá</InvoiceItem>
+                        <InvoiceItem style={{ width: 60, textAlign: 'center', fontWeight: '700' }}>{t("stt")}</InvoiceItem>
+                        <InvoiceItem style={{ textAlign: 'left', fontWeight: '700' }}>{t("food-name")}</InvoiceItem>
+                        <InvoiceItem style={{ width: 120, textAlign: 'center', fontWeight: '700' }}>{t("quantity")}</InvoiceItem>
+                        <InvoiceItem style={{ textAlign: 'right', fontWeight: '700' }}>{t("price")}</InvoiceItem>
                     </tr>
                 </thead>
                 <tbody>
                     <InvoiceItems>
                         <InvoiceItem style={{ width: 60, textAlign: 'center' }}>01</InvoiceItem>
-                        <InvoiceItem style={{ textAlign: 'left'}}>Tropicana Purenectar Pomegr</InvoiceItem>
+                        <InvoiceItem style={{ textAlign: 'left' }}>Tropicana Purenectar Pomegr</InvoiceItem>
                         <InvoiceItem style={{ width: 120, textAlign: 'center' }}>5 PC</InvoiceItem>
                         <Price>₹ 100</Price>
                     </InvoiceItems>
                     <InvoiceItems>
                         <InvoiceItem style={{ width: 60, textAlign: 'center' }}>02</InvoiceItem>
-                        <InvoiceItem style={{ textAlign: 'left'}}>Tropicana Purenectar Pomegr</InvoiceItem>
+                        <InvoiceItem style={{ textAlign: 'left' }}>Tropicana Purenectar Pomegr</InvoiceItem>
                         <InvoiceItem style={{ width: 120, textAlign: 'center' }}>5 PC</InvoiceItem>
                         <Price>₹ 100</Price>
                     </InvoiceItems>
                     <InvoiceItems>
                         <InvoiceItem style={{ width: 60, textAlign: 'center' }}>03</InvoiceItem>
-                        <InvoiceItem style={{ textAlign: 'left'}}>Tropicana Purenectar Pomegr</InvoiceItem>
+                        <InvoiceItem style={{ textAlign: 'left' }}>Tropicana Purenectar Pomegr</InvoiceItem>
                         <InvoiceItem style={{ width: 120, textAlign: 'center' }}>5 PC</InvoiceItem>
                         <Price>₹ 100</Price>
                     </InvoiceItems>
                     <InvoiceItems>
                         <InvoiceItem style={{ width: 60, textAlign: 'center' }}>04</InvoiceItem>
-                        <InvoiceItem style={{ textAlign: 'left'}}>Tropicana Purenectar Pomegr</InvoiceItem>
+                        <InvoiceItem style={{ textAlign: 'left' }}>Tropicana Purenectar Pomegr</InvoiceItem>
                         <InvoiceItem style={{ width: 120, textAlign: 'center' }}>5 PC</InvoiceItem>
                         <Price>₹ 100</Price>
                     </InvoiceItems>
@@ -75,8 +76,8 @@ export const Invoice = () => {
             <TotalTable>
                 <thead>
                     <tr>
-                        <td style={{ paddingLeft: 10, paddingBlock: 5 }}>Tổng cộng: </td>
-                        <Price style={{ paddingRight: 5, fontWeight: '700'}}>₹ 396</Price>
+                        <td style={{ paddingLeft: 10, paddingBlock: 5 }}>{t("total")}: </td>
+                        <Price style={{ paddingRight: 5, fontWeight: '700' }}>₹ 396</Price>
                     </tr>
                 </thead>
             </TotalTable>

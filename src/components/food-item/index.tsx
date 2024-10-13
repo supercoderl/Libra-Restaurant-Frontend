@@ -12,29 +12,40 @@ import {
   TimeText,
   Title,
 } from './style';
-import { useStoreDispatch } from 'src/redux/store';
+import { useStoreDispatch, useStoreSelector } from 'src/redux/store';
 import { addItem } from 'src/redux/slices/cart-slice';
 import { theme } from 'twin.macro';
 import PlusIcon from 'public/assets/icons/plus-icon.svg';
 import Item from '@/type/Item';
+import { toast } from 'react-toastify';
+import { TFunction } from 'i18next';
+import { useTranslation } from "next-i18next";
 
 export default function FoodItem(item: Item) {
   const { picture, title, price } = item;
   const [priceRepresentation, setPriceRepresentation] = useState('');
   const dispatch = useStoreDispatch();
+  const id = useStoreSelector(state => state.reservation.id);
+  const { t } = useTranslation();
+
   useEffect(() => {
     setPriceRepresentation(price.toString() + ' ₫');
   }, [price]);
 
   const handleClick = () => {
-    dispatch(addItem(item));
+    if (!id) {
+      toast(t("you-have-not-reservation"), { type: "warning" })
+    }
+    else {
+      dispatch(addItem(item));
+    }
   };
 
   return (
     <Container onClick={handleClick} className='group'>
       <PlusContainer>
         <PlusIcon fill="black" />
-        <Title>Thêm vào giỏ</Title>
+        <Title>{t("add-to-cart")}</Title>
       </PlusContainer>
       <ImageContainer>
         <Image
@@ -45,7 +56,7 @@ export default function FoodItem(item: Item) {
         />
         <TimeContainer>
           <TimeText>
-            <b>26-30</b> phút
+            <b>26-30</b> {t("minutes")}
           </TimeText>
         </TimeContainer>
       </ImageContainer>

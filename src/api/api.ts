@@ -60,11 +60,18 @@ const errorHanding = async (err: any) => {
     isLog && console.error(err)
     if (err?.response && err?.response?.data && err?.response?.data?.errors) {
         console.log(err?.response?.data);
-        const errorMessages = Object.entries(err?.response?.data?.errors)
-            .map(([key, messages]: [string, any]) => messages?.join(', ')).join(', ');
-        toast(errorMessages, {
-            type: "error",
-        });
+        if (Array.isArray(err?.response?.data?.errors) && err?.response?.data?.errors.length > 0) {
+            toast(err?.response?.data?.errors.join(', '), {
+                type: "error",
+            });
+        }
+        else {
+            const errorMessages = Object.entries(err?.response?.data?.errors)
+                .map(([key, messages]: [string, any]) => messages?.join(', ')).join(', ');
+            toast(errorMessages, {
+                type: "error",
+            });
+        }
     }
 }
 

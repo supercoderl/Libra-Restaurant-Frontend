@@ -8,24 +8,26 @@ import { useState } from "react";
 import Category from "@/type/Category";
 import { MobileTable } from "@/components/mobile/tables/mobile-table";
 import { useRouter } from "next/navigation";
+import { TFunction } from "i18next";
 
 type HeaderProps = {
     isShowText?: boolean;
+    t: TFunction<"translation", undefined>;
 }
 
-const Header: React.FC<HeaderProps> = ({ isShowText }) => {
+const Header: React.FC<HeaderProps> = ({ isShowText, t }) => {
     const router = useRouter();
 
     return (
         <ToolbarContainer isRow={true}>
-            <HeaderText>Quản lý danh mục thức ăn</HeaderText>
+            <HeaderText>{t("category-management-full")}</HeaderText>
             <Button
                 icon={<RollbackOutlined />}
                 type="primary"
                 danger
                 onClick={() => router.back()}
             >
-                {isShowText && 'Quay lại'}
+                {isShowText && t("back")}
             </Button>
         </ToolbarContainer>
     )
@@ -35,9 +37,10 @@ type ToolbarProps = {
     isRow?: boolean;
     onReload?: () => void;
     onSearch?: (text: string) => void;
+    t: TFunction<"translation", undefined>
 }
 
-const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch }) => {
+const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch, t }) => {
     const onChangeDate: DatePickerProps['onChange'] = (date, dateString) => {
         console.log(date, dateString);
     };
@@ -55,11 +58,11 @@ const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch }) => {
     return (
         <ToolbarContainer isRow={isRow}>
             <AlignContainer>
-                <DatePicker placeholder="Cập nhật lúc" onChange={onChangeDate} />
+                <DatePicker placeholder={t("update-at")} onChange={onChangeDate} />
 
                 <Select
                     showSearch
-                    placeholder="Lọc theo"
+                    placeholder={t("filter-by")}
                     optionFilterProp="label"
                     onChange={onChangeSelect}
                     onSearch={onSearch}
@@ -79,21 +82,21 @@ const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch }) => {
                     ]}
                 />
 
-                <Checkbox onChange={onChangeCheckbox}>Danh mục đã xóa</Checkbox>
+                <Checkbox onChange={onChangeCheckbox}>{t("category-deleted")}</Checkbox>
 
-                <Button>Lọc</Button>
+                <Button>{t("filter")}</Button>
 
-                <Button type="primary">Reset</Button>
+                <Button type="primary">{t("reset")}</Button>
 
-                <Button type="primary" danger icon={<PlusOutlined />} href="create">Thêm</Button>
+                <Button type="primary" danger icon={<PlusOutlined />} href="create">{t("create")}</Button>
             </AlignContainer>
 
             <Divider type="vertical" />
 
             <AlignContainer>
-                <Button type="primary" icon={<ReloadOutlined />} onClick={onReload}>Tải lại</Button>
+                <Button type="primary" icon={<ReloadOutlined />} onClick={onReload}>{t("reload")}</Button>
 
-                <Search placeholder="Tìm kiếm..." onSearch={onSearch} />
+                <Search placeholder={t("search")} onSearch={onSearch} />
             </AlignContainer>
         </ToolbarContainer>
     )
@@ -105,38 +108,39 @@ type CategoryProps = {
     onReload?: () => void;
     onPaginationChange?: (page: number, pageSize: number) => void;
     onSearch?: (text: string) => void;
+    t: TFunction<"translation", undefined>
 }
 
-export const CategoryContainer: React.FC<CategoryProps> = ({ result, loading, onReload, onPaginationChange, onSearch }) => {
+export const CategoryContainer: React.FC<CategoryProps> = ({ result, loading, onReload, onPaginationChange, onSearch, t }) => {
     const columns: TableColumnsType<Category> = [
         {
-            title: 'Hình ảnh',
+            title: t("picture"),
             dataIndex: 'picture',
             align: 'center',
             width: '5%',
             render: (url?: string | null) => <Image width={80} src={url || process.env.NEXT_PUBLIC_DUMMY_PICTURE} />
         },
         {
-            title: 'Tên danh mục',
+            title: t("category-name"),
             dataIndex: 'name',
             render: (text: string) => <a>{text}</a>,
         },
         {
-            title: 'Trạng thái',
+            title: t("status"),
             dataIndex: 'isActive',
             width: 100,
             align: 'center',
-            render: (isActive: boolean) => isActive ? <Tag color="success">Đang hoạt động</Tag> : <Tag color="error">Tạm khóa</Tag>
+            render: (isActive: boolean) => isActive ? <Tag color="success">{t("active")}</Tag> : <Tag color="error">{t("blocked")}</Tag>
         },
         {
-            title: 'Chức năng',
+            title: t("actions"),
             dataIndex: '',
             key: 'x',
             width: '10%',
             align: 'center',
             render: (row: Category) => (
                 <ActionContainer>
-                    <Tooltip title="Xem">
+                    <Tooltip title={t("see")}>
                         <Button
                             icon={<EyeOutlined />}
                             type="link"
@@ -147,7 +151,7 @@ export const CategoryContainer: React.FC<CategoryProps> = ({ result, loading, on
                             }}
                         />
                     </Tooltip>
-                    <Tooltip title="Sửa">
+                    <Tooltip title={t("edit")}>
                         <Button
                             icon={<EditOutlined />}
                             type="link"
@@ -155,7 +159,7 @@ export const CategoryContainer: React.FC<CategoryProps> = ({ result, loading, on
                             href={`edit?categoryId=${row.categoryId}`}
                         />
                     </Tooltip>
-                    <Tooltip title="Xóa">
+                    <Tooltip title={t("delete")}>
                         <Button
                             icon={<DeleteOutlined />}
                             type="link"
@@ -181,9 +185,9 @@ export const CategoryContainer: React.FC<CategoryProps> = ({ result, loading, on
     const { width } = useWindowDimensions();
 
     return (
-        <DashboardLayout>
-            <Header isShowText={width > 767} />
-            <Toolbar isRow={width > 767} onReload={onReload} onSearch={onSearch} />
+        <DashboardLayout t={t}>
+            <Header t={t} isShowText={width > 767} />
+            <Toolbar t={t} isRow={width > 767} onReload={onReload} onSearch={onSearch} />
             {
                 width > 767 ?
                     <TableContainer>
@@ -206,7 +210,7 @@ export const CategoryContainer: React.FC<CategoryProps> = ({ result, loading, on
                         <MobileTable
                             key={index}
                             title={item.name}
-                            subTitle={item.isActive ? "Đang hoạt động" : "Bị khóa"}
+                            subTitle={item.isActive ? t("active") : t("blocked")}
                             description={item.description}
                             image="https://cdn-icons-png.flaticon.com/512/11618/11618642.png"
                         />

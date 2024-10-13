@@ -7,6 +7,7 @@ import { useState } from "react";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { useStoreDispatch, useStoreSelector } from "@/redux/store";
 import { filterDistrictsAndWards, filterWards } from "@/redux/slices/locations-slice";
+import { TFunction } from "i18next";
 
 
 type FormProps = {
@@ -15,9 +16,10 @@ type FormProps = {
     title: string;
     onFinish: () => void;
     loading: boolean;
+    t: TFunction<"translation", undefined>
 };
 
-export const StoreForm: React.FC<FormProps> = ({ onChange, fields, title, onFinish, loading }) => {
+export const StoreForm: React.FC<FormProps> = ({ onChange, fields, title, onFinish, loading, t }) => {
     const [form] = Form.useForm();
     const { cities, districts, wards } = useStoreSelector(
         state => ({
@@ -57,12 +59,13 @@ export const StoreForm: React.FC<FormProps> = ({ onChange, fields, title, onFini
     );
 
     return (
-        <DashboardLayout>
+        <DashboardLayout t={t}>
             <HeaderTitle
                 title={title}
                 isShowText={width > 767}
                 onSubmit={onFinish}
                 loading={loading}
+                t={t}
             />
             <Container>
                 <Form
@@ -76,22 +79,22 @@ export const StoreForm: React.FC<FormProps> = ({ onChange, fields, title, onFini
                     <Row gutter={[16, 0]} justify="center">
                         <Col span={6}>
                             <Form.Item
-                                label="Tên chi nhánh"
+                                label={t("store-name")}
                                 name="name"
-                                rules={[{ required: true, message: "Tên chi nhánh là bắt buộc" }]}
+                                rules={[{ required: true, message: t("store-name-require") }]}
                             >
-                                <Input placeholder="Nhập tên chi nhánh..." />
+                                <Input placeholder={t("input-store")} />
                             </Form.Item>
                         </Col>
                         <Col span={6}>
                             <Form.Item
-                                label="Thành phố"
+                                label={t("city")}
                                 name="cityId"
-                                rules={[{ required: true, message: "Thành phố là bắt buộc" }]}
+                                rules={[{ required: true, message: t("city-require") }]}
                             >
                                 <Select
                                     showSearch
-                                    placeholder="Chọn thành phố"
+                                    placeholder={t("choose-city")}
                                     optionFilterProp="label"
                                     onChange={handleChangeCity}
                                     options={cities.map(city => ({ value: city.cityId, label: city.name }))}
@@ -100,13 +103,13 @@ export const StoreForm: React.FC<FormProps> = ({ onChange, fields, title, onFini
                         </Col>
                         <Col span={6}>
                             <Form.Item
-                                label="Quận/huyện"
+                                label={t("district")}
                                 name="districtId"
-                                rules={[{ required: true, message: "Quận/huyện là bắt buộc" }]}
+                                rules={[{ required: true, message: t("district-require") }]}
                             >
                                 <Select
                                     showSearch
-                                    placeholder="Chọn quận/huyện"
+                                    placeholder={t("choose-district")}
                                     optionFilterProp="label"
                                     onChange={handleChangeDistrict}
                                     options={districts.map(district => ({ value: district.districtId, label: district.name }))}
@@ -115,13 +118,13 @@ export const StoreForm: React.FC<FormProps> = ({ onChange, fields, title, onFini
                         </Col>
                         <Col span={6}>
                             <Form.Item
-                                label="Phường/xã"
+                                label={t("ward")}
                                 name="wardId"
-                                rules={[{ required: true, message: "Phường/xã là bắt buộc" }]}
+                                rules={[{ required: true, message: t("ward-require") }]}
                             >
                                 <Select
                                     showSearch
-                                    placeholder="Chọn phường/xã"
+                                    placeholder={t("choose-ward")}
                                     optionFilterProp="label"
                                     options={wards.map(ward => ({ value: ward.wardId, label: ward.name }))}
                                 />
@@ -129,34 +132,34 @@ export const StoreForm: React.FC<FormProps> = ({ onChange, fields, title, onFini
                         </Col>
                         <Col span={6}>
                             <Form.Item
-                                label="Mã số thuế"
+                                label={t("tax-code")}
                                 name="taxCode"
                             >
-                                <Input placeholder="Nhập mã số thuế..." />
+                                <Input placeholder={t("input-tax-code")} />
                             </Form.Item>
                         </Col>
                         <Col span={6}>
                             <Form.Item
-                                label="Mã bưu chính"
+                                label={t("postal-code")}
                                 name="postalCode"
                             >
-                                <Input placeholder="Nhập mã bưu chính..." />
+                                <Input placeholder={t("input-postal-code")} />
                             </Form.Item>
                         </Col>
                         <Col span={6}>
                             <Form.Item
-                                label="Số điện thoại"
+                                label={t("phone")}
                                 name="phone"
                             >
-                                <Input placeholder="Nhập số điện thoại..." />
+                                <Input placeholder={t("input-phone")} />
                             </Form.Item>
                         </Col>
                         <Col span={6}>
                             <Form.Item
-                                label="Số fax"
+                                label={t("fax")}
                                 name="fax"
                             >
-                                <Input placeholder="Nhập số fax..." />
+                                <Input placeholder={t("input-fax")} />
                             </Form.Item>
                         </Col>
                         <Col span={6}>
@@ -185,63 +188,63 @@ export const StoreForm: React.FC<FormProps> = ({ onChange, fields, title, onFini
                             <Row gutter={[16, 0]}>
                                 <Col span={8}>
                                     <Form.Item
-                                        label="Chi nhánh của ngân hàng"
+                                        label={t("bank-branch")}
                                         name="bankBranch"
                                     >
-                                        <Input placeholder="Nhập chi nhánh của ngân hàng..." />
+                                        <Input placeholder={t("input-bank-branch")} />
                                     </Form.Item>
                                 </Col>
                                 <Col span={8}>
                                     <Form.Item
-                                        label="Email"
+                                        label={t("email")}
                                         name="email"
                                     >
-                                        <Input placeholder="Nhập email..." />
+                                        <Input placeholder={t("input-email")} />
                                     </Form.Item>
                                 </Col>
                                 <Col span={8}>
                                     <Form.Item
-                                        label="Trang web"
+                                        label={t("website")}
                                         name="website"
                                     >
-                                        <Input placeholder="Nhập trang web..." />
+                                        <Input placeholder={t("input-website")} />
                                     </Form.Item>
                                 </Col>
                                 <Col span={8}>
                                     <Form.Item
-                                        label="Mã ngân hàng"
+                                        label={t("bank-code")}
                                         name="bankCode"
                                     >
-                                        <Input placeholder="Nhập mã ngân hàng..." />
+                                        <Input placeholder={t("input-bank-code")} />
                                     </Form.Item>
                                 </Col>
                                 <Col span={8}>
                                     <Form.Item
-                                        label="Số tài khoản"
+                                        label={t("account-number")}
                                         name="bankAccount"
                                     >
-                                        <Input placeholder="Nhập số tài khoản..." />
+                                        <Input placeholder={t("input-account-number")} />
                                     </Form.Item>
                                 </Col>
                                 <Col span={8}>
                                     <Form.Item
-                                        label="Trạng thái"
-                                        tooltip={{ title: 'Hiển thị chi nhánh hoặc ẩn đi' }}
+                                        label={t("status")}
+                                        tooltip={{ title: t("show-status") }}
                                         name="isActive"
-                                        rules={[{ required: true, message: "Trạng thái là bắt buộc" }]}
+                                        rules={[{ required: true, message: t("status-require") }]}
                                     >
                                         <Select
                                             showSearch
-                                            placeholder="Chọn trạng thái"
+                                            placeholder={t("choose-status")}
                                             optionFilterProp="label"
                                             options={[
                                                 {
                                                     value: true,
-                                                    label: 'Hoạt động',
+                                                    label: t("active"),
                                                 },
                                                 {
                                                     value: false,
-                                                    label: 'Tạm khóa',
+                                                    label: t("blocked"),
                                                 }
                                             ]}
                                         />
@@ -251,22 +254,21 @@ export const StoreForm: React.FC<FormProps> = ({ onChange, fields, title, onFini
                         </Col>
                         <Col span={12}>
                             <Form.Item
-                                label="Địa chỉ"
+                                label={t("address")}
                                 name="address"
-                                rules={[{ required: true, message: "Địa chỉ là bắt buộc" }]}
+                                rules={[{ required: true, message: t("address-require") }]}
 
                             >
-                                <Input.TextArea rows={6} value="Nhập địa chỉ..." />
+                                <Input.TextArea rows={6} value={t("input-address")} />
                             </Form.Item>
                         </Col>
                         <Col span={12}>
                             <Form.Item
-                                label="Vị trí"
+                                label={t("gps")}
                                 name="gpsLocation"
                             >
-                                <Input.TextArea rows={6} value="Nhập vị trí..." />
+                                <Input.TextArea rows={6} value={t("input-gps")} />
                             </Form.Item>
-
                         </Col>
                     </Row>
                 </Form>

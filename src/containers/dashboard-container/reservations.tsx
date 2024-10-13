@@ -9,23 +9,25 @@ import { Reservation } from "@/type/Reservation";
 import { Status } from "@/enums";
 import { MobileTable } from "@/components/mobile/tables/mobile-table";
 import { useRouter } from "next/navigation";
+import { TFunction } from "i18next";
 
 type HeaderProps = {
     isShowText?: boolean;
+    t: TFunction<"translation", undefined>
 }
 
-const Header: React.FC<HeaderProps> = ({ isShowText }) => {
+const Header: React.FC<HeaderProps> = ({ isShowText, t }) => {
     const router = useRouter();
     return (
         <ToolbarContainer isRow={true}>
-            <HeaderText>Quản lý đặt chỗ</HeaderText>
+            <HeaderText>{t("reservation-management-full")}</HeaderText>
             <Button
                 icon={<RollbackOutlined />}
                 type="primary"
                 danger
                 onClick={() => router.back()}
             >
-                {isShowText && 'Quay lại'}
+                {isShowText && t("back")}
             </Button>
         </ToolbarContainer>
     )
@@ -35,9 +37,10 @@ type ToolbarProps = {
     isRow?: boolean;
     onReload?: () => void;
     onSearch?: (text: string) => void;
+    t: TFunction<"translation", undefined>
 }
 
-const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch }) => {
+const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch, t }) => {
     const onChangeDate: DatePickerProps['onChange'] = (date, dateString) => {
         console.log(date, dateString);
     };
@@ -55,11 +58,11 @@ const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch }) => {
     return (
         <ToolbarContainer isRow={isRow}>
             <AlignContainer>
-                <DatePicker placeholder="Cập nhật lúc" onChange={onChangeDate} />
+                <DatePicker placeholder={t("update-at")} onChange={onChangeDate} />
 
                 <Select
                     showSearch
-                    placeholder="Lọc theo"
+                    placeholder={t("filter-by")}
                     optionFilterProp="label"
                     onChange={onChangeSelect}
                     onSearch={onSearch}
@@ -79,21 +82,21 @@ const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch }) => {
                     ]}
                 />
 
-                <Checkbox onChange={onChangeCheckbox}>Đặt chỗ đã xóa</Checkbox>
+                <Checkbox onChange={onChangeCheckbox}>{t("reservation-deleted")}</Checkbox>
 
-                <Button>Lọc</Button>
+                <Button>{t("filter")}</Button>
 
-                <Button type="primary">Reset</Button>
+                <Button type="primary">{t("reset")}</Button>
 
-                <Button type="primary" danger icon={<PlusOutlined />} href="create">Thêm</Button>
+                <Button type="primary" danger icon={<PlusOutlined />} href="create">{t("create")}</Button>
             </AlignContainer>
 
             <Divider type="vertical" />
 
             <AlignContainer>
-                <Button type="primary" icon={<ReloadOutlined />} onClick={onReload}>Tải lại</Button>
+                <Button type="primary" icon={<ReloadOutlined />} onClick={onReload}>{t("reload")}</Button>
 
-                <Search placeholder="Tìm kiếm..." onSearch={onSearch} />
+                <Search placeholder={t("search")} onSearch={onSearch} />
             </AlignContainer>
         </ToolbarContainer>
     )
@@ -105,46 +108,47 @@ type ReservationProps = {
     onReload?: () => void;
     onPaginationChange?: (page: number, pageSize: number) => void;
     onSearch?: (text: string) => void;
+    t: TFunction<"translation", undefined>
 }
 
-export const ReservationContainer: React.FC<ReservationProps> = ({ result, loading, onReload, onPaginationChange, onSearch }) => {
+export const ReservationContainer: React.FC<ReservationProps> = ({ result, loading, onReload, onPaginationChange, onSearch, t }) => {
     const columns: TableColumnsType<Reservation> = [
         {
-            title: 'Mã QR',
+            title: t("qr-code"),
             dataIndex: 'qrCode',
             align: 'center',
             width: 80,
             render: (text: string) => <Image width={60} src={text} alt="qr" />
         },
         {
-            title: 'Số bàn',
+            title: t("table-number"),
             dataIndex: 'tableNumber',
             render: (text: number) => <a>{text}</a>,
         },
         {
-            title: 'Số chỗ ngồi',
+            title: t("capacity"),
             dataIndex: 'capacity',
         },
         {
-            title: 'Chi nhánh',
+            title: t("store"),
             dataIndex: 'storeName'
         },
         {
-            title: 'Trạng thái',
+            title: t("status"),
             dataIndex: 'status',
             width: 100,
             align: 'center',
             render: (status: number) => <Tag color="#0958d9">{Status[status as keyof typeof Status]}</Tag>
         },
         {
-            title: 'Chức năng',
+            title: t("actions"),
             dataIndex: '',
             key: 'x',
             width: '10%',
             align: 'center',
             render: (row: Reservation) => (
                 <ActionContainer>
-                    <Tooltip title="Xem">
+                    <Tooltip title={t("see")}>
                         <Button
                             icon={<EyeOutlined />}
                             type="link"
@@ -155,7 +159,7 @@ export const ReservationContainer: React.FC<ReservationProps> = ({ result, loadi
                             }}
                         />
                     </Tooltip>
-                    <Tooltip title="Sửa">
+                    <Tooltip title={t("edit")}>
                         <Button
                             icon={<EditOutlined />}
                             type="link"
@@ -163,7 +167,7 @@ export const ReservationContainer: React.FC<ReservationProps> = ({ result, loadi
                             href={`edit?reservationId=${row.reservationId}`}
                         />
                     </Tooltip>
-                    <Tooltip title="Xóa">
+                    <Tooltip title={t("delete")}>
                         <Button
                             icon={<DeleteOutlined />}
                             type="link"
@@ -189,9 +193,9 @@ export const ReservationContainer: React.FC<ReservationProps> = ({ result, loadi
     const { width } = useWindowDimensions();
 
     return (
-        <DashboardLayout>
-            <Header isShowText={width > 767} />
-            <Toolbar isRow={width > 767} onReload={onReload} onSearch={onSearch} />
+        <DashboardLayout t={t}>
+            <Header t={t} isShowText={width > 767} />
+            <Toolbar t={t} isRow={width > 767} onReload={onReload} onSearch={onSearch} />
             {
                 width > 767 ?
                     <TableContainer>
@@ -213,7 +217,7 @@ export const ReservationContainer: React.FC<ReservationProps> = ({ result, loadi
                     result.items.map((item, index) => (
                         <MobileTable
                             key={index}
-                            title={`Bàn số ${item.tableNumber}`}
+                            title={`${t("table-no")} ${item.tableNumber}`}
                             subTitle={item.storeName}
                             description={String(Status[item.status as keyof typeof Status])}
                             image="https://cdn-icons-png.flaticon.com/512/11138/11138514.png"

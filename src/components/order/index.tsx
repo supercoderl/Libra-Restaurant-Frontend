@@ -10,15 +10,17 @@ import { CustomerLikeStatus } from "@/enums";
 import { toast } from "react-toastify";
 import { actionListOrderLine } from "@/api/business/orderLineApi";
 import { OrderLine } from "@/type/OrderLine";
+import { TFunction } from "i18next";
 
 type OrderProps = {
     tableNumber: number;
     orderId: string;
     storeId?: string | null;
     reservationId: number;
+    t: TFunction<"translation", undefined>;
 }
 
-export const Order: React.FC<OrderProps> = ({ tableNumber, orderId, storeId, reservationId }) => {
+export const Order: React.FC<OrderProps> = ({ tableNumber, orderId, storeId, reservationId, t }) => {
     const { itemsInCart } = useStoreSelector(
         state => ({
             itemsInCart: state.cart.itemsInCart
@@ -60,7 +62,7 @@ export const Order: React.FC<OrderProps> = ({ tableNumber, orderId, storeId, res
         <Container>
             <Component>
                 <ComponentInfo>
-                    <Title>Giỏ hàng của bạn</Title>
+                    <Title>{t("my-cart")}</Title>
                     {
                         itemsInCart && itemsInCart.length > 0 ?
                             itemsInCart.map((e, index) => (
@@ -71,7 +73,7 @@ export const Order: React.FC<OrderProps> = ({ tableNumber, orderId, storeId, res
                                     <PlanContent>
                                         <PlanContentName>{e.item.title}</PlanContentName>
                                         {/* <PlanContentPrice>{e.item.price}VND</PlanContentPrice> */}
-                                        <PlanContentQuantity>Số lượng: {e.quantityOrder}</PlanContentQuantity>
+                                        <PlanContentQuantity>{t("quantity")}: {e.quantityOrder}</PlanContentQuantity>
                                     </PlanContent>
                                     <PlanAction onClick={() => handleRemove(e.item.itemId)}>
                                         <TrashIcon width={18} height={18} />
@@ -82,7 +84,7 @@ export const Order: React.FC<OrderProps> = ({ tableNumber, orderId, storeId, res
                             (
                                 <EmptyContainer>
                                     <CartOrderIcon fill='#29223d' />
-                                    <EmptyText>Giỏ hàng trống, order ngay!</EmptyText>
+                                    <EmptyText>{t("order-empty")}</EmptyText>
                                 </EmptyContainer>
                             )
                     }
@@ -107,7 +109,7 @@ export const Order: React.FC<OrderProps> = ({ tableNumber, orderId, storeId, res
                                         </g>
                                     </g>
                                 </SvgCheckout>
-                                Gọi món
+                                {t("order")}
                             </ButtonCheckout>
                         )
                     }

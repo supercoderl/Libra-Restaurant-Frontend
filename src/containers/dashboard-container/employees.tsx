@@ -11,15 +11,17 @@ import { useStoreSelector } from "@/redux/store";
 import { assign } from "@/api/business/roleApi";
 import { toast } from "react-toastify";
 import { MobileTable } from "@/components/mobile/tables/mobile-table";
+import { TFunction } from "i18next";
 
 type HeaderProps = {
     isShowText?: boolean;
+    t: TFunction<"translation", undefined>
 }
 
-const Header: React.FC<HeaderProps> = ({ isShowText }) => {
+const Header: React.FC<HeaderProps> = ({ isShowText, t }) => {
     return (
         <ToolbarContainer isRow={true}>
-            <HeaderText>Quản lý nhân viên</HeaderText>
+            <HeaderText>{t("employee-management-full")}</HeaderText>
         </ToolbarContainer>
     )
 }
@@ -28,9 +30,10 @@ type ToolbarProps = {
     isRow?: boolean;
     onReload?: () => void;
     onSearch?: (text: string) => void;
+    t: TFunction<"translation", undefined>
 }
 
-const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch }) => {
+const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch, t }) => {
     const onChangeDate: DatePickerProps['onChange'] = (date, dateString) => {
         console.log(date, dateString);
     };
@@ -48,11 +51,11 @@ const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch }) => {
     return (
         <ToolbarContainer isRow={isRow}>
             <AlignContainer>
-                <DatePicker placeholder="Cập nhật lúc" onChange={onChangeDate} />
+                <DatePicker placeholder={t("update-at")} onChange={onChangeDate} />
 
                 <Select
                     showSearch
-                    placeholder="Lọc theo"
+                    placeholder={t("filter-by")}
                     optionFilterProp="label"
                     onChange={onChangeSelect}
                     onSearch={onSearch}
@@ -72,21 +75,21 @@ const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch }) => {
                     ]}
                 />
 
-                <Checkbox onChange={onChangeCheckbox}>Nhân viên đã xóa</Checkbox>
+                <Checkbox onChange={onChangeCheckbox}>{t("employee-deleted")}</Checkbox>
 
-                <Button>Lọc</Button>
+                <Button>{t("filter")}</Button>
 
-                <Button type="primary">Reset</Button>
+                <Button type="primary">{t("reset")}</Button>
 
-                <Button type="primary" danger icon={<PlusOutlined />} href="create">Thêm</Button>
+                <Button type="primary" danger icon={<PlusOutlined />} href="create">{t("create")}</Button>
             </AlignContainer>
 
             <Divider type="vertical" />
 
             <AlignContainer>
-                <Button type="primary" icon={<ReloadOutlined />} onClick={onReload}>Tải lại</Button>
+                <Button type="primary" icon={<ReloadOutlined />} onClick={onReload}>{t("reload")}</Button>
 
-                <Search placeholder="Tìm kiếm..." onSearch={onSearch} />
+                <Search placeholder={t("search")} onSearch={onSearch} />
             </AlignContainer>
         </ToolbarContainer>
     )
@@ -98,43 +101,44 @@ type EmployeeProps = {
     onReload?: () => void;
     onPaginationChange?: (page: number, pageSize: number) => void;
     onSearch?: (text: string) => void;
+    t: TFunction<"translation", undefined>
 }
 
-export const EmployeeContainer: React.FC<EmployeeProps> = ({ result, loading, onReload, onPaginationChange, onSearch }) => {
+export const EmployeeContainer: React.FC<EmployeeProps> = ({ result, loading, onReload, onPaginationChange, onSearch, t }) => {
     const columns: TableColumnsType<Employee> = [
         {
-            title: 'Tên nhân viên',
+            title: t("employee-name"),
             dataIndex: 'fullName',
             render: (text: string) => <a>{text}</a>,
         },
         {
-            title: 'Chi nhánh',
+            title: t("store"),
             dataIndex: 'storeName',
         },
         {
-            title: 'Email',
+            title: t("email"),
             dataIndex: 'email',
         },
         {
-            title: 'Số điện thoại',
+            title: t("phone"),
             dataIndex: 'mobile',
         },
         {
-            title: 'Trạng thái',
+            title: t("status"),
             dataIndex: 'status',
             width: 100,
             align: 'center',
-            render: (status: number) => status === UserStatus.Active ? <Tag color="success">Đang hoạt động</Tag> : <Tag color="error">Tạm khóa</Tag>
+            render: (status: number) => status === UserStatus.Active ? <Tag color="success">{t("active")}</Tag> : <Tag color="error">{t("blocked")}</Tag>
         },
         {
-            title: 'Chức năng',
+            title: t("actions"),
             dataIndex: '',
             key: 'x',
             width: '10%',
             align: 'center',
             render: (row: Employee) => (
                 <ActionContainer>
-                    <Tooltip title="Phân quyền">
+                    <Tooltip title={t("permission")}>
                         <Button
                             icon={<SisternodeOutlined />}
                             type="link"
@@ -146,7 +150,7 @@ export const EmployeeContainer: React.FC<EmployeeProps> = ({ result, loading, on
                             }}
                         />
                     </Tooltip>
-                    <Tooltip title="Sửa">
+                    <Tooltip title={t("edit")}>
                         <Button
                             icon={<EditOutlined />}
                             type="link"
@@ -154,7 +158,7 @@ export const EmployeeContainer: React.FC<EmployeeProps> = ({ result, loading, on
                             href={`edit?employeeId=${row.id}`}
                         />
                     </Tooltip>
-                    <Tooltip title="Khóa">
+                    <Tooltip title={t("block")}>
                         <Button
                             icon={<LockOutlined />}
                             type="link"
@@ -230,9 +234,9 @@ export const EmployeeContainer: React.FC<EmployeeProps> = ({ result, loading, on
     const { roles } = useStoreSelector(state => state.mainRoleSlice);
 
     return (
-        <DashboardLayout>
-            <Header isShowText={width > 767} />
-            <Toolbar isRow={width > 767} onReload={onReload} onSearch={onSearch} />
+        <DashboardLayout t={t}>
+            <Header t={t} isShowText={width > 767} />
+            <Toolbar t={t} isRow={width > 767} onReload={onReload} onSearch={onSearch} />
             {
                 width > 767 ?
                     <TableContainer>
@@ -256,18 +260,18 @@ export const EmployeeContainer: React.FC<EmployeeProps> = ({ result, loading, on
                             key={index}
                             title={item.fullName}
                             subTitle={item.email}
-                            description={item.status === 0 ? "Đang hoạt động" : "Bị khóa"}
+                            description={item.status === 0 ? t("active") : t("blocked")}
                             image="https://cdn-icons-png.flaticon.com/512/11264/11264000.png"
                         />
                     ))
             }
-            <Modal title="Phân quyền" open={isOpen} onOk={handleSubmit} onCancel={() => setIsOpen(false)}>
-                <Text>Chọn quyền cho nhân viên {employeeSeleted?.fullName}. Bạn có thể gán lên tới 3 quyền cho một nhân viên.</Text>
+            <Modal title={t("permission")} open={isOpen} onOk={handleSubmit} onCancel={() => setIsOpen(false)}>
+                <Text>{t("select-permission-for")} {employeeSeleted?.fullName}. {t("access-3-permission")}</Text>
                 <Select
                     mode="multiple"
                     allowClear
                     style={{ width: '100%', marginTop: 10 }}
-                    placeholder="Chọn quyền..."
+                    placeholder={t("choose-permission")}
                     onChange={handleChange}
                     value={rolesSelected}
                     options={roles.map(role => ({ value: role.roleId, label: role.name }))}

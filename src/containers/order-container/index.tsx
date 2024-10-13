@@ -1,31 +1,42 @@
-import { formatDate } from "@/utils/date";
+import { checkTimeDifference, formatDate, generateOrderNo } from "@/utils/date";
 import { BodyContainer, CartContainer, FluidContainer, CustomerCartText, HeaderContainer, HeaderText, HeaderTime, ImageDesktop, ImageItemContainer, ImageMobile, ItemContainer, ItemInfoContainer, ItemInfoMoreContainer, ItemInfoMoreText, ItemInfoPriceContainer, ItemInfoPriceDiscount, ItemInfoPriceText, ItemInfoPriceTotal, ItemInfoTextContainer, ItemInfoTitle, LeftContainer, Price, PriceCalculate, PriceCalculateContainer, PriceCalculateText, PriceCalculateTotal, PriceContainer, PriceTotal, PriceTotalNumber, PriceTotalText, RightContainer, ShippingText, Container, CenterContainer, Button, ButtonContainer, QuantityContainer, QuantityButton, ItemInfoPriceContainerMobile, PromoContainer, PromoInput, PromoButtonContainer, PromoButton, PromoSvg } from "./style";
-import { useStoreSelector } from "@/redux/store";
+import { useStoreDispatch, useStoreSelector } from "@/redux/store";
 import Header from "@/components/header";
 import { useRouter } from "next/navigation";
 import { OrderStatus } from "@/enums";
 import React, { useEffect, useState } from "react";
-import { get } from "@/utils/sesstionStorage";
 import { actionOrder, order } from "@/api/business/orderApi";
 import { Order } from "@/type/Order";
 import { Spinner } from "@/components/loading/spinner";
 import { Payment } from "./payment";
 import AddIcon from '../../../public/assets/icons/add-icon.svg';
+import CloseIcon from '../../../public/assets/icons/close-icon.svg';
 import SubtractIcon from '../../../public/assets/icons/subtract-icon.svg';
+import { ArrowEffect } from "@/components/arrows/effect";
+import { changeQuantity, removeItem } from "@/redux/slices/cart-slice";
+import { toast } from "react-toastify";
+import { v4 as uuid } from 'uuid';
+import { get, set } from "@/utils/localStorage";
+import { TFunction } from "i18next";
+import { useSignalR } from "@/context/signalRProvider";
 
-export default function OrderContainer() {
+export default function OrderContainer({ t }: { t: TFunction<"translation", undefined> }) {
     const router = useRouter();
     const [orderId, setOrderId] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [show, setShow] = useState(false);
     const [orderS, setOrderS] = useState<Order | null>(null);
     const [count, setCount] = useState(0);
+    const dispatch = useStoreDispatch();
+    const { sendMessageToGroup } = useSignalR();
+    const myTable = get("my-table");
 
-    const { itemsInCart, id, storeId } = useStoreSelector(
+    const { itemsInCart, id, storeId, tableNumber } = useStoreSelector(
         state => ({
             itemsInCart: state.cart.itemsInCart,
             id: state.reservation.id,
-            storeId: state.reservation.storeId
+            storeId: state.reservation.storeId,
+            tableNumber: state.reservation.tableNumber
         })
     );
 
@@ -39,9 +50,29 @@ export default function OrderContainer() {
         return 0;
     }
 
+    const onCancel = () => {
+        if (orderS) {
+            if (checkTimeDifference(orderS?.latestStatusUpdate, 10))
+                toast(t("food-ready"), { type: "warning" });
+        }
+        else {
+            toast(t("order-not-exists"), { type: "error" });
+        }
+    }
+
     const onSubmit = async () => {
+        if (!id) {
+            toast(t("you-have-not-reservation"), { type: "warning" });
+            return;
+        }
+        else if (!myTable) {
+            toast("Bàn của bạn xảy ra lỗi!", { type: "warning" });
+            return;
+        }
+
         setLoading(true);
-        const body = {
+        let body: any = {
+            orderNo: generateOrderNo(Number(tableNumber)),
             storeId,
             reservationId: Number(id),
             priceCalculated: calculatePriceItems(),
@@ -54,20 +85,33 @@ export default function OrderContainer() {
             isPreparationDelayed: false,
             isCanceled: false,
             isReady: false,
-            isCompleted: false
-        } as any;
+            isCompleted: false,
+            orderLines: itemsInCart.map(e => ({
+                orderId: uuid(),
+                itemId: e.item.itemId,
+                quantity: e.quantityOrder,
+                isCanceled: false
+            }))
+        };
 
         try {
             let response;
             if (orderId) {
                 body.orderId = orderId;
+                body.action = "update";
                 response = await actionOrder(body as Order, "edit");
                 setCount(count + 1);
             }
             else {
                 response = await actionOrder(body as Order, "create");
                 setCount(count + 1);
+                if (response && response.data) {
+                    set("orderId", response.data);
+                    setOrderId(response.data);
+                };
             }
+            await sendMessageToGroup(myTable, `Khách bàn số ${tableNumber} đã đặt món`);
+            toast(t("order-success"), { type: "success" })
         }
         catch (error) {
             console.log("Submit to pay: ", error);
@@ -79,18 +123,17 @@ export default function OrderContainer() {
 
     //? Init
     useEffect(() => {
-        const id = get("orderId");
-        if (id) setOrderId(id);
+        const orderId = get("orderId");
+        if (orderId && typeof orderId === "string") setOrderId(orderId);
     }, []);
 
     //? Focus On Mount
     useEffect(() => {
         const getOrder = async () => {
             const res = await order(orderId || "");
-            console.log(res);
-            // if (res && res?.data && res?.data?.data) {
-            //     setOrderS(res?.data?.data);
-            // }
+            if (res && res.data) {
+                setOrderS(res.data);
+            }
         }
 
         orderId && getOrder();
@@ -102,50 +145,69 @@ export default function OrderContainer() {
                 <Header />
                 <FluidContainer>
                     <HeaderContainer>
-                        <HeaderText>Giỏ hàng của tôi, mã đơn hàng: #13432</HeaderText>
+                        <HeaderText>{t("my-cart")}: #13432</HeaderText>
                         <HeaderTime>{formatDate(new Date())}</HeaderTime>
                     </HeaderContainer>
                     <BodyContainer>
                         <LeftContainer>
                             <CartContainer>
-                                <CustomerCartText>Giỏ hàng</CustomerCartText>
+                                <CustomerCartText>{t("cart")}</CustomerCartText>
                                 {
                                     itemsInCart && itemsInCart.length > 0 &&
-                                    itemsInCart.map((e, index) => (
-                                        <ItemContainer key={index}>
-                                            <ImageItemContainer>
-                                                <ImageDesktop src={e.item?.picture || process.env.NEXT_PUBLIC_DUMMY_PICTURE} alt="item" />
-                                                <ImageMobile src={e.item?.picture || process.env.NEXT_PUBLIC_DUMMY_PICTURE} alt="item" />
-                                            </ImageItemContainer>
-                                            <ItemInfoContainer>
-                                                <ItemInfoTextContainer>
-                                                    <ItemInfoTitle>{e.item.title}</ItemInfoTitle>
-                                                    <ItemInfoMoreContainer>
-                                                        <ItemInfoMoreText><span>Style: </span> Italic Minimal Design</ItemInfoMoreText>
-                                                        <ItemInfoMoreText><span>Size: </span> Small</ItemInfoMoreText>
-                                                        <ItemInfoMoreText><span>Color: </span> Light Blue</ItemInfoMoreText>
-                                                    </ItemInfoMoreContainer>
-                                                </ItemInfoTextContainer>
-                                                <ItemInfoPriceContainer>
-                                                    <ItemInfoPriceText>{e.item.price} ₫ <ItemInfoPriceDiscount> 45000 ₫</ItemInfoPriceDiscount></ItemInfoPriceText>
-                                                    <ItemInfoPriceText>{e.quantityOrder}</ItemInfoPriceText>
-                                                    <ItemInfoPriceTotal>{e.item.price * e.quantityOrder} ₫</ItemInfoPriceTotal>
-                                                </ItemInfoPriceContainer>
-                                                <ItemInfoPriceContainerMobile>
-                                                    <ItemInfoPriceTotal>{e.item.price * e.quantityOrder} ₫</ItemInfoPriceTotal>
-                                                    <QuantityContainer>
-                                                        <QuantityButton>
-                                                            <AddIcon width={16} fill="white" />
-                                                        </QuantityButton>
-                                                        <ItemInfoPriceText>{e.quantityOrder}</ItemInfoPriceText>
-                                                        <QuantityButton>
-                                                            <SubtractIcon width={16} fill="white" />
-                                                        </QuantityButton>
-                                                    </QuantityContainer>
-                                                </ItemInfoPriceContainerMobile>
-                                            </ItemInfoContainer>
-                                        </ItemContainer>
-                                    ))
+                                    itemsInCart.map((e, index) => {
+                                        let orderLine;
+                                        if (orderS && orderS.orderLines && orderS.orderLines.length > 0) {
+                                            orderLine = orderS.orderLines.find((x: any) => x.itemId === e.item.itemId);
+                                        }
+                                        return (
+                                            <ItemContainer key={index}>
+                                                <ImageItemContainer>
+                                                    <ImageDesktop src={e.item?.picture || process.env.NEXT_PUBLIC_DUMMY_PICTURE} alt="item" />
+                                                    <ImageMobile src={e.item?.picture || process.env.NEXT_PUBLIC_DUMMY_PICTURE} alt="item" />
+                                                </ImageItemContainer>
+                                                <ItemInfoContainer>
+                                                    <ItemInfoTextContainer>
+                                                        <ItemInfoTitle>{e.item.title}</ItemInfoTitle>
+                                                        <ItemInfoMoreContainer>
+                                                            <ItemInfoMoreText><span>Style: </span> Italic Minimal Design</ItemInfoMoreText>
+                                                            <ItemInfoMoreText><span>Size: </span> Small</ItemInfoMoreText>
+                                                            <ItemInfoMoreText><span>Color: </span> Light Blue</ItemInfoMoreText>
+                                                        </ItemInfoMoreContainer>
+                                                    </ItemInfoTextContainer>
+                                                    <ItemInfoPriceContainerMobile>
+                                                        <ItemInfoPriceTotal>{e.item.price * e.quantityOrder} ₫</ItemInfoPriceTotal>
+                                                        <QuantityContainer>
+                                                            <QuantityButton
+                                                                isDisabled={false}
+                                                                onClick={() => dispatch(changeQuantity({ id: e.item.itemId, quantity: e.quantityOrder + 1 }))}>
+                                                                <AddIcon width={16} fill="white" />
+                                                            </QuantityButton>
+                                                            <ItemInfoPriceText>{e.quantityOrder}</ItemInfoPriceText>
+                                                            <QuantityButton
+                                                                isDisabled={orderLine && orderLine.quantity === e.quantityOrder}
+                                                                disabled={orderLine && orderLine.quantity === e.quantityOrder}
+                                                                onClick={() => {
+                                                                    if (e.quantityOrder === 1) {
+                                                                        dispatch(removeItem(e.item.itemId))
+                                                                    }
+                                                                    else {
+                                                                        dispatch(changeQuantity({ id: e.item.itemId, quantity: e.quantityOrder - 1 }))
+                                                                    }
+                                                                }}
+                                                            >
+                                                                {
+                                                                    e.quantityOrder === 1 ?
+                                                                        <CloseIcon width={16} height={16} fill="white" />
+                                                                        :
+                                                                        <SubtractIcon width={16} fill="white" />
+                                                                }
+                                                            </QuantityButton>
+                                                        </QuantityContainer>
+                                                    </ItemInfoPriceContainerMobile>
+                                                </ItemInfoContainer>
+                                            </ItemContainer>
+                                        )
+                                    })
                                 }
                             </CartContainer>
 
@@ -153,24 +215,24 @@ export default function OrderContainer() {
                         <RightContainer>
                             <PriceContainer>
                                 <Price>
-                                    <ShippingText>Tổng kết hóa đơn</ShippingText>
+                                    <ShippingText>{t("summary-of-invoice")}</ShippingText>
                                     <PriceCalculate>
                                         <PriceCalculateContainer>
-                                            <PriceCalculateText>Tạm tính</PriceCalculateText>
+                                            <PriceCalculateText>{t("subtotal")}</PriceCalculateText>
                                             <PriceCalculateTotal>{calculatePriceItems()} ₫</PriceCalculateTotal>
                                         </PriceCalculateContainer>
                                         <PriceCalculateContainer>
-                                            <PriceCalculateText>Khuyến mãi</PriceCalculateText>
+                                            <PriceCalculateText>{t("sale")}</PriceCalculateText>
                                             <PriceCalculateTotal>0 ₫</PriceCalculateTotal>
                                         </PriceCalculateContainer>
                                         <PriceCalculateContainer>
-                                            <PriceCalculateText>Thuế</PriceCalculateText>
+                                            <PriceCalculateText>{t("tax")}</PriceCalculateText>
                                             <PriceCalculateTotal>10%</PriceCalculateTotal>
                                         </PriceCalculateContainer>
                                         <PromoContainer>
                                             <PromoInput
                                                 type="text"
-                                                placeholder="Nhập mã giảm giá"
+                                                placeholder={t("input-discount")}
                                             />
                                             <PromoButtonContainer>
                                                 <PromoButton
@@ -190,26 +252,25 @@ export default function OrderContainer() {
                                         </PromoContainer>
                                     </PriceCalculate>
                                     <PriceTotal>
-                                        <PriceTotalText>Tổng cộng</PriceTotalText>
+                                        <PriceTotalText>{t("total")}</PriceTotalText>
                                         <PriceTotalNumber>{calculatePriceItems() + calculatePriceItems() * 10 / 100} ₫</PriceTotalNumber>
                                     </PriceTotal>
                                     <ButtonContainer>
-                                        <Button onClick={() => router.back()}>Hủy đơn</Button>
+                                        <Button onClick={onCancel}>{t("cancel")}</Button>
                                         <Button onClick={onSubmit} className="group">
                                             {
                                                 loading && <Spinner width={15} />
                                             }
-                                            Gọi món
+                                            {t("order")}
                                         </Button>
                                     </ButtonContainer>
+
+                                    <ArrowEffect t={t} />
                                 </Price>
 
                                 <ButtonContainer>
-                                    <Button onClick={onSubmit} className="group">
-                                        {
-                                            loading && <Spinner width={15} />
-                                        }
-                                        Thanh toán
+                                    <Button onClick={() => setShow(true)} className="group">
+                                        {t("pay")}
                                     </Button>
                                 </ButtonContainer>
                             </PriceContainer>

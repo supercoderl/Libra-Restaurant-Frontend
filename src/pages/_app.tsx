@@ -1,5 +1,5 @@
 import React from 'react';
-import App, { AppContext } from 'next/app';
+import App, { AppContext, AppProps } from 'next/app';
 import { GlobalStyles } from 'twin.macro';
 import ThemeProvider from '../theme/theme-provider';
 import ThemeStyles from '../theme/theme';
@@ -28,33 +28,27 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
+import { appWithTranslation } from 'next-i18next';
+import DarkThemeToggler from '@/components/dark-theme-toggler';
+import { LanguageSelector } from '@/components/language-selector';
+import { SignalRProvider, useSignalR } from '@/context/signalRProvider';
 
 let persistor = persistStore(store);
 
-export default class MyApp extends App {
-  static async getInitialProps({ Component, ctx }: AppContext) {
-    let pageProps = {}
+const MyApp = ({ Component, pageProps }: AppProps) => {
+  dayjs.extend(customParseFormat);
+  dayjs.extend(advancedFormat);
+  dayjs.extend(weekday);
+  dayjs.extend(weekOfYear);
+  dayjs.extend(weekYear);
+  dayjs.extend(localeData);
+  dayjs.locale("vi_VN");
 
-    if (Component.getInitialProps) {
-      pageProps = await Component.getInitialProps(ctx)
-    }
-
-    return { pageProps }
-  }
-
-  render() {
-    const { Component, pageProps } = this.props;
-    dayjs.extend(customParseFormat);
-    dayjs.extend(advancedFormat);
-    dayjs.extend(weekday);
-    dayjs.extend(weekOfYear);
-    dayjs.extend(weekYear);
-    dayjs.extend(localeData);
-    dayjs.locale("vi_VN");
-
-    return (
-      <ConfigProvider locale={locale}>
-        <Provider store={store}>
+  return (
+    <ConfigProvider locale={locale}>
+      <LanguageSelector />
+      <Provider store={store}>
+        <SignalRProvider>
           <GlobalStyles />
           <ThemeStyles />
           <ToastContainer position="top-center" />
@@ -62,9 +56,22 @@ export default class MyApp extends App {
             <PersistGate loading={null} persistor={persistor}>
               <Component {...pageProps} />
             </PersistGate>
+            <DarkThemeToggler />
           </ThemeProvider>
-        </Provider>
-      </ConfigProvider>
-    );
-  }
+        </SignalRProvider>
+      </Provider>
+    </ConfigProvider>
+  );
 }
+
+MyApp.getInitialProps = async ({ Component, ctx }: AppContext) => {
+  let pageProps = {}
+
+  if (Component.getInitialProps) {
+    pageProps = await Component.getInitialProps(ctx)
+  }
+
+  return { pageProps }
+}
+
+export default appWithTranslation(MyApp)

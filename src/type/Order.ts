@@ -1,5 +1,8 @@
+import { OrderLine } from "./OrderLine";
+import { OrderLog } from "./OrderLog";
+
 export interface Order {
-    orderId?: string | null;
+    orderId: string;
     orderNo: string;
     storeId: string;
     paymentMethodId?: number | null;
@@ -27,4 +30,6 @@ export interface Order {
     isCompleted: boolean;
     completedTime?: Date | null;
     storeName?: string | null;
+    orderLines: OrderLine[];
+    orderLogs: OrderLog[];
 }

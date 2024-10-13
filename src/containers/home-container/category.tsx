@@ -7,25 +7,27 @@ import React, { useCallback, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import Category from "@/type/Category";
 import { Empty } from "@/components/empty";
+import { TFunction } from "i18next";
 
 interface CategoryProps {
   categories: Category[];
+  t: TFunction<"translation", undefined>
 }
 
-export const CategorySlide: React.FC<CategoryProps> = ({ categories }) => {
+export const CategorySlide: React.FC<CategoryProps> = ({ categories, t }) => {
   const OPTIONS: EmblaOptionsType = { slidesToScroll: 2, containScroll: 'trimSnaps', align: 'start' };
   const [emblaApi, setEmblaApi] = useState<EmblaCarouselType | null>(null);
 
   return (
     <>
       <MidContainer>
-        <Title isBigger>Danh mục</Title>
+        <Title isBigger>{t("catalog")}</Title>
         <ArrowButton embla={emblaApi} />
       </MidContainer>
       <FoodCategoriesContainer>
         {
           categories.length <= 0 ? (
-            <Empty title="Danh mục trống!" />
+            <Empty title={t("catalog-empty")} />
           )
             :
             <Carousel
@@ -34,7 +36,7 @@ export const CategorySlide: React.FC<CategoryProps> = ({ categories }) => {
             >
               {categories.map(e => (
                 <div className='embla__slide__1' key={e.categoryId}>
-                  <FoodCategory category={e}></FoodCategory>
+                  <FoodCategory t={t} category={e}></FoodCategory>
                 </div>
               ))}
             </Carousel>

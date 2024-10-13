@@ -4,25 +4,27 @@ import { DashboardLayout } from "@/layouts/DashboardLayout";
 import HeaderTitle from "@/components/dashboard/headerTitle";
 import useWindowDimensions from "@/hooks/use-window-dimensions";
 import { useStoreSelector } from "@/redux/store";
+import { TFunction } from "i18next";
 
 
 type FormProps = {
     onChange: (fields: FieldData[]) => void;
     fields: FieldData[];
-    title: string;                                                                                                                                           
+    title: string;
     onFinish: () => void;
     loading: boolean;
+    t: TFunction<"translation", undefined>
 };
 
-export const EmployeeForm: React.FC<FormProps> = ({ onChange, fields, title, onFinish, loading }) => {
+export const EmployeeForm: React.FC<FormProps> = ({ onChange, fields, title, onFinish, loading, t }) => {
     const [form] = Form.useForm();
     const { stores } = useStoreSelector(state => state.mainStoreSlice);
 
     const { width } = useWindowDimensions();
 
     return (
-        <DashboardLayout>
-            <HeaderTitle title={title} isShowText={width > 767} onSubmit={onFinish} loading={loading} />
+        <DashboardLayout t={t}>
+            <HeaderTitle t={t} title={title} isShowText={width > 767} onSubmit={onFinish} loading={loading} />
             <Container>
                 <Form
                     form={form}
@@ -33,42 +35,42 @@ export const EmployeeForm: React.FC<FormProps> = ({ onChange, fields, title, onF
                     }}
                 >
                     <Form.Item
-                        label="Tên nhân viên"
+                        label={t("employee-name")}
                         name="firstName"
-                        rules={[{ required: true, message: "Tên nhân viên là bắt buộc" }]}
+                        rules={[{ required: true, message: t("employee-name-require") }]}
                     >
-                        <Input placeholder="Nhập tên nhân viên..." />
+                        <Input placeholder={t("input-employee-name")} />
                     </Form.Item>
                     <Form.Item
-                        label="Họ nhân viên"
+                        label={t("employee-last")}
                         name="lastName"
-                        rules={[{ required: true, message: "Họ nhân viên là bắt buộc" }]}
+                        rules={[{ required: true, message: t("employee-last-require") }]}
                     >
-                        <Input placeholder="Nhập họ nhân viên..." />
+                        <Input placeholder={t("input-employee-last")} />
                     </Form.Item>
                     <Form.Item
-                        label="Email"
+                        label={t("email")}
                         name="email"
-                        rules={[{ required: true, message: "Email là bắt buộc" }]}
+                        rules={[{ required: true, message: t("email-require") }]}
                     >
-                        <Input placeholder="Nhập email..." />
+                        <Input placeholder={t("input-email")} />
                     </Form.Item>
                     <Form.Item
-                        label="Số điện thoại"
+                        label={t("phone")}
                         name="mobile"
-                        rules={[{ required: true, message: "Số điện thoại là bắt buộc" }]}
+                        rules={[{ required: true, message: t("phone-require") }]}
                     >
-                        <Input placeholder="Nhập số điện thoại..." />
+                        <Input placeholder={t("input-phone")} />
                     </Form.Item>
                     <Form.Item
-                        label="Chi nhánh"
-                        tooltip={{ title: 'Chọn chi nhánh có sẵn trên địa bàn' }}
+                        label={t("store")}
+                        tooltip={{ title: t("choose-available-store") }}
                         name="storeId"
-                        rules={[{ required: true, message: "Chi nhánh là bắt buộc" }]}
+                        rules={[{ required: true, message: t("store-require") }]}
                     >
                         <Select
                             showSearch
-                            placeholder="Chọn chi nhánh"
+                            placeholder={t("choose-store")}
                             optionFilterProp="label"
                             options={stores.map((item) => ({ value: item.storeId, label: item.name }))}
                         />

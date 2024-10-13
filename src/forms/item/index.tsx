@@ -4,6 +4,7 @@ import { DashboardLayout } from "@/layouts/DashboardLayout";
 import HeaderTitle from "@/components/dashboard/headerTitle";
 import useWindowDimensions from "@/hooks/use-window-dimensions";
 import { useStoreSelector } from "@/redux/store";
+import { TFunction } from "i18next";
 
 
 type FormProps = {
@@ -13,6 +14,7 @@ type FormProps = {
     onFinish: () => void;
     src?: string | null;
     loading: boolean;
+    t: TFunction<"translation", undefined>
 };
 
 export const ItemForm: React.FC<FormProps> = (props) => {
@@ -29,8 +31,8 @@ export const ItemForm: React.FC<FormProps> = (props) => {
     };
 
     return (
-        <DashboardLayout>
-            <HeaderTitle title={props.title} isShowText={width > 767} onSubmit={props.onFinish} loading={props.loading} />
+        <DashboardLayout t={props.t}>
+            <HeaderTitle t={props.t} title={props.title} isShowText={width > 767} onSubmit={props.onFinish} loading={props.loading} />
             <Container>
                 <Form
                     form={form}
@@ -42,40 +44,40 @@ export const ItemForm: React.FC<FormProps> = (props) => {
                     onFinish={props.onFinish}
                 >
                     <Form.Item
-                        label="Tên món"
-                        tooltip="This is a required field"
+                        label={props.t("food-name")}
+                        tooltip={props.t("food-require")}
                         name="title"
-                        rules={[{ required: true, message: "Tên món là bắt buộc" }]}
+                        rules={[{ required: true, message: props.t("food-require") }]}
                     >
-                        <Input placeholder="Nhập tên món..." />
+                        <Input placeholder={props.t("input-food")} />
                     </Form.Item>
                     <Form.Item
-                        label="Slug"
+                        label={props.t("slug")}
                         tooltip={{ title: 'Slug sẽ hiển thị trên đường dẫn thay cho id của sản phẩm' }}
                         name="slug"
-                        rules={[{ required: true, message: "Slug là bắt buộc" }]}
+                        rules={[{ required: true, message: props.t("slug-require") }]}
                     >
                         <Input addonBefore="https://librarestaurant.vn/" placeholder="slug-example" />
                     </Form.Item>
-                    <Form.Item label="Mô tả" name="summary">
-                        <Input.TextArea rows={5} placeholder="Nhập mô tả..." />
+                    <Form.Item label={props.t("description")} name="summary">
+                        <Input.TextArea rows={5} placeholder={props.t("input-description")} />
                     </Form.Item>
                     <Form.Item
-                        label="Mã món ăn"
-                        tooltip="Mã món ăn bắt đầu bằng FD (thức ăn) hoặc DK (đồ uống)"
+                        label={props.t("sku")}
+                        tooltip={props.t("sku-start-with-FD-or-DK")}
                         name="sku"
-                        rules={[{ required: true, message: "Mã món ăn là bắt buộc" }]}
+                        rules={[{ required: true, message: props.t("sku-require") }]}
                     >
-                        <Input placeholder="Nhập mã..." />
+                        <Input placeholder={props.t("input-sku")} />
                     </Form.Item>
                     <Form.Item
-                        label="Danh mục"
+                        label={props.t("category")}
                         name="categoryIds"
                     >
                         <Select
                             showSearch
                             mode="multiple"
-                            placeholder="Chọn danh mục"
+                            placeholder={props.t("choose-category")}
                             optionFilterProp="label"
                             options={categories.map((item) => ({ value: item.categoryId, label: item.name }))}
                         />
@@ -83,7 +85,7 @@ export const ItemForm: React.FC<FormProps> = (props) => {
                     <Form.Item name="picture" noStyle />
                     <ImageContainer>
                         <Form.Item
-                            label="Hình ảnh"
+                            label={props.t("picture")}
                             name="base64"
                             valuePropName="fileList"
                             getValueFromEvent={normFile}
@@ -93,7 +95,7 @@ export const ItemForm: React.FC<FormProps> = (props) => {
                                 multiple={false}
                                 className="customSizedUpload"
                             >
-                                {props.src && props.src !== '' ? 'Đổi hình' : 'Thêm hình'}
+                                {props.src && props.src !== '' ? props.t("change-picture") : props.t("add-picture")}
                             </Upload>
                         </Form.Item>
                         {
@@ -105,26 +107,26 @@ export const ItemForm: React.FC<FormProps> = (props) => {
                         }
                     </ImageContainer>
                     <Form.Item
-                        label="Đơn giá"
+                        label={props.t("price")}
                         tooltip="Giá của một món ăn/đồ uống"
                         name="price"
-                        rules={[{ required: true, message: "Giá là bắt buộc" }]}
+                        rules={[{ required: true, message: props.t("price-require") }]}
                     >
-                        <Input placeholder="Nhập đơn giá" />
+                        <Input placeholder={props.t("input-price")} />
                     </Form.Item>
                     <Form.Item
-                        label="Số lượng"
+                        label={props.t("quantity")}
                         tooltip="Số lượng tồn của sản phẩm"
                         name="quantity"
-                        rules={[{ required: true, message: "Số lượng là bắt buộc" }]}
+                        rules={[{ required: true, message: props.t("quantity-require") }]}
                     >
-                        <Input placeholder="Nhập số lượng" />
+                        <Input placeholder={props.t("input-quantity")} />
                     </Form.Item>
-                    <Form.Item label="Công thức" name="recipe">
-                        <Input.TextArea rows={5} placeholder="Nhập công thức" />
+                    <Form.Item label={props.t("recipe")} name="recipe">
+                        <Input.TextArea rows={5} placeholder={props.t("input-recipe")} />
                     </Form.Item>
-                    <Form.Item label="Hướng dẫn sử dụng" name="instruction">
-                        <Input.TextArea rows={5} placeholder="Nhập hướng dẫn sử dụng" />
+                    <Form.Item label={props.t("instruction")} name="instruction">
+                        <Input.TextArea rows={5} placeholder={props.t("input-instruction")} />
                     </Form.Item>
                 </Form>
             </Container>

@@ -3,6 +3,7 @@ import { Container, ImageContainer } from "../style"
 import { DashboardLayout } from "@/layouts/DashboardLayout";
 import HeaderTitle from "@/components/dashboard/headerTitle";
 import useWindowDimensions from "@/hooks/use-window-dimensions";
+import { t, TFunction } from "i18next";
 
 
 type FormProps = {
@@ -12,6 +13,7 @@ type FormProps = {
     src?: string | null;
     onFinish: () => void;
     loading: boolean;
+    t: TFunction<"translation", undefined>
 };
 
 export const CategoryForm: React.FC<FormProps> = (props: FormProps) => {
@@ -27,8 +29,8 @@ export const CategoryForm: React.FC<FormProps> = (props: FormProps) => {
     };
 
     return (
-        <DashboardLayout>
-            <HeaderTitle title={props.title} isShowText={width > 767} onSubmit={props.onFinish} loading={props.loading} />
+        <DashboardLayout t={t}>
+            <HeaderTitle t={props.t} title={props.title} isShowText={width > 767} onSubmit={props.onFinish} loading={props.loading} />
             <Container>
                 <Form
                     form={form}
@@ -40,30 +42,30 @@ export const CategoryForm: React.FC<FormProps> = (props: FormProps) => {
                     onFinish={props.onFinish}
                 >
                     <Form.Item
-                        label="Tên danh mục"
+                        label={t("category-name")}
                         name="name"
-                        rules={[{ required: true, message: "Tên danh mục là bắt buộc" }]}
+                        rules={[{ required: true, message: t("category-require") }]}
                     >
-                        <Input placeholder="Nhập tên danh mục..." />
+                        <Input placeholder={t("input-category")} />
                     </Form.Item>
                     <Form.Item
-                        label="Trạng thái"
-                        tooltip={{ title: 'Hiển thị danh mục hoặc ẩn đi' }}
+                        label={t("status")}
+                        tooltip={{ title: t("show-category") }}
                         name="isActive"
-                        rules={[{ required: true, message: "Trạng thái là bắt buộc" }]}
+                        rules={[{ required: true, message: t("status-require") }]}
                     >
                         <Select
                             showSearch
-                            placeholder="Chọn trạng thái"
+                            placeholder={t("choose-status")}
                             optionFilterProp="label"
                             options={[
                                 {
                                     value: true,
-                                    label: 'Hoạt động',
+                                    label: t("active"),
                                 },
                                 {
                                     value: false,
-                                    label: 'Tạm khóa',
+                                    label: t("blocked"),
                                 }
                             ]}
                         />
@@ -71,7 +73,7 @@ export const CategoryForm: React.FC<FormProps> = (props: FormProps) => {
                     <Form.Item name="picture" noStyle />
                     <ImageContainer>
                         <Form.Item
-                            label="Hình ảnh"
+                            label={t("picture")}
                             name="base64"
                             valuePropName="fileList"
                             getValueFromEvent={normFile}
@@ -81,7 +83,7 @@ export const CategoryForm: React.FC<FormProps> = (props: FormProps) => {
                                 multiple={false}
                                 className="customSizedUpload"
                             >
-                                {props.src && props.src !== '' ? 'Đổi hình' : 'Thêm hình'}
+                                {props.src && props.src !== '' ? t("change-picture") : t("add-picture")}
                             </Upload>
                         </Form.Item>
                         {
@@ -92,8 +94,8 @@ export const CategoryForm: React.FC<FormProps> = (props: FormProps) => {
                             />
                         }
                     </ImageContainer>
-                    <Form.Item label="Mô tả" name="description">
-                        <Input.TextArea rows={5} placeholder="Nhập mô tả..." />
+                    <Form.Item label={t("description")} name="description">
+                        <Input.TextArea rows={5} placeholder={t("input-description")} />
                     </Form.Item>
                 </Form>
             </Container>

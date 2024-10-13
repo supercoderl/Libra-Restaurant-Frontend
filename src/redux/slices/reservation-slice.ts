@@ -60,6 +60,16 @@ const mainReservationSlice = createSlice({
                 customerName,
                 customerPhone
             }
+        },
+        clearReservation: (state) => {
+            state.status = -1;
+            state.id = null;
+            state.isChanged = false;
+            state.capacity = 0;
+            state.customerName = '';
+            state.customerPhone = '';
+            state.storeId = null;
+            state.tableNumber = -1;
         }
     },
     extraReducers: (builder) => {
@@ -70,6 +80,6 @@ const mainReservationSlice = createSlice({
 
 })
 
-export const { updateReservation, updateReservationStatus, updateReservationCustomer } = mainReservationSlice.actions
+export const { updateReservation, updateReservationStatus, updateReservationCustomer, clearReservation } = mainReservationSlice.actions
 
 export default mainReservationSlice.reducer;

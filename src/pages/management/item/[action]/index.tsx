@@ -4,11 +4,21 @@ import Item from "@/type/Item";
 import { NextPage } from "next";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useTranslation } from "next-i18next";
 import { toast } from "react-toastify";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
+export async function getStaticProps({ locale }: { locale: string }) {
+    return {
+        props: {
+            ...(await serverSideTranslations(locale, ['common'])),
+        },
+    };
+}
 
 const ItemAction: NextPage = () => {
     const searchParams = useSearchParams();
+    const { t } = useTranslation();
     const router = useRouter();
     const [fields, setFields] = useState<FieldData[]>([
         { name: ['title'], value: '' },
@@ -25,7 +35,7 @@ const ItemAction: NextPage = () => {
     ]);
     const [src, setSrc] = useState("");
     const [loading, setLoading] = useState(false);
-    const [state, setState] = useState("Thêm mới sản phẩm");
+    const [state, setState] = useState(t("food-create"));
 
     const onLoad = async () => {
         if (searchParams.get('itemId')) {
@@ -45,7 +55,7 @@ const ItemAction: NextPage = () => {
                         { name: 'picture', value: res.data?.picture }
                     ]);
                     setSrc(res.data?.picture || "")
-                    setState("Cập nhật sản phẩm");
+                    setState(t("food-update"));
                 }
             }
             catch (error) {
@@ -78,7 +88,7 @@ const ItemAction: NextPage = () => {
 
             const res = await actionItem(values as Item, searchParams.get('itemId') ? 'edit' : 'create');
             if (res && res.success) {
-                toast(`${searchParams.get('itemId') ? 'Cập nhật' : 'Tạo mới'} thành công`, {
+                toast(`${searchParams.get('itemId') ? t("update") : t("create")} ${t("success")}`, {
                     type: "success"
                 });
                 router.push("general");
@@ -97,6 +107,7 @@ const ItemAction: NextPage = () => {
     }, []);
 
     return <ItemForm
+        t={t}
         fields={fields}
         onChange={(newFields) => {
             setFields(newFields);

@@ -3,6 +3,7 @@ import { Container, ImageContainer } from "../style"
 import { DashboardLayout } from "@/layouts/DashboardLayout";
 import HeaderTitle from "@/components/dashboard/headerTitle";
 import useWindowDimensions from "@/hooks/use-window-dimensions";
+import { TFunction } from "i18next";
 
 
 type FormProps = {
@@ -12,6 +13,7 @@ type FormProps = {
     src?: string | null;
     onFinish: () => void;
     loading: boolean;
+    t: TFunction<"translation", undefined>
 };
 
 export const RoleForm: React.FC<FormProps> = (props: FormProps) => {
@@ -20,8 +22,8 @@ export const RoleForm: React.FC<FormProps> = (props: FormProps) => {
     const { width } = useWindowDimensions();
 
     return (
-        <DashboardLayout>
-            <HeaderTitle title={props.title} isShowText={width > 767} onSubmit={props.onFinish} loading={props.loading} />
+        <DashboardLayout t={props.t}>
+            <HeaderTitle t={props.t} title={props.title} isShowText={width > 767} onSubmit={props.onFinish} loading={props.loading} />
             <Container>
                 <Form
                     form={form}
@@ -33,21 +35,21 @@ export const RoleForm: React.FC<FormProps> = (props: FormProps) => {
                     onFinish={props.onFinish}
                 >
                     <Form.Item
-                        label="Mã vai trò"
+                        label={props.t("roleId")}
                         name="roleId"
-                        rules={[{ required: true, message: "Mã vai trò là bắt buộc" }]}
+                        rules={[{ required: true, message: props.t("roleId-require") }]}
                     >
-                        <Input placeholder="Nhập mã vai trò..." />
+                        <Input placeholder={props.t("input-roleId")} />
                     </Form.Item>
                     <Form.Item
-                        label="Tên vai trò"
+                        label={props.t("role-name")}
                         name="name"
-                        rules={[{ required: true, message: "Tên vai trò là bắt buộc" }]}
+                        rules={[{ required: true, message: props.t("role-name-require") }]}
                     >
-                        <Input placeholder="Nhập tên vai trò..." />
+                        <Input placeholder={props.t("input-role-name")} />
                     </Form.Item>
-                    <Form.Item label="Mô tả" name="description">
-                        <Input.TextArea rows={5} placeholder="Nhập mô tả..." />
+                    <Form.Item label={props.t("description")} name="description">
+                        <Input.TextArea rows={5} placeholder={props.t("input-description")} />
                     </Form.Item>
                 </Form>
             </Container>

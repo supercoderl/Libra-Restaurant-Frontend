@@ -1,7 +1,13 @@
 import { useStoreSelector } from "@/redux/store";
 import { Component, ComponentInfo, Container, NormalPrice, PriceContainer, Title } from "./style"
+import { TFunction } from "i18next";
+import React from "react";
 
-export const OrderPrice = () => {
+type OrderPriceProps = {
+    t: TFunction<"translation", undefined>;
+}
+
+export const OrderPrice: React.FC<OrderPriceProps> = ({t}) => {
     const { itemsInCart } = useStoreSelector(
         state => ({
             itemsInCart: state.cart.itemsInCart
@@ -23,16 +29,16 @@ export const OrderPrice = () => {
         <Container>
             <Component>
                 <ComponentInfo>
-                    <Title>Chi phí thanh toán</Title>
+                    <Title>{t("expenses-paid")}</Title>
 
                     <PriceContainer>
-                        <NormalPrice>Đã tính: &nbsp; <b>{calculatePriceItems()} ₫</b></NormalPrice>
+                        <NormalPrice>{t("calculated")}: &nbsp; <b>{calculatePriceItems()} ₫</b></NormalPrice>
                     </PriceContainer>
                     <PriceContainer>
-                        <NormalPrice>Thuế: &nbsp; <b>10%</b></NormalPrice>
+                        <NormalPrice>{t("tax")}: &nbsp; <b>10%</b></NormalPrice>
                     </PriceContainer>
                     <PriceContainer>
-                        <NormalPrice>Tổng thu: &nbsp; <b>{calculatePriceItems() + calculatePriceItems() * 10 / 100} ₫</b></NormalPrice>
+                        <NormalPrice>{t("total-revenue")}: &nbsp; <b>{calculatePriceItems() + calculatePriceItems() * 10 / 100} ₫</b></NormalPrice>
                     </PriceContainer>
                 </ComponentInfo>
             </Component>

@@ -23,6 +23,7 @@ module.exports = {
       backgroundColor: {
         primary: 'var(--bg-primary)',
         secondary: 'var(--bg-secondary)',
+        tertiary: 'var(--bg-tertiary)',
         productQuantity: '#D12121',
         main: '#D12121',
       },
@@ -31,6 +32,9 @@ module.exports = {
           'url("https://modinatheme.com/foodking/wp-content/uploads/2024/03/catagory-card-shape.png")',
         heroBackground:
           'url("https://wallpapers.com/images/hd/restaurant-background-npda8c1hqh6d0xso.jpg")',
+      },
+      borderColor: {
+        primary: 'var(--bg-primary)',
       },
       boxShadow: {
         readmore: 'inset 0 0 1.6em -0.6em #D12121',

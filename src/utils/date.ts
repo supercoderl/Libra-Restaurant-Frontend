@@ -33,3 +33,15 @@ export function generateOrderNo(tableNumber: number) {
 
     return orderNo;
 }
+
+export function checkTimeDifference(inputDate: any, minutesToCheck: number) {
+    const currentTime = new Date(); // Lấy thời gian hiện tại
+    const timeDifference = Number(currentTime) - Number(new Date(inputDate)); // Tính sự chênh lệch giữa 2 thời gian (milliseconds)
+
+    // So sánh chênh lệch có lớn hơn 10 phút (600000 milliseconds)
+    if (timeDifference > minutesToCheck * 60 * 1000) {
+        return true; // Đã lớn hơn số phút cần kiểm tra
+    } else {
+        return false; // Chưa đến số phút cần kiểm tra
+    }
+}

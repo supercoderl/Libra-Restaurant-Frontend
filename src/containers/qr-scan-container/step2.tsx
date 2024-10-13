@@ -1,41 +1,83 @@
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { ModalActionButton, ModalActionContainer, ModalActionSvg, ModalActionText, ModalBody, ModalBodyFormContainer, ModalBodyFormGroup, ModalBodyFormInput, ModalBodyFormLabel, ModalBodyStatus, ModalHeader } from "../reservation-container/style";
 import { Status } from '@/enums';
+import { toast } from 'react-toastify';
+import { useStoreDispatch } from '@/redux/store';
+import { updateReservationCustomer } from '@/redux/slices/reservation-slice';
+import { TFunction } from 'i18next';
 
 // Define the props interface for Step2 component
 interface Step2Props {
     onPrevious: () => void; // Function to move to the next step
     onSubmit: () => void;
     status: number;
+    customerPhone: string;
+    t: TFunction<"translation", undefined>
 }
 
-const Step2: React.FC<Step2Props> = ({ onPrevious, onSubmit, status }) => {
+const Step2: React.FC<Step2Props> = ({ onPrevious, onSubmit, status, customerPhone, t }) => {
+    const dispatch = useStoreDispatch();
+
     // State to manage form data
-    const [formData, setFormData] = useState({
-        organization: '',
-        phoneNumber: '',
-        message: '',
+    const [customerData, setCustomerData] = useState({
+        customerName: '',
+        customerPhone: '',
     });
 
-    // Function to handle input changes
-    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        // Update the form data state
-        setFormData({ ...formData, [name]: value });
-        // Invoke the onChange function with updated form data
-    };
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        if (status === Status.Occupied) {
+            if (customerData.customerPhone === "") {
+                toast(t("please-input-phone"), { type: "warning" });
+                return;
+            }
+            else if (customerData.customerPhone !== customerPhone) {
+                toast(t("phone-not-same"), { type: "warning" });
+                return;
+            }
+            onSubmit();
+        }
+        else {
+            if (customerData.customerName === "" || customerData.customerPhone === "") {
+                toast(t("please-input-info"), { type: "warning" });
+                return;
+            }
+            dispatch(updateReservationCustomer({
+                customerName: customerData.customerName,
+                customerPhone: customerData.customerPhone
+            }));
+            onSubmit();
+        }
+
+        // dispatch(login(loginInput));
+    }
 
     return (
         <div>
-            <ModalHeader>Thông tin khách hàng</ModalHeader>
+            <ModalHeader>{t("customer-info")}</ModalHeader>
             <ModalBody>
-                <ModalBodyStatus>Trạng thái bàn: {Status[status as keyof typeof Status]}</ModalBodyStatus>
-                <ModalBodyFormContainer onSubmit={onSubmit}>
+                <ModalBodyStatus>{t("table-status")}: {Status[status as keyof typeof Status]}</ModalBodyStatus>
+                <ModalBodyFormContainer onSubmit={handleSubmit}>
+                    {
+                        status !== Status.Occupied &&
+                        <ModalBodyFormGroup>
+                            <ModalBodyFormLabel htmlFor="name">{t("full-name")}</ModalBodyFormLabel>
+                            <ModalBodyFormInput
+                                placeholder={t("input-name")}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCustomerData(prev => ({ ...prev, customerName: e.target.value }))}
+                                id="name"
+                                type="text"
+                            />
+                        </ModalBodyFormGroup>
+                    }
                     <ModalBodyFormGroup>
-                        <ModalBodyFormLabel htmlFor="phone">Số điện thoại</ModalBodyFormLabel>
+                        <ModalBodyFormLabel htmlFor="phone">{t("phone")}</ModalBodyFormLabel>
                         <ModalBodyFormInput
                             placeholder="Nhập số điện thoại"
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCustomerData(prev => ({ ...prev, customerPhone: e.target.value }))}
                             id="phone"
+                            inputMode="numeric"
                             type="text"
                         />
                     </ModalBodyFormGroup>
@@ -43,7 +85,7 @@ const Step2: React.FC<Step2Props> = ({ onPrevious, onSubmit, status }) => {
                         <ModalActionButton className="group" type="button" isOutlined onClick={onPrevious}>
                             <ModalActionSvg isOutlined width={20} height={20} viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path fill="#000000" d="M224 480h640a32 32 0 110 64H224a32 32 0 010-64z" /><path fill="#000000" d="M237.248 512l265.408 265.344a32 32 0 01-45.312 45.312l-288-288a32 32 0 010-45.312l288-288a32 32 0 1145.312 45.312L237.248 512z" />
                             </ModalActionSvg>
-                            <ModalActionText isOutlined>Quay lại</ModalActionText>
+                            <ModalActionText isOutlined>{t("back")}</ModalActionText>
                         </ModalActionButton>
 
                         <ModalActionButton className="group" type="submit">
@@ -62,7 +104,7 @@ const Step2: React.FC<Step2Props> = ({ onPrevious, onSubmit, status }) => {
                                 c0,2.83,2.301,5.133,5.13,5.133c2.828,0,5.132-2.303,5.132-5.133v-4.041l5.724,1.521l0.089,0.154L26.721,34.852z"/>
                                 </g>
                             </ModalActionSvg>
-                            <ModalActionText>Xác nhận</ModalActionText>
+                            <ModalActionText>{t("submit")}</ModalActionText>
                         </ModalActionButton>
                     </ModalActionContainer>
                 </ModalBodyFormContainer>

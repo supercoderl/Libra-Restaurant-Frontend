@@ -5,6 +5,7 @@ import FoodItem from "@/components/food-item";
 import Item from "@/type/Item";
 import { FoodItemSkeleton } from "@/components/food-item/skeleton";
 import { Empty } from "@/components/empty";
+import { TFunction } from "i18next";
 
 interface FoodProps {
     currentCategory: number;
@@ -12,21 +13,22 @@ interface FoodProps {
     showTitle?: boolean;
     isReservation?: boolean;
     loading: boolean;
+    t: TFunction<"translation", undefined>
 }
 
-export const Food: React.FC<FoodProps> = ({ items, showTitle, isReservation, loading }) => {
+export const Food: React.FC<FoodProps> = ({ items, showTitle, isReservation, loading, t }) => {
     return (
         <>
             {
                 showTitle &&
                 <MidContainer>
-                    <Title isBigger>Món ăn phổ biến</Title>
+                    <Title isBigger>{t("popular-food")}</Title>
                 </MidContainer>
             }
 
             {
                 !loading && items.length <= 0 && (
-                    <Empty title="Không có món ăn nào!" />
+                    <Empty title={t("food-empty")} />
                 )
             }
 

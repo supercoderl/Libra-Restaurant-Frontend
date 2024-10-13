@@ -5,8 +5,9 @@ import Category from '@/type/Category';
 import { setCurrentCategory } from '@/redux/slices/categories-slice';
 import { useRouter } from 'next/navigation';
 import { fetchData } from '@/redux/slices/products-slice';
+import { TFunction } from 'i18next';
 
-export default function FoodCategory({ category }: { category: Category }) {
+export default function FoodCategory({ category, t }: { category: Category, t: TFunction<"translation", undefined> }) {
   const dispatch = useStoreDispatch();
   const router = useRouter();
 
@@ -33,9 +34,9 @@ export default function FoodCategory({ category }: { category: Category }) {
 
         </div>
         <Text>
-          <a href="https://modinatheme.com/foodking/product-category/pro-pasta/">{category.name}</a>
+          <a>{category.name}</a>
         </Text>
-        <TextQuantity>{category.itemNumber} món</TextQuantity>
+        <TextQuantity>{category.itemNumber} {t("dishes")}</TextQuantity>
       </CategoryContentContainer>
     </Container>
   );

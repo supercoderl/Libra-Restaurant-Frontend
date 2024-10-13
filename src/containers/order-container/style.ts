@@ -83,7 +83,7 @@ export const ItemInfoMoreContainer = tw.div`hidden md:flex justify-start items-s
 
 export const ItemInfoPriceContainer = tw.div`hidden md:flex justify-between space-x-8 items-start w-full`;
 
-export const ItemInfoPriceContainerMobile = tw.div`flex md:hidden w-full items-center justify-between`;
+export const ItemInfoPriceContainerMobile = tw.div`flex w-full items-center justify-between`;
 
 export const ItemInfoMoreText = tw.p`dark:text-white leading-none text-gray-800`;
 
@@ -93,13 +93,20 @@ export const ItemInfoPriceTotal = tw.p`dark:text-white font-semibold leading-6 t
 
 export const ItemInfoPriceDiscount = tw.span`text-red-300 line-through`;
 
-export const ItemContainer = tw.div`flex justify-between items-center space-y-4 md:space-y-0 w-full py-5 border-b-[1px]`
+export const ItemContainer = tw.div`relative flex justify-between items-center space-y-4 md:space-y-0 w-full py-5 border-b-[1px]`
 
 export const ButtonContainer = tw.div`flex gap-3 w-full m-0! md:pt-4`
 
-export const QuantityContainer = tw.div`flex items-center gap-2`;
+export const QuantityContainer = tw.div`flex items-center gap-3`;
 
-export const QuantityButton = tw.button`p-2 rounded-sm bg-main cursor-pointer transition duration-300`
+type quantityButton = {
+    isDisabled?: boolean;
+}
+
+export const QuantityButton = styled.button<quantityButton>`
+${({ isDisabled }) => isDisabled ? tw`bg-gray-400` : tw`bg-main cursor-pointer`}
+${tw`p-2 rounded-sm transition duration-300`}
+`
 
 export const PaymentCard = tw.div`p-4 md:p-10 bg-white rounded-[6px] shadow-[0px_24px_60px_-1px_rgba(37,_44,_54,_0.14)]`;
 
@@ -111,7 +118,7 @@ type PaymentCardTypeProps = {
 
 export const PaymentCardType = styled.div<PaymentCardTypeProps>`
 ${tw`w-full md:w-48 gap-4 relative bg-[#f2f4f7] flex flex-col justify-center items-center md:gap-5 border-2 border-[#e8ebed] p-5 rounded-[6px] cursor-pointer text-center transition duration-500 hover:border-main`},
-${({isSelected}) => isSelected && tw`border-main bg-[rgb(237_77_96_/_10%)] after:content-['✔'] after:text-main`}
+${({ isSelected }) => isSelected && tw`border-main bg-[rgb(237_77_96_/_10%)] after:content-['✔'] after:text-main`}
 `
 
 export const PaymentCardTypeText = tw.p`group-hover:text-[#28333b] text-sm`;

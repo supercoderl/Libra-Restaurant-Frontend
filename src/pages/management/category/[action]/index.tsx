@@ -5,11 +5,21 @@ import Category from "@/type/Category";
 import { NextPage } from "next";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useTranslation } from "next-i18next";
 import { toast } from "react-toastify";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
+export async function getStaticProps({ locale }: { locale: string }) {
+    return {
+        props: {
+            ...(await serverSideTranslations(locale, ['common'])),
+        },
+    };
+}
 
 const CategoryAction: NextPage = () => {
     const searchParams = useSearchParams();
+    const { t } = useTranslation();
     const router = useRouter();
     const [fields, setFields] = useState<FieldData[]>([
         { name: ['name'], value: '' },
@@ -20,7 +30,7 @@ const CategoryAction: NextPage = () => {
     ]);
     const [src, setSrc] = useState("");
     const [loading, setLoading] = useState(false);
-    const [state, setState] = useState("Thêm mới danh mục");
+    const [state, setState] = useState(t("category-create"));
 
     const onLoad = async () => {
         if (searchParams.get('categoryId')) {
@@ -34,7 +44,7 @@ const CategoryAction: NextPage = () => {
                         { name: 'picture', value: res.data?.picture }
                     ]);
                     setSrc(res.data?.picture || "")
-                    setState("Cập nhật danh mục");
+                    setState(t("category-update"));
                 }
             }
             catch (error) {
@@ -63,7 +73,7 @@ const CategoryAction: NextPage = () => {
 
             const res = await actionCategory(values as Category, searchParams.get('categoryId') ? 'edit' : 'create');
             if (res && res.success) {
-                toast(`${searchParams.get('categoryId') ? 'Cập nhật' : 'Tạo mới'} thành công`, {
+                toast(`${searchParams.get('categoryId') ? t("update") : t("create")} ${t("success")}`, {
                     type: "success"
                 });
                 router.push("general");
@@ -82,6 +92,7 @@ const CategoryAction: NextPage = () => {
     }, []);
 
     return <CategoryForm
+        t={t}
         fields={fields}
         onChange={(newFields) => {
             setFields(newFields);

@@ -5,11 +5,21 @@ import { Store } from "@/type/Store";
 import { NextPage } from "next";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useTranslation } from "next-i18next";
 import { toast } from "react-toastify";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
+export async function getStaticProps({ locale }: { locale: string }) {
+    return {
+        props: {
+            ...(await serverSideTranslations(locale, ['common'])),
+        },
+    };
+}
 
 const StoreAction: NextPage = () => {
     const searchParams = useSearchParams();
+    const { t } = useTranslation();
     const router = useRouter();
     const [fields, setFields] = useState<FieldData[]>([
         { name: ['name'], value: '' },
@@ -31,7 +41,7 @@ const StoreAction: NextPage = () => {
         { name: ['isActive'], value: true }
     ]);
     const [loading, setLoading] = useState(false);
-    const [state, setState] = useState("Thêm mới chi nhánh");
+    const [state, setState] = useState(t("store-create"));
 
     const onLoad = async () => {
         if (searchParams.get('storeId')) {
@@ -57,7 +67,7 @@ const StoreAction: NextPage = () => {
                         { name: 'bankAccount', value: res.data?.bankAccount || '' },
                         { name: 'isActive', value: res.data?.isActive }
                     ]);
-                    setState("Cập nhật chi nhánh");
+                    setState(t("update-store"));
                 }
             }
             catch (error) {
@@ -82,7 +92,7 @@ const StoreAction: NextPage = () => {
 
             const res = await actionStore(values as Store, searchParams.get('storeId') ? 'edit' : 'create');
             if (res && res.success) {
-                toast(`${searchParams.get('storeId') ? 'Cập nhật' : 'Tạo mới'} thành công`, {
+                toast(`${searchParams.get('storeId') ? t("update") : t("create")} ${t("success")}`, {
                     type: "success"
                 });
                 router.push("general");
@@ -101,6 +111,7 @@ const StoreAction: NextPage = () => {
     }, []);
 
     return <StoreForm
+        t={t}
         fields={fields}
         onChange={(newFields) => {
             setFields(newFields);

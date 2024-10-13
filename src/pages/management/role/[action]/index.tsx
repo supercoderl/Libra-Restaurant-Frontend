@@ -5,10 +5,21 @@ import { Role } from "@/type/Role";
 import { NextPage } from "next";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useTranslation } from "next-i18next";
 import { toast } from "react-toastify";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+
+export async function getStaticProps({ locale }: { locale: string }) {
+    return {
+        props: {
+            ...(await serverSideTranslations(locale, ['common'])),
+        },
+    };
+}
 
 const RoleAction: NextPage = () => {
     const searchParams = useSearchParams();
+    const { t } = useTranslation();
     const router = useRouter();
     const [fields, setFields] = useState<FieldData[]>([
         { name: ['roleId'], value: "0" },
@@ -17,7 +28,7 @@ const RoleAction: NextPage = () => {
     ]);
     const [src, setSrc] = useState("");
     const [loading, setLoading] = useState(false);
-    const [state, setState] = useState("Thêm mới vai trò");
+    const [state, setState] = useState(t("role-create"));
 
     const onLoad = async () => {
         if (searchParams.get('roleId')) {
@@ -30,7 +41,7 @@ const RoleAction: NextPage = () => {
                         { name: 'description', value: res.data?.description || '' }
                     ]);
                     setSrc(res.data?.picture || "")
-                    setState("Cập nhật vai trò");
+                    setState(t("role-update"));
                 }
             }
             catch (error) {
@@ -51,7 +62,7 @@ const RoleAction: NextPage = () => {
         try {
             const res = await actionRole(values as Role, searchParams.get('roleId') ? 'edit' : 'create');
             if (res && res.success) {
-                toast(`${searchParams.get('roleId') ? 'Cập nhật' : 'Tạo mới'} thành công`, {
+                toast(`${searchParams.get('roleId') ? t("update") : t("create")} ${t("success")}`, {
                     type: "success"
                 });
                 router.push("general");
@@ -70,6 +81,7 @@ const RoleAction: NextPage = () => {
     }, []);
 
     return <RoleForm
+        t={t}
         fields={fields}
         onChange={(newFields) => {
             setFields(newFields);

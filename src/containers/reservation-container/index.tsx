@@ -10,14 +10,16 @@ import { OrderPrice } from "@/components/order/price";
 import { SecondCategory } from "@/components/food-category/second-category";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { TFunction } from "i18next";
 
 type ReservationContainerProps = {
     tableNumber?: string | null;
     storeId?: string | null;
     reservationId?: string | null;
+    t: TFunction<"translation", undefined>
 }
 
-export default function ReservationContainer({ tableNumber, storeId, reservationId }: ReservationContainerProps) {
+export default function ReservationContainer({ tableNumber, storeId, reservationId, t }: ReservationContainerProps) {
     const { items } = useStoreSelector(
         state => ({
             items: state.mainProductSlice.items
@@ -27,7 +29,7 @@ export default function ReservationContainer({ tableNumber, storeId, reservation
 
     useEffect(() => {
         if (!tableNumber || tableNumber === null || !storeId || storeId === null || !reservationId || reservationId === null) {
-            toast("Giá trị không tồn tại, vui lòng quét mã qr được dán trên bàn!", {
+            toast(t("reservation-not-exists"), {
                 type: "error"
             });
             setTimeout(() => window.history.back(), 3000);
@@ -40,7 +42,7 @@ export default function ReservationContainer({ tableNumber, storeId, reservation
                 <BodyContainer>
                     <CenterContainer>
                         <Header />
-                        <Hero />
+                        <Hero t={t} />
                         <SecondCategory />
                         <ContentContainer>
                             <Food
@@ -49,6 +51,7 @@ export default function ReservationContainer({ tableNumber, storeId, reservation
                                 currentCategory={1}
                                 items={items}
                                 isReservation
+                                t={t}
                             />
                             {/* {
                                 orderId &&
@@ -65,7 +68,6 @@ export default function ReservationContainer({ tableNumber, storeId, reservation
                         </ContentContainer>
                     </CenterContainer>
                 </BodyContainer>
-                <DarkThemeToggler />
             </Container>
         </>
     );

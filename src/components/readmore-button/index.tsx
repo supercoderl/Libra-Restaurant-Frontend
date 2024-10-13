@@ -1,10 +1,11 @@
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { Button, Icon, Svg } from "./style";
+import { TFunction } from "i18next";
 
-export default function ReadMoreButton({ router }: { router: AppRouterInstance }) {
+export default function ReadMoreButton({ router, t }: { router: AppRouterInstance, t: TFunction<"translation", undefined>; }) {
     return (
         <Button className="group" onClick={() => router.push("/food")}>
-            Xem thêm
+            {t("see-more")}
             <Icon className="icon">
                 <Svg
                     height="24"

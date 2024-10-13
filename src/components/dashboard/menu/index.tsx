@@ -2,10 +2,12 @@ import React from 'react'
 import { Menu } from 'antd'
 import { AppstoreOutlined, SettingOutlined, ShopOutlined, SolutionOutlined } from '@ant-design/icons'
 import Link from 'next/link'
+import { useTranslation } from 'react-i18next'
 
 const SubMenu = Menu.SubMenu
 
 export default function MenuComponent() {
+    const {t} = useTranslation();
 
     return (
         <Menu
@@ -14,34 +16,34 @@ export default function MenuComponent() {
             mode="inline"
         >
             <Menu.Item key="1">
-                <Link href="/management/dashboard">Trang quản trị</Link>
+                <Link href="/management/dashboard">{t("admin-management")}</Link>
             </Menu.Item>
             <Menu.Item key="2">
-                <Link href="/management/store/general">QL chi nhánh</Link>
+                <Link href="/management/store/general">{t("store-management")}</Link>
             </Menu.Item>
             <Menu.Item key="3">
-                <Link href="/management/employee/general">QL nhân viên</Link>
+                <Link href="/management/employee/general">{t("staff-management")}</Link>
             </Menu.Item>
             <SubMenu
                 key="sub2"
                 title={
                     <span>
                         <SolutionOutlined />
-                        <span>QL nhà hàng</span>
+                        <span>{t("restaurant-management")}</span>
                     </span>
                 }
             >
                 <Menu.Item key="4">
-                    <Link href="/management/reservation/general">QL đặt chỗ</Link>
+                    <Link href="/management/reservation/general">{t("reservation-management")}</Link>
                 </Menu.Item>
                 <Menu.Item key="5">
-                    <Link href="/management/item/general">QL món ăn</Link>
+                    <Link href="/management/item/general">{t("food-management")}</Link>
                 </Menu.Item>
                 <Menu.Item key="6">
-                    <Link href="/management/category/general">QL danh mục</Link>
+                    <Link href="/management/category/general">{t("category-management")}</Link>
                 </Menu.Item>
                 <Menu.Item key="7">
-                    <Link href="/management/menu/general">QL thực đơn</Link>
+                    <Link href="/management/menu/general">{t("menu-management")}</Link>
                 </Menu.Item>
             </SubMenu>
             <SubMenu
@@ -49,30 +51,31 @@ export default function MenuComponent() {
                 title={
                     <span>
                         <AppstoreOutlined />
-                        <span>QL đơn hàng</span>
+                        <span>{t("order-management")}</span>
                     </span>
                 }
             >
                 <Menu.Item key="8">
-                    <Link href="/management/order/general">Danh sách đơn hàng</Link>
+                    <Link href="/management/order/general">{t("order-list")}</Link>
                 </Menu.Item>
-                <Menu.Item key="9">Lịch sử thanh toán</Menu.Item>
+                <Menu.Item key="9">
+                    <Link href="/management/payment-history/general">{t("payment-history")}</Link>
+                </Menu.Item>
             </SubMenu>
             <SubMenu
                 key="sub4"
                 title={
                     <span>
                         <SettingOutlined />
-                        <span>Cài đặt</span>
+                        <span>{t("options")}</span>
                     </span>
                 }
             >
-                <Menu.Item key="10">Giao diện</Menu.Item>
-                <Menu.Item key="11">Tiền tệ</Menu.Item>
-                <Menu.Item key="12">Ngôn ngữ</Menu.Item>
-                <Menu.Item key="13">Vị trí</Menu.Item>
-                <Menu.Item key="14">
-                    <Link href="/management/role/general">Vai trò</Link>
+                <Menu.Item key="10">{t("graphics")}</Menu.Item>
+                <Menu.Item key="11">{t("currency")}</Menu.Item>
+                <Menu.Item key="12">{t("gps")}</Menu.Item>
+                <Menu.Item key="13">
+                    <Link href="/management/role/general">{t("role")}</Link>
                 </Menu.Item>
             </SubMenu>
         </Menu>

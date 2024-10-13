@@ -5,15 +5,20 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import food1 from "../../../public/assets/banner/food1.png";
 import food2 from "../../../public/assets/banner/food2.png";
 import food3 from "../../../public/assets/banner/food3.png";
-import { FormEvent, useEffect, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useStoreDispatch, useStoreSelector } from "@/redux/store";
 import { login, setMessage, validateUser } from "@/redux/slices/auth-slice";
 import { message } from "antd";
 import { Spinner } from "@/components/loading/spinner";
 import { get } from "@/utils/localStorage";
+import { TFunction } from "i18next";
 
-export const LoginContainer = () => {
+type LoginProps = {
+    t: TFunction<"translation", undefined>
+}
+
+export const LoginContainer: React.FC<LoginProps> = ({ t }) => {
     const [loginInput, setLoginInput] = useState({
         email: "",
         password: ""
@@ -54,9 +59,8 @@ export const LoginContainer = () => {
     const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if(loginInput.email === "" || loginInput.password === "")
-        {
-            _message("warning", "Vui lòng nhập đầy đủ thông tin đăng nhập");
+        if (loginInput.email === "" || loginInput.password === "") {
+            _message("warning", t("please-input-login"));
             return;
         }
 
@@ -80,8 +84,8 @@ export const LoginContainer = () => {
                         <div className="logo">
                             <Logo src={logo.src} alt="logo" />
                         </div>
-                        <Title>Đăng nhập</Title>
-                        <p className="body-text">Trang quản trị dành cho nhân viên và quản lý của nhà hàng Libra</p>
+                        <Title>{t("login")}</Title>
+                        <p className="body-text">{t("admin-page")}</p>
 
                         <GoogleButton href="#">
                             <span className="google-icon"><GoogleSvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -90,15 +94,15 @@ export const LoginContainer = () => {
                                 <path d="M416.253 455.624l.014.014C372.396 490.901 316.666 512 256 512c-97.491 0-182.252-54.491-225.491-134.681l82.961-67.91c21.619 57.698 77.278 98.771 142.53 98.771 28.047 0 54.323-7.582 76.87-20.818l83.383 68.262z" fill="#28b446" />
                                 <path d="M419.404 58.936l-82.933 67.896C313.136 112.246 285.552 103.82 256 103.82c-66.729 0-123.429 42.957-143.965 102.724l-83.397-68.276h-.014C71.23 56.123 157.06 0 256 0c62.115 0 119.068 22.126 163.404 58.936z" fill="#f14336" />
                             </GoogleSvg></span>
-                            <span>Đăng nhập bằng Google</span>
+                            <span>{t("login-google")}</span>
                         </GoogleButton>
 
                         <Seperator>
-                            <SeperatorText>hoặc đăng nhập bằng Tài khoản</SeperatorText>
+                            <SeperatorText>{t("or-use-account")}</SeperatorText>
                         </Seperator>
 
                         <FormGroup>
-                            <FormLabel htmlFor="email">Email <span className="required-star">*</span></FormLabel>
+                            <FormLabel htmlFor="email">{t("email")} <span className="required-star">*</span></FormLabel>
                             <FormInput
                                 type="text"
                                 placeholder="email@employee.com"
@@ -107,11 +111,11 @@ export const LoginContainer = () => {
                             />
                         </FormGroup>
                         <FormGroup>
-                            <FormLabel htmlFor="pwd">Mật khẩu <span className="required-star">*</span></FormLabel>
+                            <FormLabel htmlFor="pwd">{t("password")} <span className="required-star">*</span></FormLabel>
                             <FormInput
                                 autoComplete="off"
                                 type="password"
-                                placeholder="Ít nhất 6 ký tự"
+                                placeholder={t("at-least-6")}
                                 id="pwd"
                                 onChange={(e) => setLoginInput(prev => ({ ...prev, password: e.target.value }))}
                             />
@@ -120,15 +124,15 @@ export const LoginContainer = () => {
                         <SingleRow>
                             <CustomCheck>
                                 <CustomCheckInput autoComplete="off" type="checkbox" id="remember" />
-                                <CustomCheckLabel htmlFor="remember">Ghi nhớ tài khoản</CustomCheckLabel>
+                                <CustomCheckLabel htmlFor="remember">{t("remember-me")}</CustomCheckLabel>
                             </CustomCheck>
 
-                            <Link href="#">Quên mật khẩu ?</Link>
+                            <Link href="#">{t("forgot-password")}</Link>
                         </SingleRow>
 
                         <CTA type="submit">
                             {(isAuthenticated || isAuthenticating) && <Spinner width="1.2vw" color="white" />}
-                            Đăng nhập
+                            {t("login")}
                         </CTA>
                     </LoginFormInner>
                 </LoginForm>

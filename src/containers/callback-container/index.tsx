@@ -1,4 +1,4 @@
-import { BillContainer, Card, Container, ContentContainer, Curved, FlexContainer, HomeButton, Icon, IconContainer, ItemContainer, Logo, LogoImg, LogoRed, StatusText, TextFooter, TextItem, TextItemContainer, Title } from "./style";
+import { BillContainer, Card, Container, ContentContainer, Curved, FlexContainer, HomeButton, Icon, IconContainer, ItemContainer, Logo, LogoImg, LogoRed, StatusText, Subtitle, TextFooter, TextItem, TextItemContainer, Title } from "./style";
 import logo from "../../../public/assets/images/logo-no-bg.png";
 import { Loading } from "@/components/loading";
 import useWindowDimensions from "@/hooks/use-window-dimensions";
@@ -10,17 +10,24 @@ import { checkStripe, checkVNPay } from "@/utils/payment";
 import { updatePayment } from "@/api/business/paymentHistoryApi";
 import { toast } from "react-toastify";
 import HandIcon from "../../../public/assets/icons/hand-icon.svg";
+import SadIcon from "../../../public/assets/icons/sad-icon.svg";
 import { v4 as uuid } from "uuid";
+import { useStoreDispatch } from "@/redux/store";
+import { clearCart } from "@/redux/slices/cart-slice";
+import { clearReservation } from "@/redux/slices/reservation-slice";
+import { useTranslation } from "next-i18next";
 
 export default function Cart() {
     const { width } = useWindowDimensions();
     const [loading, setLoading] = useState(true);
-    const [response, setResponse] = useState({});
+    const [statusType, setStatusType] = useState(PaymentStatus.Success);
     const searchParams = useSearchParams();
     const router = useRouter();
+    const dispatch = useStoreDispatch();
+    const { t } = useTranslation();
 
     const onCheckStatus = async () => {
-        let object = {};
+        let object: any = {};
 
         if (checkVNPay(searchParams.entries())) {
             object = {
@@ -46,8 +53,14 @@ export default function Cart() {
             }
         }
 
+        setStatusType(object?.status);
+
         try {
-            await updatePayment(object);
+            if (object?.status === PaymentStatus.Success) {
+                await updatePayment(object);
+                dispatch(clearCart());
+                dispatch(clearReservation());
+            }
         }
         catch (error) {
             console.log("Update payment: ", error);
@@ -74,56 +87,67 @@ export default function Cart() {
                             <LogoImg src={logo.src} alt="" />
                         </Logo>
                         <IconContainer>
-                            <Icon loading="lazy" src="https://icons.veryicon.com/png/o/miscellaneous/8atour/success-35.png" alt="" />
+                            <Icon
+                                loading="lazy"
+                                src={statusType === PaymentStatus.Success ?
+                                    "https://icons.veryicon.com/png/o/miscellaneous/8atour/success-35.png"
+                                    :
+                                    "https://icons.veryicon.com/png/o/miscellaneous/ds/38-operation-failed.png"
+                                }
+                                alt=""
+                            />
                         </IconContainer>
 
                         <ContentContainer>
-                            <StatusText>Đã thanh toán</StatusText>
+                            <StatusText>{statusType === PaymentStatus.Success ? t("paid") : t("paid-failed")}</StatusText>
 
                             <BillContainer className="receipt">
                                 <FlexContainer>
-                                    <Title>Cảm ơn quý khách</Title>
-                                    <HandIcon fill="none" width="6%"></HandIcon>
+                                    <Title>{statusType === PaymentStatus.Success ? t("thanks") : t("sorry")}</Title>
+                                    {statusType === PaymentStatus.Success ? <HandIcon fill="none" width="6%"></HandIcon> : <SadIcon width="6%"></SadIcon>}
                                 </FlexContainer>
+                                {
+                                    statusType === PaymentStatus.Fail && <Subtitle>{t("pay-again")}</Subtitle>
+                                }
                                 <ItemContainer>
                                     <TextItemContainer>
-                                        <TextItem>Quầy giao dịch</TextItem>
-                                        <TextItem>Nhà hàng Libra</TextItem>
+                                        <TextItem>{t("transaction-store")}</TextItem>
+                                        <TextItem>{t("libra-restaurant")}</TextItem>
                                     </TextItemContainer>
                                     <TextItemContainer>
-                                        <TextItem>Mã giao dịch</TextItem>
+                                        <TextItem>{t("transactionId")}</TextItem>
                                         <TextItem>{uuid().substring(0, 8)}</TextItem>
                                     </TextItemContainer>
                                     <TextItemContainer>
-                                        <TextItem>Mã hóa đơn</TextItem>
+                                        <TextItem>{t("orderId")}</TextItem>
                                         <TextItem>{uuid().substring(0, 8)}</TextItem>
                                     </TextItemContainer>
                                     <TextItemContainer>
-                                        <TextItem>Phương thức thanh toán</TextItem>
+                                        <TextItem>{t("payment-method")}</TextItem>
                                         <TextItem>
                                             {
                                                 checkVNPay(searchParams.entries()) ? "VNPay" :
-                                                checkStripe(searchParams.entries()) ? "Stripe" : null
+                                                    checkStripe(searchParams.entries()) ? "Stripe" : null
                                             }
                                         </TextItem>
                                     </TextItemContainer>
                                     <TextItemContainer>
-                                        <TextItem>Thời gian</TextItem>
+                                        <TextItem>{t("date")}</TextItem>
                                         <TextItem>10. 10. 2024 / 14:26:42</TextItem>
                                     </TextItemContainer>
                                     <TextItemContainer>
-                                        <TextItem isBold>Tổng cộng</TextItem>
+                                        <TextItem isBold>{t("total")}</TextItem>
                                         <TextItem isBold>100,000 đ</TextItem>
                                     </TextItemContainer>
                                 </ItemContainer>
                                 <HomeButton
                                     onClick={() => router.replace("/")}
                                 >
-                                    Về trang chủ
+                                    {t("back-home")}
                                 </HomeButton>
                             </BillContainer>
                         </ContentContainer>
-                        <TextFooter>Khoản thanh toán này được đảm bảo an toàn nhờ giải pháp G Pay</TextFooter>
+                        <TextFooter>{t("gPay-support")}</TextFooter>
                     </Card>
                     :
                     <Loading width={width > 767 ? "10%" : "40%"} />
