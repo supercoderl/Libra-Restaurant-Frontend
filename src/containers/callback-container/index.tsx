@@ -16,6 +16,7 @@ import { useStoreDispatch } from "@/redux/store";
 import { clearCart } from "@/redux/slices/cart-slice";
 import { clearReservation } from "@/redux/slices/reservation-slice";
 import { useTranslation } from "next-i18next";
+import { remove } from "@/utils/localStorage";
 
 export default function Cart() {
     const { width } = useWindowDimensions();
@@ -58,6 +59,7 @@ export default function Cart() {
         try {
             if (object?.status === PaymentStatus.Success) {
                 await updatePayment(object);
+                remove("orderId");
                 dispatch(clearCart());
                 dispatch(clearReservation());
             }
@@ -73,7 +75,7 @@ export default function Cart() {
 
     useEffect(() => {
         onCheckStatus();
-    }, []);
+    }, [searchParams]);
 
     return (
         <Container>

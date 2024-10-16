@@ -1,15 +1,14 @@
-import React, { useState, ChangeEvent, FormEvent } from 'react';
+import React, { useState, FormEvent } from 'react';
 import { ModalActionButton, ModalActionContainer, ModalActionSvg, ModalActionText, ModalBody, ModalBodyFormContainer, ModalBodyFormGroup, ModalBodyFormInput, ModalBodyFormLabel, ModalBodyStatus, ModalHeader } from "../reservation-container/style";
 import { Status } from '@/enums';
 import { toast } from 'react-toastify';
 import { useStoreDispatch } from '@/redux/store';
-import { updateReservationCustomer } from '@/redux/slices/reservation-slice';
 import { TFunction } from 'i18next';
 
 // Define the props interface for Step2 component
 interface Step2Props {
     onPrevious: () => void; // Function to move to the next step
-    onSubmit: () => void;
+    onSubmit: (customerName: string, customerPhone: string) => void;
     status: number;
     customerPhone: string;
     t: TFunction<"translation", undefined>
@@ -36,33 +35,27 @@ const Step2: React.FC<Step2Props> = ({ onPrevious, onSubmit, status, customerPho
                 toast(t("phone-not-same"), { type: "warning" });
                 return;
             }
-            onSubmit();
+            onSubmit(customerData.customerName, customerData.customerPhone);
         }
         else {
             if (customerData.customerName === "" || customerData.customerPhone === "") {
                 toast(t("please-input-info"), { type: "warning" });
                 return;
             }
-            dispatch(updateReservationCustomer({
-                customerName: customerData.customerName,
-                customerPhone: customerData.customerPhone
-            }));
-            onSubmit();
+            onSubmit(customerData.customerName, customerData.customerPhone);
         }
-
-        // dispatch(login(loginInput));
     }
 
     return (
         <div>
             <ModalHeader>{t("customer-info")}</ModalHeader>
             <ModalBody>
-                <ModalBodyStatus>{t("table-status")}: {Status[status as keyof typeof Status]}</ModalBodyStatus>
+                <ModalBodyStatus>{t("reservation-status")}: {Status[status as keyof typeof Status]}</ModalBodyStatus>
                 <ModalBodyFormContainer onSubmit={handleSubmit}>
                     {
                         status !== Status.Occupied &&
                         <ModalBodyFormGroup>
-                            <ModalBodyFormLabel htmlFor="name">{t("full-name")}</ModalBodyFormLabel>
+                            <ModalBodyFormLabel htmlFor="name">{t("customer-name")}</ModalBodyFormLabel>
                             <ModalBodyFormInput
                                 placeholder={t("input-name")}
                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCustomerData(prev => ({ ...prev, customerName: e.target.value }))}

@@ -1,3 +1,5 @@
+import i18next, { TFunction } from "i18next";
+
 export const Status = {
     Available: 0,
     Reserved: 1,
@@ -18,7 +20,7 @@ export const OrderStatus = {
     Ready: 3,
     Completed: 4,
     Canceled: 5,
-    Delayed: 6, 
+    Delayed: 6,
     Paid: 7,
     Failed: 8,
     Refunded: 9
@@ -29,17 +31,8 @@ export const PaymentStatus = {
     Fail: 1
 }
 
-export const OrderStatusText = {
-    0: "Nháp",
-    1: "Xác nhận",
-    2: "Chuẩn bị",
-    3: "Sẵn sàng",
-    4: "Hoàn thành",
-    5: "Bị hủy",
-    6: "Bị hoãn",
-    7: "Đã thanh toán",
-    8: "Lỗi",
-    9: "Hoàn tiền"
+export const OrderStatusText = (value: number, t: TFunction<"translation", undefined>) => {
+    return t(`orderStatus.${value}`)
 }
 
 export const CustomerLikeStatus = {

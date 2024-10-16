@@ -1,23 +1,16 @@
-export function formatDate(date: Date) {
+import { TFunction } from "i18next";
 
-    // Mảng các ngày trong tuần và các tháng
-    const daysOfWeek = [
-        "Chủ Nhật", "Thứ Hai", "Thứ Ba",
-        "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"
-    ];
-    const monthsOfYear = [
-        "1", "2", "3", "4", "5", "6", "7",
-        "8", "9", "10", "11", "12"
-    ];
+export function formatDate(date: Date, t: TFunction<"translation", undefined>) {
+    const daysOfWeek = t('daysOfWeek', { returnObjects: true }) as string[];
+    const monthsOfYear = t('monthsOfYear', { returnObjects: true }) as string[];
 
-    // Lấy các thành phần của ngày
     const dayOfWeek = daysOfWeek[date.getDay()];
     const day = date.getDate();
     const month = monthsOfYear[date.getMonth()];
     const year = date.getFullYear();
 
-    // Định dạng thành chuỗi
-    return `${dayOfWeek}, ngày ${day} tháng ${month} năm ${year}`;
+    // Định dạng ngày dựa trên ngôn ngữ
+    return t('dateFormat', { dayOfWeek, day, month, year });
 }
 
 export function generateOrderNo(tableNumber: number) {

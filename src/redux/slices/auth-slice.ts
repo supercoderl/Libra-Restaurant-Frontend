@@ -1,5 +1,5 @@
-import { authenticate, currentUser } from "@/api/business/userApi"
-import { clear, keys, set } from "@/utils/localStorage";
+import { authenticate, currentUser, logout } from "@/api/business/userApi"
+import { clear, get, keys, remove, set } from "@/utils/localStorage";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
 import axios from "axios";
 
@@ -92,21 +92,37 @@ export const validateUser = createAsyncThunk('auth/validateUser', async (token: 
 })
 
 // Logout Action
-export const logout = createAsyncThunk('auth/logout', async (e, { dispatch }) => {
+export const handleLogout = createAsyncThunk('auth/logout', async (e, { dispatch, rejectWithValue }) => {
+    const refreshToken = get(keys.KEY_REFRESH_TOKEN);
+    
+    try {
+        // Set Is Authenticating `true`
+        dispatch(setIsAuthenticating(true));
 
-    // Set Is Authenticating `true`
-    dispatch(setIsAuthenticating(true))
+        // Gọi API để revoke refreshToken
+        if(refreshToken) {
+            const res = await logout({ refreshToken });
+            console.log(res);
+        };
 
-    // Clear localStorage
-    clear();
+        // Clear localStorage
+        clear();
 
-    // Dispatch `authReducer` Values to Redux Store
-    dispatch(setIsAuthenticated(false))
-    dispatch(setToken(null))
-    dispatch(setUser({}))
+        // Cập nhật Redux Store
+        dispatch(setIsAuthenticated(false));
+        dispatch(setToken(null));
+        dispatch(setUser({}));
+        remove(keys.KEY_CURRENT_USER);
+        remove(keys.KEY_REFRESH_TOKEN);
+        remove(keys.KEY_TOKEN);
 
-    // Set Is Authenticating `false`
-    dispatch(setIsAuthenticating(false))
+    } catch (error: any) {
+        console.error('Logout failed:', error);
+        return rejectWithValue(error.response?.data || 'Logout failed');
+    } finally {
+        // Set Is Authenticating `false` sau khi hoàn tất
+        dispatch(setIsAuthenticating(false));
+    }
 })
 
 interface Message {

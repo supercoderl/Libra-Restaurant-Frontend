@@ -1,15 +1,50 @@
-import { reservationStatus } from "@/api/business/reservationApi";
-import { createAsyncThunk, createSlice, Draft, PayloadAction } from "@reduxjs/toolkit";
+import { generateCode, reservation, reservationCustomer } from "@/api/business/reservationApi";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export const getStatus = createAsyncThunk(
     'reservations/getStatus',
     async (reservationId: number) => {
-        const response = await reservationStatus(reservationId);
+        const response = await reservation(reservationId);
         if (response?.success)
             return response?.data;
         return null;
     }
 )
+
+export const updateReservationAsync = createAsyncThunk(
+    'reservation/updateReservationAsync',
+    async (reservationData: any, { rejectWithValue }) => {
+        try {
+            const response = await reservationCustomer({
+                reservationId: reservationData.reservationId,
+                status: reservationData.status,
+                customerName: reservationData.customerName,
+                customerPhone: reservationData.customerPhone
+            });
+            if (response?.success) {
+                return reservationData;
+            }
+            return null;
+        } catch (error: any) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+export const generateCodeAsync = createAsyncThunk(
+    'reservation/generateCodeAsync',
+    async (reservationId: number, { rejectWithValue }) => {
+        try {
+            const response = await generateCode(reservationId);
+            if (response?.success) {
+                return response?.data;
+            }
+            return null;
+        } catch (error: any) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
 
 type sliceType = {
     status: number;
@@ -19,7 +54,8 @@ type sliceType = {
     customerName: string;
     customerPhone: string;
     storeId: any;
-    tableNumber: number
+    tableNumber: number;
+    loading: boolean;
 }
 
 const initialState: sliceType = {
@@ -30,21 +66,14 @@ const initialState: sliceType = {
     customerName: '',
     customerPhone: '',
     storeId: null,
-    tableNumber: -1
+    tableNumber: -1,
+    loading: false
 }
 
 const mainReservationSlice = createSlice({
     name: 'main-reservation',
     initialState: initialState,
     reducers: {
-        updateReservation: (state, action) => {
-            const { reservationId, isChanged, capacity, storeId, tableNumber } = action.payload;
-            state.isChanged = isChanged
-            state.id = reservationId
-            state.capacity = capacity
-            state.storeId = storeId
-            state.tableNumber = tableNumber
-        },
         updateReservationStatus: (state, action) => {
             const { status, tableNumber } = action.payload;
             return {
@@ -53,15 +82,8 @@ const mainReservationSlice = createSlice({
                 tableNumber
             }
         },
-        updateReservationCustomer: (state, action) => {
-            const { customerName, customerPhone } = action.payload;
-            return {
-                ...state,
-                customerName,
-                customerPhone
-            }
-        },
         clearReservation: (state) => {
+            console.log("clear");
             state.status = -1;
             state.id = null;
             state.isChanged = false;
@@ -74,12 +96,46 @@ const mainReservationSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(getStatus.fulfilled, (state, action) => {
-            state.status = action.payload;
-        })
+            if (action.payload) {
+                state.status = action.payload.status;
+                state.customerName = action.payload.customerName;
+                state.customerPhone = action.payload.customerPhone;
+            }
+        });
+        builder
+            .addCase(updateReservationAsync.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(updateReservationAsync.fulfilled, (state, action) => {
+                if (action.payload) {
+                    const { reservationId, capacity, isChanged, storeId, tableNumber } = action.payload;
+
+                    // Cập nhật state bằng dữ liệu đã truyền vào
+                    state.id = reservationId;
+                    state.capacity = capacity;
+                    state.storeId = storeId;
+                    state.tableNumber = tableNumber;
+                    state.isChanged = isChanged; // Cập nhật xong
+                }
+                state.loading = false;
+            })
+            .addCase(updateReservationAsync.rejected, (state, action) => {
+                state.loading = false;
+            });
+        builder
+            .addCase(generateCodeAsync.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(generateCodeAsync.fulfilled, (state) => {
+                state.loading = false;
+            })
+            .addCase(generateCodeAsync.rejected, (state) => {
+                state.loading = false;
+            });
     },
 
 })
 
-export const { updateReservation, updateReservationStatus, updateReservationCustomer, clearReservation } = mainReservationSlice.actions
+export const { updateReservationStatus, clearReservation } = mainReservationSlice.actions
 
 export default mainReservationSlice.reducer;

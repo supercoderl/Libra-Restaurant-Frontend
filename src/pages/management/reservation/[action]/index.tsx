@@ -11,7 +11,7 @@ import { useTranslation } from "next-i18next";
 import { toast } from "react-toastify";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
-export async function getStaticProps({ locale }: { locale: string }) {
+export async function getServerSideProps({ locale }: { locale: string }) {
     return {
         props: {
             ...(await serverSideTranslations(locale, ['common'])),
@@ -128,6 +128,7 @@ const ReservationAction: NextPage = () => {
         onFinish={onFinish}
         loading={loading}
         stores={storeDatas}
+        reservationId={Number(searchParams.get('reservationId'))}
     />
 }
 

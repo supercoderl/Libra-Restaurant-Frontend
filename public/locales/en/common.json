@@ -357,5 +357,48 @@
   "food-recent": "Recent dishes",
   "email": "Email",
   "increase": "Increase",
-  "decrease": "Decrease"
+  "decrease": "Decrease",
+  "daysOfWeek": [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday"
+  ],
+  "monthsOfYear": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12"
+  ],
+  "dateFormat": "{{dayOfWeek}}, {{month}}/{{day}}/{{year}}",
+  "slug-replace": "The slug will be displayed in the URL instead of the product ID",
+  "food-price": "The price of a food/drink item",
+  "quantity-in-stock": "The quantity of a product in stock",
+  "orderStatus": {
+    "0": "Draft",
+    "1": "Confirmed",
+    "2": "Preparing",
+    "3": "Ready",
+    "4": "Completed",
+    "5": "Canceled",
+    "6": "Delayed",
+    "7": "Paid",
+    "8": "Error",
+    "9": "Refunded"
+  },
+  "quantity-call": "Number of additional calls",
+  "time-call": "Extra call time",
+  "clean": "Cleaned up",
+  "generate-code": "Generate QR code"
 }

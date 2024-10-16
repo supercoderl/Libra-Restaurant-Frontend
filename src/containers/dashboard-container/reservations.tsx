@@ -10,6 +10,10 @@ import { Status } from "@/enums";
 import { MobileTable } from "@/components/mobile/tables/mobile-table";
 import { useRouter } from "next/navigation";
 import { TFunction } from "i18next";
+import ClearIcon from "../../../public/assets/icons/clear-icon.svg";
+import { useStoreDispatch } from "@/redux/store";
+import { updateReservationAsync } from "@/redux/slices/reservation-slice";
+import { toast } from "react-toastify";
 
 type HeaderProps = {
     isShowText?: boolean;
@@ -105,7 +109,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch, t }) => {
 type ReservationProps = {
     result?: ListRep | null;
     loading: boolean;
-    onReload?: () => void;
+    onReload: () => void;
     onPaginationChange?: (page: number, pageSize: number) => void;
     onSearch?: (text: string) => void;
     t: TFunction<"translation", undefined>
@@ -148,6 +152,14 @@ export const ReservationContainer: React.FC<ReservationProps> = ({ result, loadi
             align: 'center',
             render: (row: Reservation) => (
                 <ActionContainer>
+                    <Tooltip title={t("clean")}>
+                        <Button
+                            icon={<ClearIcon fill="#ff4d4f" />}
+                            type="link"
+                            danger
+                            onClick={() => handleSubmitClean(row)}
+                        />
+                    </Tooltip>
                     <Tooltip title={t("see")}>
                         <Button
                             icon={<EyeOutlined />}
@@ -191,6 +203,23 @@ export const ReservationContainer: React.FC<ReservationProps> = ({ result, loadi
     const [isOpen, setIsOpen] = useState(false);
     const [itemSelected, setItemSelected] = useState<Reservation | null>(null);
     const { width } = useWindowDimensions();
+    const dispatch = useStoreDispatch();
+
+    const handleSubmitClean = (reservation: Reservation) => {
+        dispatch(updateReservationAsync({
+            reservationId: reservation.reservationId,
+            isChanged: false,
+            capacity: reservation.capacity,
+            storeId: reservation.storeId,
+            tableNumber: reservation.tableNumber,
+            status: Status.Available,
+            customerName: null,
+            customerPhone: null
+        })).then(() => {
+            toast("Cập nhật bàn thành công", { type: "success" });
+            onReload();
+        });
+    }
 
     return (
         <DashboardLayout t={t}>

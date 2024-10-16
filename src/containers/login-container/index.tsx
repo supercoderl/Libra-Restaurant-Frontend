@@ -20,8 +20,8 @@ type LoginProps = {
 
 export const LoginContainer: React.FC<LoginProps> = ({ t }) => {
     const [loginInput, setLoginInput] = useState({
-        email: "",
-        password: ""
+        email: "admin@gmail.com",
+        password: "Password123!"
     });
 
     const router = useRouter()
@@ -107,6 +107,7 @@ export const LoginContainer: React.FC<LoginProps> = ({ t }) => {
                                 type="text"
                                 placeholder="email@employee.com"
                                 id="email"
+                                value={loginInput.email}
                                 onChange={(e) => setLoginInput(prev => ({ ...prev, email: e.target.value }))}
                             />
                         </FormGroup>
@@ -117,6 +118,7 @@ export const LoginContainer: React.FC<LoginProps> = ({ t }) => {
                                 type="password"
                                 placeholder={t("at-least-6")}
                                 id="pwd"
+                                value={loginInput.password}
                                 onChange={(e) => setLoginInput(prev => ({ ...prev, password: e.target.value }))}
                             />
                         </FormGroup>

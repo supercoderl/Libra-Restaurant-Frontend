@@ -136,10 +136,10 @@ export const OrderContainer: React.FC<OrderProps> = ({ result, loading, onReload
     };
 
     const expandColumns: TableColumnsType<any> = [
-        { title: 'Món ăn', dataIndex: 'foodName' },
-        { title: 'Số lượng', dataIndex: 'quantityOrder' },
-        { title: 'Số lượng gọi thêm', dataIndex: 'quantityChanges' },
-        { title: 'Thời gian gọi thêm', dataIndex: 'timeChanges' }
+        { title: t("food-name"), dataIndex: 'foodName' },
+        { title: t("quantity"), dataIndex: 'quantityOrder' },
+        { title: t("quantity-call"), dataIndex: 'quantityChanges' },
+        { title: t("time-call"), dataIndex: 'timeChanges' }
     ];
 
     const expandedRowRender = (record: Order) => (
@@ -174,7 +174,7 @@ export const OrderContainer: React.FC<OrderProps> = ({ result, loading, onReload
             dataIndex: 'latestStatus',
             width: 100,
             align: 'center',
-            render: (latestStatus: number) => <Tag color={getOrderStatus(latestStatus).color}>{getOrderStatus(latestStatus).title}</Tag>
+            render: (latestStatus: number) => <Tag color={getOrderStatus(latestStatus, t).color}>{getOrderStatus(latestStatus, t).title}</Tag>
         },
         {
             title: t("actions"),

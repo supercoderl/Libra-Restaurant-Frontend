@@ -8,6 +8,7 @@ const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
 
 export function getHeaders() {
     let token = get(keys.KEY_TOKEN)
+
     return {
         'Authorization': 'Bearer ' + token,
         'ngrok-skip-browser-warning': '69420'
@@ -35,7 +36,7 @@ async function refreshToken() {
     try {
         const refreshToken = get(keys.KEY_REFRESH_TOKEN);
         const res = await HttpClient.request(
-            baseUrl.concat('/refresh'), // Đường dẫn API refresh token
+            baseUrl.concat('/Employee/refresh'), // Đường dẫn API refresh token
             {},
             { refreshToken }, // Gửi refreshToken để lấy accessToken mới
             _buildRequestConfig({ method: HTTP_METHODS.POST }) // HTTP POST method
@@ -43,7 +44,7 @@ async function refreshToken() {
 
         if (res?.data && res?.data?.success && res?.data?.data?.accessToken) {
             // Lưu lại token mới
-            set(keys.KEY_CURRENT_USER, res?.data?.data?.accessToken);
+            set(keys.KEY_TOKEN, res?.data?.data?.accessToken);
             set(keys.KEY_REFRESH_TOKEN, res?.data?.data?.refreshToken);
             return res?.data?.data?.accessToken;
         } else {
@@ -59,7 +60,6 @@ const errorHanding = async (err: any) => {
     isLog && console.log('-------- error --------')
     isLog && console.error(err)
     if (err?.response && err?.response?.data && err?.response?.data?.errors) {
-        console.log(err?.response?.data);
         if (Array.isArray(err?.response?.data?.errors) && err?.response?.data?.errors.length > 0) {
             toast(err?.response?.data?.errors.join(', '), {
                 type: "error",
@@ -121,6 +121,7 @@ async function _api<T>(params: APIParams, data: object, method: HTTP_METHODS) {
                     data,
                     _buildRequestConfig({ method })
                 )
+
                 return _wrapperResponse<T>(res.data)
             } catch (refreshError) {
                 // Xử lý khi không refresh được token (ví dụ: chuyển hướng về trang đăng nhập)

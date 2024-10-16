@@ -52,7 +52,7 @@ export default function FoodItem(item: Item) {
           layout="fill"
           src={picture || process.env.NEXT_PUBLIC_DUMMY_PICTURE || ""}
           alt={`${title} image`}
-          objectFit="cover"
+          objectFit="contain"
         />
         <TimeContainer>
           <TimeText>

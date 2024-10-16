@@ -12,6 +12,13 @@ export function authenticate(data: { email: string, password: string }): Promise
     }, data);
 }
 
+export function logout(data: { refreshToken: string }): Promise<SingleResponse | undefined> {
+    return apiPut<SingleResponse>({
+        url: `/${CLASS_ITEM_NAME}/logout`,
+        params: null
+    }, data);
+}
+
 export function currentUser(): Promise<SingleResponse | undefined> {
     return apiGet<SingleResponse>({
         url: `/${CLASS_ITEM_NAME}/me`,

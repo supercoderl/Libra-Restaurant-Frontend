@@ -361,5 +361,48 @@
   "food-recent": "Món ăn gần đây",
   "email": "Email",
   "increase": "Tăng",
-  "decrease": "Giảm"
+  "decrease": "Giảm",
+  "daysOfWeek": [
+    "Chủ Nhật",
+    "Thứ Hai",
+    "Thứ Ba",
+    "Thứ Tư",
+    "Thứ Năm",
+    "Thứ Sáu",
+    "Thứ Bảy"
+  ],
+  "monthsOfYear": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12"
+  ],
+  "dateFormat": "{{dayOfWeek}}, ngày {{day}} tháng {{month}} năm {{year}}",
+  "slug-replace": "Slug sẽ hiển thị trên đường dẫn thay cho id của sản phẩm",
+  "food-price": "Giá của một món ăn / đồ uống",
+  "quantity-in-stock": "Số lượng tồn của một sản phẩm",
+  "orderStatus": {
+    "0": "Nháp",
+    "1": "Xác nhận",
+    "2": "Chuẩn bị",
+    "3": "Sẵn sàng",
+    "4": "Hoàn thành",
+    "5": "Bị hủy",
+    "6": "Bị hoãn",
+    "7": "Đã thanh toán",
+    "8": "Lỗi",
+    "9": "Hoàn tiền"
+  },
+  "quantity-call": "Số lượng gọi thêm",
+  "time-call": "Thời gian gọi thêm",
+  "clean": "Đã dọn xong",
+  "generate-code": "Tạo mã QR"
 }

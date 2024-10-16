@@ -3,8 +3,10 @@ import { Avatar, Button, Dropdown, Flex } from 'antd'
 import { Dot, HeaderContainer, Name, NotificationContainer, UserContainer } from './style'
 import { BellOutlined, CreditCardOutlined, LogoutOutlined, MenuOutlined, ProfileOutlined, UserOutlined } from '@ant-design/icons'
 import { TFunction } from 'i18next';
-import { useStoreSelector } from '@/redux/store';
+import { useStoreDispatch, useStoreSelector } from '@/redux/store';
 import { NotificationCard } from '@/components/notification';
+import { handleLogout } from '@/redux/slices/auth-slice';
+import { useRouter } from 'next/navigation';
 
 type DashboardHeaderProps = {
     isShowButton?: boolean;
@@ -14,6 +16,8 @@ type DashboardHeaderProps = {
 
 const DashboardHeader: React.FC<DashboardHeaderProps> = ({ isShowButton, onMenuClick, t }) => {
     const { notifications, unread } = useStoreSelector(state => state.mainNotificationSlice);
+    const dispatch = useStoreDispatch();
+    const router = useRouter();
 
     const items = [
         {
@@ -29,7 +33,11 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ isShowButton, onMenuC
         {
             label: t("logout"),
             key: '3',
-            icon: <LogoutOutlined />
+            icon: <LogoutOutlined />,
+            onClick: () => {
+                dispatch(handleLogout());
+                router.push("/");
+            }
         },
     ];
 
@@ -47,7 +55,13 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ isShowButton, onMenuC
                         {unread > 0 && <Dot />}
                     </NotificationContainer>
                 </Dropdown>
-                <Dropdown menu={{ items }} placement="bottomCenter" overlayStyle={{ cursor: 'pointer' }}>
+                <Dropdown
+                    menu={{ items }}
+                    placement="bottomCenter"
+                    overlayStyle={{ cursor: 'pointer' }}
+                    trigger={['click']}
+                    
+                >
                     <UserContainer>
                         <Avatar icon={<UserOutlined />} style={{ margin: 5 }} size='small' />
                         <Name>Administrator</Name>

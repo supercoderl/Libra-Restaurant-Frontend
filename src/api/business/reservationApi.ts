@@ -34,15 +34,26 @@ export function reservationTable(tableNumber?: number | null, storeId?: string |
     })
 }
 
-export function reservationStatus(reservationId: number): Promise<SingleResponse | undefined> {
-    return apiGet<SingleResponse>({
-        url: `/${CLASS_ITEM_NAME}/${reservationId}/status`
-    })
+export function reservationCustomer(reservation: {
+    reservationId: number;
+    status: number;
+    customerName: string;
+    customerPhone: string;
+}): Promise<SingleResponse | undefined> {
+    return apiPut<SingleResponse>({
+        url: `/${CLASS_ITEM_NAME}/customer`
+    }, reservation);
+}
+
+export function generateCode(reservationId: number): Promise<SingleResponse | undefined> {
+    return apiPost<SingleResponse>({
+        url: `/${CLASS_ITEM_NAME}/${reservationId}/code`,
+        params: null
+    }, { reservationId })
 }
 
 export function actionReservation(reservation: Reservation, action: string): Promise<SingleResponse | undefined> {
-    if(action === "create")
-    {
+    if (action === "create") {
         return apiPost<SingleResponse>({
             url: `/${CLASS_ITEM_NAME}`,
             params: null

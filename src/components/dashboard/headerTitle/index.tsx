@@ -2,16 +2,18 @@ import { HeaderText, ToolbarContainer } from "@/containers/dashboard-container/s
 import { RollbackOutlined, SaveOutlined } from "@ant-design/icons";
 import { Button, Space } from "antd";
 import { TFunction } from "i18next";
+import React from "react";
 
 type HeaderProps = {
     isShowText?: boolean;
     title: string;
     onSubmit?: () => void;
     loading?: boolean;
-    t: TFunction<"translation", undefined>
+    t: TFunction<"translation", undefined>;
+    children?: React.ReactNode;
 }
 
-const HeaderTitle: React.FC<HeaderProps> = ({ isShowText, title, onSubmit, loading, t }) => {
+const HeaderTitle: React.FC<HeaderProps> = ({ isShowText, title, onSubmit, loading, t, children }) => {
     return (
         <ToolbarContainer isRow={true}>
             <HeaderText>{title}</HeaderText>
@@ -25,6 +27,7 @@ const HeaderTitle: React.FC<HeaderProps> = ({ isShowText, title, onSubmit, loadi
                 >
                     {isShowText && t("save")}
                 </Button>
+                {children}
             </Space>
         </ToolbarContainer>
     )

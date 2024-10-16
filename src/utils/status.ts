@@ -1,8 +1,9 @@
 import { OrderStatus, OrderStatusText } from "@/enums"
+import { TFunction } from "i18next";
 
-export const getOrderStatus = (value: number) => {
+export const getOrderStatus = (value: number, t: TFunction<"translation", undefined>) => {
     return {
-        title: OrderStatusText[value as keyof typeof OrderStatusText],
+        title: OrderStatusText(value, t),
         color: getOrderStatusColor(value)
     };
 }

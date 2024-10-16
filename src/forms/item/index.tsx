@@ -53,7 +53,7 @@ export const ItemForm: React.FC<FormProps> = (props) => {
                     </Form.Item>
                     <Form.Item
                         label={props.t("slug")}
-                        tooltip={{ title: 'Slug sẽ hiển thị trên đường dẫn thay cho id của sản phẩm' }}
+                        tooltip={{ title: props.t("slug-replace") }}
                         name="slug"
                         rules={[{ required: true, message: props.t("slug-require") }]}
                     >
@@ -108,7 +108,7 @@ export const ItemForm: React.FC<FormProps> = (props) => {
                     </ImageContainer>
                     <Form.Item
                         label={props.t("price")}
-                        tooltip="Giá của một món ăn/đồ uống"
+                        tooltip={props.t("food-price")}
                         name="price"
                         rules={[{ required: true, message: props.t("price-require") }]}
                     >
@@ -116,7 +116,7 @@ export const ItemForm: React.FC<FormProps> = (props) => {
                     </Form.Item>
                     <Form.Item
                         label={props.t("quantity")}
-                        tooltip="Số lượng tồn của sản phẩm"
+                        tooltip={props.t("quantity-in-stock")}
                         name="quantity"
                         rules={[{ required: true, message: props.t("quantity-require") }]}
                     >

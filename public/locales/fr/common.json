@@ -357,5 +357,48 @@
   "food-recent": "Plats récents",
   "email": "E-mail",
   "increase": "Augmenter",
-  "decrease": "Réduire"
+  "decrease": "Réduire",
+  "daysOfWeek": [
+    "dimanche",
+    "lundi",
+    "mardi",
+    "mercredi",
+    "jeudi",
+    "vendredi",
+    "samedi"
+  ],
+  "monthsOfYear": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12"
+  ],
+  "dateFormat": "{{dayOfWeek}} {{day}} {{month}} {{year}}",
+  "slug-replace": "Le slug sera affiché dans l'URL à la place de l'ID du produit",
+  "food-price": "Le prix d'un plat/boisson",
+  "quantity-in-stock": "La quantité d'un produit en stock",
+  "orderStatus": {
+    "0": "Brouillon",
+    "1": "Confirmé",
+    "2": "En préparation",
+    "3": "Prêt",
+    "4": "Terminé",
+    "5": "Annulé",
+    "6": "Retardé",
+    "7": "Payé",
+    "8": "Erreur",
+    "9": "Remboursé"
+  },
+  "quantity-call": "Nombre d'appels supplémentaires",
+  "time-call": "Temps d'appel supplémentaire",
+  "clean": "Nettoyé",
+  "generate-code": "Générer des code QR"
 }

@@ -60,7 +60,7 @@ export const useStoreSelector: TypedUseSelectorHook<RootState> = useSelector
 store.dispatch(fetchData());
 store.dispatch(fetchDataPaymentMethod());
 store.dispatch(fetchCategoryData());
-store.dispatch(fetchLocationData());
+// store.dispatch(fetchLocationData());
 store.dispatch(fetchDataDashboard());
 store.dispatch(fetchStoreData());
 store.dispatch(fetchRoleData());

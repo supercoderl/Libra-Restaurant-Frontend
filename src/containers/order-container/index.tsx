@@ -146,7 +146,7 @@ export default function OrderContainer({ t }: { t: TFunction<"translation", unde
                 <FluidContainer>
                     <HeaderContainer>
                         <HeaderText>{t("my-cart")}: #13432</HeaderText>
-                        <HeaderTime>{formatDate(new Date())}</HeaderTime>
+                        <HeaderTime>{formatDate(new Date(), t)}</HeaderTime>
                     </HeaderContainer>
                     <BodyContainer>
                         <LeftContainer>

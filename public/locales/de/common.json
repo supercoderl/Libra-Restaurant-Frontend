@@ -357,5 +357,48 @@
   "food-recent": "Kürzliche Gerichte",
   "email": "E-mail",
   "increase": "Zunahme",
-  "decrease": "Reduzieren"
+  "decrease": "Reduzieren",
+  "daysOfWeek": [
+    "Sonntag",
+    "Montag",
+    "Dienstag",
+    "Mittwoch",
+    "Donnerstag",
+    "Freitag",
+    "Samstag"
+  ],
+  "monthsOfYear": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12"
+  ],
+  "dateFormat": "{{dayOfWeek}}, den {{day}}. {{month}} {{year}}",
+  "slug-replace": "Der Slug wird anstelle der Produkt-ID in der URL angezeigt",
+  "food-price": "Der Preis eines Speisen-/Getränkartikels",
+  "quantity-in-stock": "Die Menge eines Produkts auf Lager",
+  "orderStatus": {
+    "0": "Entwurf",
+    "1": "Bestätigt",
+    "2": "In Vorbereitung",
+    "3": "Bereit",
+    "4": "Abgeschlossen",
+    "5": "Storniert",
+    "6": "Verschoben",
+    "7": "Bezahlt",
+    "8": "Fehler",
+    "9": "Erstattet"
+  },
+  "quantity-call": "Anzahl zusätzlicher Anrufe",
+  "time-call": "Zusätzliche Anrufzeit",
+  "clean": "Aufgeräumt",
+  "generate-code": "Generieren Sie QR-Codes"
 }

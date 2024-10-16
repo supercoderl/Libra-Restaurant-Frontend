@@ -9,7 +9,7 @@ import { useTranslation } from "next-i18next";
 import { toast } from "react-toastify";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
-export async function getStaticProps({ locale }: { locale: string }) {
+export async function getServerSideProps({ locale }: { locale: string }) {
     return {
         props: {
             ...(await serverSideTranslations(locale, ['common'])),
@@ -67,7 +67,7 @@ const StoreAction: NextPage = () => {
                         { name: 'bankAccount', value: res.data?.bankAccount || '' },
                         { name: 'isActive', value: res.data?.isActive }
                     ]);
-                    setState(t("update-store"));
+                    setState(t("store-update"));
                 }
             }
             catch (error) {
