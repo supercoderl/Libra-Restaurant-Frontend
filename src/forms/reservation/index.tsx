@@ -1,14 +1,10 @@
-import { Button, DatePicker, Form, Input, Select } from "antd"
+import { DatePicker, Form, Input, Select } from "antd"
 import { Container } from "../style"
 import { DashboardLayout } from "@/layouts/DashboardLayout";
 import HeaderTitle from "@/components/dashboard/headerTitle";
 import useWindowDimensions from "@/hooks/use-window-dimensions";
 import { Store } from "@/type/Store";
 import { TFunction } from "i18next";
-import { QrcodeOutlined } from "@ant-design/icons";
-import { useStoreDispatch } from "@/redux/store";
-import { generateCodeAsync } from "@/redux/slices/reservation-slice";
-import { toast } from "react-toastify";
 
 
 type FormProps = {
@@ -19,30 +15,16 @@ type FormProps = {
     loading: boolean;
     stores: Store[];
     t: TFunction<"translation", undefined>;
-    reservationId: number;
 };
 
-export const ReservationForm: React.FC<FormProps> = ({ onChange, fields, title, onFinish, loading, stores, t, reservationId }) => {
+export const ReservationForm: React.FC<FormProps> = ({ onChange, fields, title, onFinish, loading, stores, t }) => {
     const [form] = Form.useForm();
-    console.log(fields);
-    const dispatch = useStoreDispatch();
 
     const { width } = useWindowDimensions();
 
     return (
         <DashboardLayout t={t}>
-            <HeaderTitle t={t} title={title} isShowText={width > 767} onSubmit={onFinish} loading={loading}>
-                <Button
-                    icon={<QrcodeOutlined />}
-                    type="default"
-                    danger
-                    onClick={() => {
-                        dispatch(generateCodeAsync(reservationId)).then(() => toast(t("generate-success"), {type: "success"}))
-                    }}
-                >
-                    {width > 767 && t("generate-code")}
-                </Button>
-            </HeaderTitle>
+            <HeaderTitle t={t} title={title} isShowText={width > 767} onSubmit={onFinish} loading={loading} />
             <Container>
                 <Form
                     form={form}

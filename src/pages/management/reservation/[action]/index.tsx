@@ -128,7 +128,6 @@ const ReservationAction: NextPage = () => {
         onFinish={onFinish}
         loading={loading}
         stores={storeDatas}
-        reservationId={Number(searchParams.get('reservationId'))}
     />
 }
 
