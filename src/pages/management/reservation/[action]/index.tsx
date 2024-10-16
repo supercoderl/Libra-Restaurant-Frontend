@@ -31,7 +31,8 @@ const ReservationAction: NextPage = () => {
         { name: ['description'], value: '' },
         { name: ['reservationTime'], value: dayjs(new Date()) },
         { name: ['customerName'], value: '' },
-        { name: ['customerPhone'], value: '' }
+        { name: ['customerPhone'], value: '' },
+        { name: ['code'], value: ''}
     ]);
     const [storeDatas, setStores] = useState<Store[]>([]);
     const [loading, setLoading] = useState(false);
@@ -50,7 +51,8 @@ const ReservationAction: NextPage = () => {
                         { name: 'description', value: res.data?.description || '' },
                         { name: 'reservationTime', value: undefined },
                         { name: 'customerName', value: res.data?.customerName || '' },
-                        { name: 'customerPhone', value: res.data?.customerPhone || '' }
+                        { name: 'customerPhone', value: res.data?.customerPhone || '' },
+                        { name: 'code', value: res.data?.qrCode }
                     ]);
                     setState(t("reservation-update"));
                 }

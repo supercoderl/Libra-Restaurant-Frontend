@@ -18,7 +18,7 @@ export default function QRScanContainer() {
     const router = useRouter();
     const [show, setShow] = useState(false);
     const dispatch = useStoreDispatch();
-    const { status, isChanged, tableNumber, customerPhone } = useStoreSelector(state => state.reservation);
+    const { status, isChanged, tableNumber, customerPhone, id } = useStoreSelector(state => state.reservation);
     const [jsonValue, setJsonValue] = useState<any>(null);
     const [step, setStep] = useState(1);
     const [pause, setPause] = useState(false);
@@ -37,8 +37,8 @@ export default function QRScanContainer() {
 
     const onScan = (scannedValue: any) => {
         setJsonValue(scannedValue);
-        if (scannedValue?.reservationId) {
-            dispatch(getStatus(Number(scannedValue.reservationId)));
+        if (scannedValue?.tableNumber && scannedValue?.storeId) {
+            dispatch(getStatus({ tableNumber: Number(scannedValue.tableNumber), storeId: scannedValue.storeId }));
         }
         setPause(true);
     };
@@ -47,10 +47,9 @@ export default function QRScanContainer() {
         setPause(false);
         setShow(false);
         setStep(1);
-        if(status === Status.Available)
-        {
+        if (status === Status.Available) {
             dispatch(updateReservationAsync({
-                reservationId: jsonValue?.reservationId,
+                reservationId: id,
                 isChanged: tableNumber !== -1 && tableNumber !== jsonValue?.tableNumber,
                 capacity: jsonValue?.capacity,
                 storeId: jsonValue?.storeId,
@@ -60,10 +59,9 @@ export default function QRScanContainer() {
                 customerPhone
             }));
         }
-        else if(status === Status.Occupied)
-        {
+        else if (status === Status.Occupied) {
             dispatch(updateReservationOccupied({
-                reservationId: jsonValue?.reservationId,
+                reservationId: id,
                 isChanged: tableNumber !== -1 && tableNumber !== jsonValue?.tableNumber,
                 capacity: jsonValue?.capacity,
                 storeId: jsonValue?.storeId,

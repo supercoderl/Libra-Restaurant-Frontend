@@ -28,6 +28,12 @@ export function reservation(id?: number): Promise<SingleResponse | undefined> {
     })
 }
 
+export function reservationByTableAndStore(tableNumber: number, storeId: string): Promise<SingleResponse | undefined> {
+    return apiGet<SingleResponse>({
+        url: `/${CLASS_ITEM_NAME}/${tableNumber}/${storeId}`
+    })
+}
+
 export function reservationTable(tableNumber?: number | null, storeId?: string | null): Promise<SingleResponse | undefined> {
     return apiGet<SingleResponse>({
         url: `/${CLASS_ITEM_NAME}/${tableNumber}/${storeId}`

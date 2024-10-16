@@ -1,10 +1,10 @@
-import { generateCode, reservation, reservationCustomer } from "@/api/business/reservationApi";
+import { generateCode, reservationByTableAndStore, reservationCustomer } from "@/api/business/reservationApi";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export const getStatus = createAsyncThunk(
     'reservations/getStatus',
-    async (reservationId: number) => {
-        const response = await reservation(reservationId);
+    async ({ tableNumber, storeId }: { tableNumber: number, storeId: string }) => {
+        const response = await reservationByTableAndStore(tableNumber, storeId);
         if (response?.success)
             return response?.data;
         return null;
@@ -105,6 +105,7 @@ const mainReservationSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(getStatus.fulfilled, (state, action) => {
             if (action.payload) {
+                state.id = action.payload.reservationId;
                 state.status = action.payload.status;
                 state.customerName = action.payload.customerName;
                 state.customerPhone = action.payload.customerPhone;
