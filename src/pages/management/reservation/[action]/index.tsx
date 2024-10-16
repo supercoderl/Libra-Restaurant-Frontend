@@ -74,8 +74,8 @@ const ReservationAction: NextPage = () => {
     const onFinish = async () => {
         setLoading(true);
         let values = fields.reduce((acc, field) => {
-            if (Array.isArray(field.name) && typeof field.name[0] === 'string') {
-                acc[field.name[0]] = field.value;
+            if (typeof field.name === 'string') { // Kiểm tra nếu name là chuỗi
+                acc[field.name] = field.value;
             }
             return acc;
         }, {} as { [key: string]: any });
