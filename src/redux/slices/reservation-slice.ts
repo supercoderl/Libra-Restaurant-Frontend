@@ -82,8 +82,16 @@ const mainReservationSlice = createSlice({
                 tableNumber
             }
         },
+        updateReservationOccupied: (state, action) => {
+            const { reservationId, capacity, storeId, tableNumber, isChanged } = action.payload;
+
+            state.id = reservationId;
+            state.capacity = capacity;
+            state.storeId = storeId;
+            state.tableNumber = tableNumber;
+            state.isChanged = isChanged; // Cập nhật xong
+        },
         clearReservation: (state) => {
-            console.log("clear");
             state.status = -1;
             state.id = null;
             state.isChanged = false;
@@ -136,6 +144,6 @@ const mainReservationSlice = createSlice({
 
 })
 
-export const { updateReservationStatus, clearReservation } = mainReservationSlice.actions
+export const { updateReservationStatus, clearReservation, updateReservationOccupied } = mainReservationSlice.actions
 
 export default mainReservationSlice.reducer;

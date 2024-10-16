@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { Status } from "@/enums";
 import { useEffect, useState } from "react";
 import { ModalSection } from "@/components/modal";
-import { getStatus, updateReservationAsync } from "@/redux/slices/reservation-slice";
+import { getStatus, updateReservationAsync, updateReservationOccupied } from "@/redux/slices/reservation-slice";
 import { useStoreDispatch, useStoreSelector } from "@/redux/store";
 import Step1 from "./step1";
 import Step2 from "./step2";
@@ -59,6 +59,16 @@ export default function QRScanContainer() {
                 customerName,
                 customerPhone
             }));
+        }
+        else if(status === Status.Occupied)
+        {
+            dispatch(updateReservationOccupied({
+                reservationId: jsonValue?.reservationId,
+                isChanged: tableNumber !== -1 && tableNumber !== jsonValue?.tableNumber,
+                capacity: jsonValue?.capacity,
+                storeId: jsonValue?.storeId,
+                tableNumber: jsonValue?.tableNumber,
+            }))
         }
         await joinTableGroup(`${jsonValue?.storeId}-${jsonValue?.tableNumber}`);
         toast(t("book-successful"), { type: "success" });
