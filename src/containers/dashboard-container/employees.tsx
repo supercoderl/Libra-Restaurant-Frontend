@@ -1,17 +1,18 @@
 import { DashboardLayout } from "@/layouts/DashboardLayout"
-import { Button, Checkbox, CheckboxProps, DatePicker, DatePickerProps, Divider, Input, Modal, Select, SelectProps, Table, TableColumnsType, Tag, Tooltip, Typography } from "antd";
+import { Button, Checkbox, CheckboxProps, DatePicker, DatePickerProps, Divider, Input, Modal, Popconfirm, Select, SelectProps, Table, TableColumnsType, Tag, Tooltip, Typography } from "antd";
 import { ActionContainer, AlignContainer, HeaderText, TableContainer, ToolbarContainer } from "./style";
-import { EditOutlined, LockOutlined, PlusOutlined, ReloadOutlined, SisternodeOutlined } from "@ant-design/icons";
+import { EditOutlined, LockOutlined, PlusOutlined, ReloadOutlined, SisternodeOutlined, UnlockOutlined } from "@ant-design/icons";
 import useWindowDimensions from "@/hooks/use-window-dimensions";
 import { ListRep } from "@/type/objectTypes";
 import { useState } from "react";
 import { Employee } from "@/type/Employee";
 import { UserStatus } from "@/enums";
-import { useStoreSelector } from "@/redux/store";
+import { useStoreDispatch, useStoreSelector } from "@/redux/store";
 import { assign } from "@/api/business/roleApi";
 import { toast } from "react-toastify";
 import { MobileTable } from "@/components/mobile/tables/mobile-table";
 import { TFunction } from "i18next";
+import { updateEmployeeData } from "@/redux/slices/employee-slice";
 
 type HeaderProps = {
     isShowText?: boolean;
@@ -20,7 +21,7 @@ type HeaderProps = {
 
 const Header: React.FC<HeaderProps> = ({ isShowText, t }) => {
     return (
-        <ToolbarContainer isRow={true}>
+        <ToolbarContainer $isRow={true}>
             <HeaderText>{t("employee-management-full")}</HeaderText>
         </ToolbarContainer>
     )
@@ -49,7 +50,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch, t }) => {
     const { Search } = Input;
 
     return (
-        <ToolbarContainer isRow={isRow}>
+        <ToolbarContainer $isRow={isRow}>
             <AlignContainer>
                 <DatePicker placeholder={t("update-at")} onChange={onChangeDate} />
 
@@ -158,12 +159,24 @@ export const EmployeeContainer: React.FC<EmployeeProps> = ({ result, loading, on
                             href={`edit?employeeId=${row.id}`}
                         />
                     </Tooltip>
-                    <Tooltip title={t("block")}>
-                        <Button
-                            icon={<LockOutlined />}
-                            type="link"
-                            danger
-                        />
+                    <Tooltip title={row.status === UserStatus.Active ? t("block") : "Mở khóa"}>
+                        <Popconfirm
+                            title={row.status === UserStatus.Active ? "Khóa tài khoản" : "Mở khóa tài khoản"}
+                            description={`Bạn có chắc muốn ${row.status === UserStatus.Active ? "khóa" : "mở khóa"} tài khoản nhân viên này?`}
+                            okText="Đồng ý"
+                            cancelText="Không"
+                            okButtonProps={{ loading: employeeLoading }}
+                            onConfirm={() => {
+                                const body = { ...row, status: row.status === UserStatus.Active ? UserStatus.InActive : UserStatus.Active }
+                                dispatch(updateEmployeeData(body)).then(onReload);
+                            }}
+                        >
+                            <Button
+                                icon={row.status === UserStatus.Active ? <LockOutlined /> : <UnlockOutlined />}
+                                type="link"
+                                danger
+                            />
+                        </Popconfirm>
                     </Tooltip>
                 </ActionContainer>
             ),
@@ -231,7 +244,11 @@ export const EmployeeContainer: React.FC<EmployeeProps> = ({ result, loading, on
     const [employeeSeleted, setEmployeeSeleted] = useState<Employee | null>(null);
     const { width } = useWindowDimensions();
     const { Text } = Typography;
-    const { roles } = useStoreSelector(state => state.mainRoleSlice);
+    const { roles, employeeLoading } = useStoreSelector(state => ({
+        roles: state.mainRoleSlice.roles,
+        employeeLoading: state.mainEmployeeSlice.loading
+    }));
+    const dispatch = useStoreDispatch();
 
     return (
         <DashboardLayout t={t}>
@@ -246,6 +263,7 @@ export const EmployeeContainer: React.FC<EmployeeProps> = ({ result, loading, on
                                 type: 'checkbox',
                                 ...rowSelection,
                             }}
+                            rowKey={(record) => record.id}
                             columns={columns}
                             dataSource={result?.items}
                             style={{ borderRadius: 0 }}

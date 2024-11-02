@@ -11,22 +11,35 @@ import useWindowDimensions from "@/hooks/use-window-dimensions";
 import { useStoreSelector } from "@/redux/store";
 import { toast } from "react-toastify";
 import { v4 as uuid } from 'uuid';
+import { Order } from "@/type/Order";
+import { OrderStatus } from "@/enums";
+import { actionOrder } from "@/api/business/orderApi";
+import { clearCart, updateOrder } from "@/redux/slices/cart-slice";
+import { Spinner } from "@/components/loading/spinner";
+import { remove } from "@/utils/localStorage";
+import { clearReservation } from "@/redux/slices/reservation-slice";
 
 type PaymentProps = {
     show: boolean;
     setShow: React.Dispatch<React.SetStateAction<boolean>>;
     router: AppRouterInstance;
-    orderId: string;
+    order: Order | null;
     amount: number;
+    dispatch: any;
+    tableCode: string | null;
+    sendMessageFunction: (tableName: string, message: string, type: string) => Promise<void>;
+    tableNumber: number;
 }
 
-export const Payment: React.FC<PaymentProps> = ({ show, setShow, router, orderId, amount }) => {
+export const Payment: React.FC<PaymentProps> = ({ show, setShow, router, order, amount, dispatch, tableCode, sendMessageFunction, tableNumber }) => {
     const [selected, setSelected] = useState(0);
     const [type, setType] = useState("payment");
     const { width } = useWindowDimensions();
-    const { paymentMethods } = useStoreSelector(
+    const { paymentMethods, isSuccess, loading } = useStoreSelector(
         state => ({
-            paymentMethods: state.mainPaymentMethodSlice.paymentMethods
+            paymentMethods: state.mainPaymentMethodSlice.paymentMethods,
+            isSuccess: state.cart.isSuccess,
+            loading: state.cart.loading
         }),
     );
 
@@ -36,14 +49,41 @@ export const Payment: React.FC<PaymentProps> = ({ show, setShow, router, orderId
             toast("Vui lòng chọn một phương thức thanh toán!", { type: "warning" });
             return;
         }
-        else if (payment && payment.name != "Trực tiếp tại quầy") {
+        else if (payment && payment.name != "Trực tiếp tại bàn") {
             setType("loading");
             setTimeout(async () => {
                 await onPost(payment.name, payment.paymentMethodId);
             }, 600);
         }
         else {
-            setType("notify");
+            if (order && tableCode) {
+                let body = {
+                    ...order,
+                    priceCalculated: amount,
+                    subtotal: amount,
+                    total: amount,
+                    latestStatus: OrderStatus.Ready,
+                    latestStatusUpdate: new Date(),
+                    isPaid: false,
+                    isPreparationDelayed: false,
+                    isCanceled: false,
+                    isReady: true,
+                    isCompleted: false,
+                    action: "pay"
+                };
+
+                setTimeout(() => {
+                    dispatch(updateOrder(body)).then(async () => {
+                        if (isSuccess) {
+                            await sendMessageFunction(tableCode, `Khách bàn số ${tableNumber} yêu cầu thanh toán`, "pay");
+                            setType("notify");
+                            remove("orderId");
+                            dispatch(clearCart());
+                            dispatch(clearReservation());
+                        }
+                    });
+                }, 600);
+            }
         }
     }
 
@@ -56,7 +96,7 @@ export const Payment: React.FC<PaymentProps> = ({ show, setShow, router, orderId
                     currency: "USD",
                     value: convertVNDToUSD(amount),
                     paymentMethodId,
-                    orderId
+                    orderId: order?.orderId
                 };
                 break;
             case "VNPay":
@@ -65,7 +105,7 @@ export const Payment: React.FC<PaymentProps> = ({ show, setShow, router, orderId
                     isVNBank: true,
                     isIntCard: false,
                     amount,
-                    orderId, //Transaction id,
+                    orderId: order?.orderId,
                     transactionId: uuid(),
                     status: "0",
                     paymentMethodId,
@@ -83,7 +123,7 @@ export const Payment: React.FC<PaymentProps> = ({ show, setShow, router, orderId
                     customerEmail: "mzi23844@tccho.com",
                     paymentMethodId,
                     transactionId: uuid(),
-                    orderId
+                    orderId: order?.orderId
                 }
                 break;
             case "PayOS":
@@ -91,28 +131,28 @@ export const Payment: React.FC<PaymentProps> = ({ show, setShow, router, orderId
                     productName: "Ten san pham",
                     description: "Mo ta",
                     price: amount,
-                    orderId,
+                    orderId: order?.orderId,
                     paymentMethodId,
                     transactionId: uuid(),
                 }
                 break;
         };
+
         try {
-            console.log(body);
             const res = await pay(body, type);
             if (res?.success && res.data) {
                 switch (type) {
                     case "Paypal":
-                        window.open(res.data.links[1].href, "_blank");
+                        window.open(res.data.links[1].href);
                         break;
                     case "VNPay":
-                        window.open(res.data, "_blank");
+                        window.open(res.data);
                         break;
                     case "PayOS":
-                        window.open(res.data.checkoutUrl, "_blank");
+                        window.open(res.data.checkoutUrl);
                         break;
                     case "Stripe":
-                        window.open(res.data.url, "_blank");
+                        window.open(res.data.url);
                         break;
                 }
             }
@@ -159,18 +199,34 @@ export const Payment: React.FC<PaymentProps> = ({ show, setShow, router, orderId
                         <PaymentCardButtonContainer>
                             <div>
                                 <PaymentCardButton
-                                    isSecondary={true}
+                                    $isSecondary={true}
+                                    $isLink={false}
+                                    $isPrimary={false}
+                                    $isCenter={false}
                                     onClick={() => router.push("/")}
                                 >
                                     Trở về trang chủ
                                 </PaymentCardButton>
                             </div>
                             <ContinueContainer>
-                                <PaymentCardButton isLink={true} onClick={() => setShow(false)}>Quay lại</PaymentCardButton>
                                 <PaymentCardButton
-                                    isPrimary={true}
-                                    onClick={onSubmit}
+                                    $isLink={true}
+                                    onClick={() => setShow(false)}
+                                    $isSecondary={false}
+                                    $isPrimary={false}
+                                    $isCenter={false}
                                 >
+                                    Quay lại
+                                </PaymentCardButton>
+                                <PaymentCardButton
+                                    $isPrimary={true}
+                                    $isSecondary={false}
+                                    $isLink={false}
+                                    $isCenter={false}
+                                    onClick={onSubmit}
+                                    disabled={loading}
+                                >
+                                    {loading && <Spinner width={16} color="white" />}
                                     Tiếp theo
                                 </PaymentCardButton>
                             </ContinueContainer>
@@ -196,7 +252,10 @@ export const Payment: React.FC<PaymentProps> = ({ show, setShow, router, orderId
                             <h4>Hệ thống đã gửi thông báo đến quầy, quý khách vui lòng thanh toán tại quầy. Xin cảm ơn và hẹn gặp lại!</h4>
                         </PaymentCardFix>
                         <PaymentCardButton
-                            isSecondary={true}
+                            $isSecondary={true}
+                            $isLink={false}
+                            $isPrimary={false}
+                            $isCenter={true}
                             onClick={() => router.push("/")}
                         >
                             Trở về trang chủ

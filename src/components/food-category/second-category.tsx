@@ -20,13 +20,14 @@ export const SecondCategory = () => {
             <CategoryFood>
                 <EmblaCarousel
                     className='category'
+                    isAutoPlay={false}
                     options={OPTIONS}>
                     {
                         categories.map((category, index) => (
                             <CategoryFoodItem
                                 key={index}
                                 onClick={() => handleClick(category.categoryId)}
-                                isActive={currentCategory === category.categoryId}
+                                $isActive={currentCategory === category.categoryId}
                             >
                                 <CategoryFoodItemLink>
                                     <CategoryFoodItemImage src={category.picture || ""} alt="" />

@@ -2,7 +2,7 @@ import styled from "styled-components";
 import tw from "twin.macro";
 
 type ToolbarProps = {
-    isRow?: boolean;
+    $isRow?: boolean;
 }
 
 export const Container = tw.div`bg-white shadow-md text-[#595959] h-[106px]`;
@@ -32,7 +32,7 @@ export const RecentText = tw.h3`text-[#22075e] mb-[5px] text-lg font-semibold`
 export const TableContainer = tw.div`bg-white shadow-md text-[#595959] p-4`
 
 export const ToolbarContainer = styled.div<ToolbarProps>`
-${({ isRow }) => isRow ? tw`flex-row` : tw`flex-col`}
+${({ $isRow }) => $isRow ? tw`flex-row` : tw`flex-col`}
 ${tw`bg-white shadow-md p-6 mb-4 flex items-center justify-between`}
 `
 

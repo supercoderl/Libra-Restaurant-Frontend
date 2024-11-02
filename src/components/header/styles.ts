@@ -5,7 +5,7 @@ import tw from "twin.macro";
 export const Container = tw.div`flex w-full gap-10 h-24 bg-primary items-center md:justify-between`
 
 
-export const RightSideContainer = tw.div`w-full flex-1`
+export const RightSideContainer = tw.div`w-full flex-1 relative`
 
 export const LeftSideContainer = tw.div`w-max items-center justify-around hidden md:flex`
 

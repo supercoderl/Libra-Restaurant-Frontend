@@ -41,9 +41,9 @@ export default function ThemeProvider({ children }: themeProviderType) {
 
   const updateTheme = (currentTheme: themeValues) => {
     const root = window.document.documentElement;
-    const isDark = currentTheme === 'dark';
+    const isdark = currentTheme === 'dark';
 
-    root.classList.remove(isDark ? 'light' : 'dark');
+    root.classList.remove(isdark ? 'light' : 'dark');
     root.classList.add(currentTheme);
     if (typeof window !== 'undefined' && window.localStorage) {
       window.localStorage.setItem('themeValue', currentTheme);

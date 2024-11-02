@@ -10,7 +10,7 @@ const opacityManager = ({ opacityVariable, opacityValue }, cssVar) => {
 
 module.exports = {
   purge: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
-  darkMode: false, // or 'media' or 'class'
+  darkMode: 'class', // or 'media' or 'class'
   important: true,
   content: [
     './app/**/*.{js,ts,jsx,tsx,mdx}',
@@ -27,11 +27,17 @@ module.exports = {
         productQuantity: '#D12121',
         main: '#D12121',
       },
+      dropShadow: {
+        coupon: '0 3px 5px rgba(0, 0, 0, 0.5)', // Tùy chỉnh drop-shadow
+      },
       backgroundImage: {
         catagoryBackground:
           'url("https://modinatheme.com/foodking/wp-content/uploads/2024/03/catagory-card-shape.png")',
         heroBackground:
           'url("https://wallpapers.com/images/hd/restaurant-background-npda8c1hqh6d0xso.jpg")',
+        customRadialBefore: 'radial-gradient(circle at -5% 50%, transparent 25px, gold 26px)',
+        customRadialAfter: 'radial-gradient(circle at 105% 50%, transparent 25px, gold 26px)',
+        customRadialRight: 'radial-gradient(circle at 110% 50%, transparent 25px, #fff 26px)',
       },
       borderColor: {
         primary: 'var(--bg-primary)',
@@ -108,11 +114,34 @@ module.exports = {
           '0%': { transform: 'translateX(0)', opacity: '1' },
           '100%': { transform: 'translateX(100%)', opacity: '0' },
         },
+        move: {
+          '0%': { transform: 'translateY(0)' },
+          '25%': { transform: 'translateY(-25px)' },
+          '50%': { transform: 'translateY(-15px)' },
+          '75%': { transform: 'translateY(-25px)' },
+          '100%': { transform: 'translateY(0)' },
+        },
+        rotate360: {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' }
+        },
+        fadeInUp: {
+          '0%': { opacity: 0, transform: 'translateY(20px)' },
+          '100%': { opacity: 1, transform: 'translateY(0px)' }
+        }
       },
       animation: {
         fadeIn: 'fadeIn 500ms ease-in-out',
         slideIn: 'slideIn 500ms ease-in-out',
         slideOut: 'slideOut 500ms ease-in-out',
+        move: 'move 7s infinite',
+        rotate360: 'rotate360 8s linear infinite',
+        spinSlow: 'spin 3s linear infinite',
+        fadeInUp: 'fadeInUp 0.5s ease'
+      },
+      fontFamily: {
+        barcode: ['"Libre Barcode 128 Text"', 'cursive'], // Thêm font tùy chỉnh
+        lobster: ["Lobster", "cursive"],
       },
     },
   },

@@ -4,27 +4,19 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
 import axios from "axios";
 
 export const login = createAsyncThunk('auth/login', async (data: { email: string, password: string }, { dispatch }) => {
-
-    // Set Is Authenticating `true`
-    dispatch(setIsAuthenticating(true))
-
     try {
         const res = await authenticate(data);
-
         // If Error or Token Doesn't Exist
-        if (!res?.data) {
-            throw new Error('Token Not Found')
+        if (res?.data) {
+            const token = res.data.accessToken;
+            set(keys.KEY_TOKEN, token);
+
+            const refreshToken = res.data.refreshToken;
+            set(keys.KEY_REFRESH_TOKEN, refreshToken);
+
+            // Validate User By Token
+            dispatch(validateUser(token))
         }
-
-        const token = res.data.accessToken;
-        set(keys.KEY_TOKEN, token);
-
-        const refreshToken = res.data.refreshToken;
-        set(keys.KEY_REFRESH_TOKEN, refreshToken);
-
-        // Validate User By Token
-        dispatch(validateUser(token))
-
     } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
             // Đây là lỗi từ Axios, bạn có thể truy cập vào `err.response.data.message`
@@ -36,21 +28,11 @@ export const login = createAsyncThunk('auth/login', async (data: { email: string
             // Lỗi khác không xác định
             dispatch(setMessage({ type: "error", message: "An unknown error occurred" }));
         }
-
-        // Dispatch các action khác
-        dispatch(setIsAuthenticated(false));
-        dispatch(setToken(null));
-        dispatch(setUser({}));
-        dispatch(setIsAuthenticating(false));
     }
 })
 
 // Validate User By Token
 export const validateUser = createAsyncThunk('auth/validateUser', async (token: any, { dispatch }) => {
-
-    // Set Is Authenticating `true`
-    dispatch(setIsAuthenticating(true))
-
     try {
 
         // If Token Doesn't Exist
@@ -70,48 +52,30 @@ export const validateUser = createAsyncThunk('auth/validateUser', async (token: 
         // Save `user` to localStorage
         set(keys.KEY_CURRENT_USER, JSON.stringify(user));
 
-        // Dispatch `authReducer` Values to Redux Store
-        dispatch(setIsAuthenticated(true))
-        dispatch(setToken(token))
-        dispatch(setUser(user))
-
-        // Set Is Authenticating `false`
-        dispatch(setIsAuthenticating(false))
+        return {
+            token,
+            user
+        };
 
     } catch (err) {
         console.error(err)
-
-        // Dispatch `authReducer` Values to Redux Store
-        dispatch(setIsAuthenticated(false))
-        dispatch(setToken(null))
-        dispatch(setUser({}))
-
-        // Set Is Authenticating `false`
-        dispatch(setIsAuthenticating(false))
     }
 })
 
 // Logout Action
 export const handleLogout = createAsyncThunk('auth/logout', async (e, { dispatch, rejectWithValue }) => {
     const refreshToken = get(keys.KEY_REFRESH_TOKEN);
-    
-    try {
-        // Set Is Authenticating `true`
-        dispatch(setIsAuthenticating(true));
 
+    try {
         // Gọi API để revoke refreshToken
-        if(refreshToken) {
+        if (refreshToken) {
             const res = await logout({ refreshToken });
-            console.log(res);
         };
 
         // Clear localStorage
         clear();
 
         // Cập nhật Redux Store
-        dispatch(setIsAuthenticated(false));
-        dispatch(setToken(null));
-        dispatch(setUser({}));
         remove(keys.KEY_CURRENT_USER);
         remove(keys.KEY_REFRESH_TOKEN);
         remove(keys.KEY_TOKEN);
@@ -119,9 +83,6 @@ export const handleLogout = createAsyncThunk('auth/logout', async (e, { dispatch
     } catch (error: any) {
         console.error('Logout failed:', error);
         return rejectWithValue(error.response?.data || 'Logout failed');
-    } finally {
-        // Set Is Authenticating `false` sau khi hoàn tất
-        dispatch(setIsAuthenticating(false));
     }
 })
 
@@ -140,7 +101,7 @@ interface authState {
 
 const initialState: authState = {
     isAuthenticated: false,
-    isAuthenticating: true,
+    isAuthenticating: false,
     token: null,
     user: {},
     message: {
@@ -168,7 +129,54 @@ const authSlice = createSlice({
         setMessage: (state, action: PayloadAction<Message>) => {
             state.message = action.payload;
         }
-    }
+    },
+    extraReducers: (builder) => {
+        builder
+            .addCase(login.pending, (state) => {
+                state.isAuthenticating = true;
+            })
+            .addCase(login.fulfilled, (state, action) => {
+                state.isAuthenticating = false;
+            })
+            .addCase(login.rejected, (state) => {
+                state.isAuthenticating = false;
+                state.isAuthenticated = false;
+                state.token = null;
+                state.user = {};
+            });
+        builder
+            .addCase(validateUser.pending, (state) => {
+                state.isAuthenticating = true;
+            })
+            .addCase(validateUser.fulfilled, (state, action) => {
+                state.isAuthenticating = false;
+                state.isAuthenticated = true;
+                state.token = action.payload?.token;
+                state.user = action.payload?.user;
+            })
+            .addCase(validateUser.rejected, (state) => {
+                state.isAuthenticating = false;
+                state.isAuthenticated = false;
+                state.token = null;
+                state.user = {};
+            });
+        builder
+            .addCase(handleLogout.pending, (state) => {
+                state.isAuthenticating = true;
+            })
+            .addCase(handleLogout.fulfilled, (state, action) => {
+                state.isAuthenticating = false;
+                state.isAuthenticated = false;
+                state.token = null;
+                state.user = {};
+            })
+            .addCase(handleLogout.rejected, (state) => {
+                state.isAuthenticating = false;
+                state.isAuthenticated = false;
+                state.token = null;
+                state.user = {};
+            })
+    },
 })
 
 export const { setIsAuthenticated, setIsAuthenticating, setToken, setUser, setMessage } = authSlice.actions

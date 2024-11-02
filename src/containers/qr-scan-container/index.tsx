@@ -90,7 +90,7 @@ export default function QRScanContainer() {
             <Container>
                 <BodyContainer>
                     <CenterContainer>
-                        <Header />
+                        <Header t={t} />
                         <TitleContainer>
                             <Title>{t("scan-to-order")}</Title>
                         </TitleContainer>

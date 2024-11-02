@@ -22,5 +22,6 @@ export default interface Query {
   searchTerm?: string | null
   isAll?: boolean,
   categoryId?: number,
-  type?: string
+  type?: string,
+  itemId?: number
 }

@@ -2,7 +2,7 @@ import styled from "styled-components";
 import tw from "twin.macro";
 
 type themeType = {
-  isDark?: boolean;
+  $isdark: boolean;
 }
 
 export const Container = styled.label`
@@ -22,10 +22,10 @@ export const SwitchInput = tw.input`
   `
 
 export const SwitchIcon = styled.svg<themeType>`
-  ${({ isDark }) => isDark && tw`rotate-[30deg]`}
+  ${({ $isdark }) => $isdark && tw`rotate-[30deg]`}
   ${tw`absolute block top-[0.375em] w-[0.75em] h-[0.75em] duration-300 transition-transform`}
 `
 
 export const SwitchPolyline = styled.polyline<themeType>`
-  ${({ isDark }) => isDark && tw`ease-custom-bezier-out`}
+  ${({ $isdark }) => $isdark && tw`ease-custom-bezier-out`}
 `

@@ -8,11 +8,11 @@ export const FoodItemSkeleton = () => {
             </ImageContainer>
             <DetailContainer>
                 <RowContainer>
-                    <Title isSkeleton className="custom-gradient">asdasdasdasdasda</Title>
+                    <Title $isSkeleton className="custom-gradient">asdasdasdasdasda</Title>
                 </RowContainer>
                 <RowContainer>
-                    <Title isSkeleton className="custom-gradient">asdasdaaa</Title>
-                    <Title isSkeleton className="custom-gradient">asdasda</Title>
+                    <Title $isSkeleton className="custom-gradient">asdasdaaa</Title>
+                    <Title $isSkeleton className="custom-gradient">asdasda</Title>
                 </RowContainer>
             </DetailContainer>
         </Container>

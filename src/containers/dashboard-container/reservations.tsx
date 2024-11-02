@@ -1,5 +1,5 @@
 import { DashboardLayout } from "@/layouts/DashboardLayout"
-import { Button, Checkbox, CheckboxProps, DatePicker, DatePickerProps, Divider, Image, Input, Select, Table, TableColumnsType, Tag, Tooltip } from "antd";
+import { Button, Checkbox, CheckboxProps, DatePicker, DatePickerProps, Divider, Image, Input, Popconfirm, Select, Table, TableColumnsType, Tag, Tooltip } from "antd";
 import { ActionContainer, AlignContainer, HeaderText, TableContainer, ToolbarContainer } from "./style";
 import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined, ReloadOutlined, RollbackOutlined } from "@ant-design/icons";
 import useWindowDimensions from "@/hooks/use-window-dimensions";
@@ -11,8 +11,8 @@ import { MobileTable } from "@/components/mobile/tables/mobile-table";
 import { useRouter } from "next/navigation";
 import { TFunction } from "i18next";
 import ClearIcon from "../../../public/assets/icons/clear-icon.svg";
-import { useStoreDispatch } from "@/redux/store";
-import { updateReservationAsync } from "@/redux/slices/reservation-slice";
+import { useStoreDispatch, useStoreSelector } from "@/redux/store";
+import { deleteReservationAsync, updateReservationAsync } from "@/redux/slices/reservation-slice";
 import { toast } from "react-toastify";
 
 type HeaderProps = {
@@ -23,7 +23,7 @@ type HeaderProps = {
 const Header: React.FC<HeaderProps> = ({ isShowText, t }) => {
     const router = useRouter();
     return (
-        <ToolbarContainer isRow={true}>
+        <ToolbarContainer $isRow={true}>
             <HeaderText>{t("reservation-management-full")}</HeaderText>
             <Button
                 icon={<RollbackOutlined />}
@@ -60,7 +60,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch, t }) => {
     const { Search } = Input;
 
     return (
-        <ToolbarContainer isRow={isRow}>
+        <ToolbarContainer $isRow={isRow}>
             <AlignContainer>
                 <DatePicker placeholder={t("update-at")} onChange={onChangeDate} />
 
@@ -180,11 +180,20 @@ export const ReservationContainer: React.FC<ReservationProps> = ({ result, loadi
                         />
                     </Tooltip>
                     <Tooltip title={t("delete")}>
-                        <Button
-                            icon={<DeleteOutlined />}
-                            type="link"
-                            danger
-                        />
+                        <Popconfirm
+                            title="Xóa bàn"
+                            description="Bạn có chắc muốn xóa bàn này?"
+                            okText="Đồng ý"
+                            cancelText="Không"
+                            okButtonProps={{ loading: reservationLoading }}
+                            onConfirm={() => dispatch(deleteReservationAsync(row.reservationId)).then(onReload)}
+                        >
+                            <Button
+                                icon={<DeleteOutlined />}
+                                type="link"
+                                danger
+                            />
+                        </Popconfirm>
                     </Tooltip>
                 </ActionContainer>
             ),
@@ -203,6 +212,10 @@ export const ReservationContainer: React.FC<ReservationProps> = ({ result, loadi
     const [isOpen, setIsOpen] = useState(false);
     const [itemSelected, setItemSelected] = useState<Reservation | null>(null);
     const { width } = useWindowDimensions();
+    const { reservationLoading } = useStoreSelector(state => ({
+        reservationLoading: state.reservation.loading
+    }));
+
     const dispatch = useStoreDispatch();
 
     const handleSubmitClean = (reservation: Reservation) => {
@@ -236,6 +249,7 @@ export const ReservationContainer: React.FC<ReservationProps> = ({ result, loadi
                             }}
                             columns={columns}
                             dataSource={result?.items}
+                            rowKey={(record) => record.reservationId}
                             style={{ borderRadius: 0 }}
                             loading={loading}
                             pagination={{ pageSize: result?.pageSize, total: result?.count, onChange: onPaginationChange }}

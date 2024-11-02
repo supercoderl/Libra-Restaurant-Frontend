@@ -25,18 +25,15 @@ export default function FoodCategory({ category, t }: { category: Category, t: T
           fill
           data-src={category.picture || "https://modinatheme.com/foodking/wp-content/uploads/2024/03/french-fry.png"}
           alt="Image"
+          sizes="auto"
+          priority={true}
           src={category.picture || "https://modinatheme.com/foodking/wp-content/uploads/2024/03/french-fry.png"}
           className="lazyloaded"
         />
       </CategoryImageContainer>
-      <CategoryContentContainer className="catagory-product-content text-center">
-        <div className="catagory-product-icon">
-
-        </div>
-        <Text>
-          <a>{category.name}</a>
-        </Text>
-        <TextQuantity>{category.itemNumber} {t("dishes")}</TextQuantity>
+      <CategoryContentContainer $isSkeleton={false} className="catagory-product-content text-center">
+        <Text $isSkeleton={false}>{category.name}</Text>
+        <TextQuantity $isSkeleton={false}>{category.itemNumber} {t("dishes")}</TextQuantity>
       </CategoryContentContainer>
     </Container>
   );

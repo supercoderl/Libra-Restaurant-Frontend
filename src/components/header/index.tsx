@@ -10,20 +10,17 @@ import {
   RightSideContainer,
   TitleContainer,
 } from './styles';
-import { toggleCart } from 'src/redux/slices/cart-slice';
-import { useStoreDispatch } from 'src/redux/store';
 import { theme } from 'twin.macro';
 import useWindowDimensions from 'src/hooks/use-window-dimensions';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useTranslation } from 'react-i18next';
+import { TFunction } from 'i18next';
 
-export default function Header() {
-  const { t } = useTranslation();
-  const dispatch = useStoreDispatch();
-  const clickHandler = () => {
-    dispatch(toggleCart());
-  };
+type HeaderProps = {
+  t: TFunction<"translation", undefined>
+}
+
+export default function Header({ t }: HeaderProps) {
   const router = useRouter();
 
   const { width } = useWindowDimensions();
@@ -38,7 +35,7 @@ export default function Header() {
         <InputHeader t={t} />
       </RightSideContainer>
       {width < 1600 && (
-        <IconContainer onClick={clickHandler}>
+        <IconContainer>
           <Link href='myorder' style={{ width: 22 }}><BagIcon fill={theme`textColor.primary`}></BagIcon></Link>
           <Link href='scan' style={{ width: 22 }}><ScanIcon fill={theme`textColor.primary`}></ScanIcon></Link>
         </IconContainer>

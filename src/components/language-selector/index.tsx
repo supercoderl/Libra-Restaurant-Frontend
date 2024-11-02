@@ -1,12 +1,10 @@
-import i18next from "i18next";
+
 import { PopupContainer, Select } from "./style"
 import { languageResources } from "@/utils/i18next";
 import { languages } from "@/model/languages";
-import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 
 export const LanguageSelector = () => {
-    const { t } = useTranslation();
     const router = useRouter();
 
     const changeLocale = (locale: string) => {

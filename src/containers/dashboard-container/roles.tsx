@@ -18,7 +18,7 @@ type HeaderProps = {
 const Header: React.FC<HeaderProps> = ({ isShowText, t }) => {
     const router = useRouter();
     return (
-        <ToolbarContainer isRow={true}>
+        <ToolbarContainer $isRow={true}>
             <HeaderText>{t("role-management-full")}</HeaderText>
             <Button
                 icon={<RollbackOutlined />}
@@ -55,7 +55,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch, t }) => {
     const { Search } = Input;
 
     return (
-        <ToolbarContainer isRow={isRow}>
+        <ToolbarContainer $isRow={isRow}>
             <AlignContainer>
                 <DatePicker placeholder={t("update-at")} onChange={onChangeDate} />
 
@@ -258,6 +258,7 @@ export const RoleContainer: React.FC<RoleProps> = ({ result, loading, onReload, 
                                 ...rowSelection,
                             }}
                             columns={columns}
+                            rowKey={(record) => record.roleId}
                             dataSource={result?.items}
                             style={{ borderRadius: 0 }}
                             loading={loading}

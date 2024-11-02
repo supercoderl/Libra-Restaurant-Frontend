@@ -1,5 +1,5 @@
 import { BottomDetail, BottomText, BottomTextA, BottomTextSpan, Box, Button, Content, ContentTop, FooterContainer, Input, InputBox, LinkBoxes, LinkName, LinkNameText, MediaIcon, MediaText, SpanLogo, TitleDetail, TitleImage, TitleLogo } from "./style"
-import logo from "../../../public/assets/images/logo-no-bg.png";
+import logo from "../../../public/assets/images/logo/logo-removebg-preview.png";
 import FacebookIcon from "../../../public/assets/icons/facebook-icon.svg";
 import TwitterIcon from "../../../public/assets/icons/twitter-icon.svg";
 import InstagramIcon from "../../../public/assets/icons/instagram-icon.svg";
@@ -7,7 +7,6 @@ import LinkedInIcon from "../../../public/assets/icons/linkedin-icon.svg";
 import YoutubeIcon from "../../../public/assets/icons/youtube-icon.svg";
 import { TFunction } from "i18next";
 import React from "react";
-import Link from "next/link";
 
 export default function Footer({ t }: { t: TFunction<"translation", undefined> }) {
     return (
@@ -19,7 +18,7 @@ export default function Footer({ t }: { t: TFunction<"translation", undefined> }
                         <TitleLogo>Libra <SpanLogo>Restaurant</SpanLogo></TitleLogo>
                     </TitleDetail>
                     <MediaIcon>
-                        <MediaText href="#">
+                        <MediaText href="https://www.facebook.com/quangm4">
                             <FacebookIcon width={24} height={24} />
                         </MediaText>
                         <MediaText href="#">
@@ -28,7 +27,7 @@ export default function Footer({ t }: { t: TFunction<"translation", undefined> }
                         <MediaText href="#">
                             <InstagramIcon width={24} height={24} />
                         </MediaText>
-                        <MediaText href="#">
+                        <MediaText href="https://www.linkedin.com/in/supercoderle">
                             <LinkedInIcon width={24} height={24} />
                         </MediaText>
                         <MediaText href="#">
@@ -39,7 +38,7 @@ export default function Footer({ t }: { t: TFunction<"translation", undefined> }
                 <LinkBoxes>
                     <Box>
                         <LinkName>{t("company")}</LinkName>
-                        <li><LinkNameText>{t("home")}</LinkNameText></li>
+                        <li><LinkNameText href="/">{t("home")}</LinkNameText></li>
                         <li><LinkNameText href="#">{t("contact")}</LinkNameText></li>
                         <li><LinkNameText href="#">{t("intro")}</LinkNameText></li>
                         <li><LinkNameText href="#">{t("hire")}</LinkNameText></li>
@@ -53,7 +52,7 @@ export default function Footer({ t }: { t: TFunction<"translation", undefined> }
                     </Box>
                     <Box>
                         <LinkName>{t("account")}</LinkName>
-                        <Link href="/login"><LinkNameText>{t("login")}</LinkNameText></Link>
+                        <li><LinkNameText href="/login">{t("login")}</LinkNameText></li>
                         <li><LinkNameText href="#">{t("profile")}</LinkNameText></li>
                         <li><LinkNameText href="#">{t("options")}</LinkNameText></li>
                         <li><LinkNameText href="#">{t("pay")}</LinkNameText></li>

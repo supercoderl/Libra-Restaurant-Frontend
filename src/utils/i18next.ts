@@ -11,8 +11,8 @@ import vi from '../../public/locales/vi/common.json'
 import zh from '../../public/locales/zh/common.json'
 
 export const languageResources = {
-    en: { translation: en },
     vi: { translation: vi },
+    en: { translation: en },
     de: { translation: de },
     fr: { translation: fr },
     hi: { translation: hi },

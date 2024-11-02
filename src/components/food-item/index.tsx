@@ -6,6 +6,7 @@ import {
   ImageContainer,
   PlusContainer,
   RowContainer,
+  StrikeText,
   StyledStarIcon,
   Text,
   TimeContainer,
@@ -18,26 +19,22 @@ import { theme } from 'twin.macro';
 import PlusIcon from 'public/assets/icons/plus-icon.svg';
 import Item from '@/type/Item';
 import { toast } from 'react-toastify';
-import { TFunction } from 'i18next';
 import { useTranslation } from "next-i18next";
+import { calculateDiscountPrice } from '@/utils/price';
+import { DiscountStatus } from '@/enums';
 
 export default function FoodItem(item: Item) {
-  const { picture, title, price } = item;
-  const [priceRepresentation, setPriceRepresentation] = useState('');
+  const { picture, title, price, discount } = item;
   const dispatch = useStoreDispatch();
   const id = useStoreSelector(state => state.reservation.id);
   const { t } = useTranslation();
-
-  useEffect(() => {
-    setPriceRepresentation(price.toString() + ' ₫');
-  }, [price]);
 
   const handleClick = () => {
     if (!id) {
       toast(t("you-have-not-reservation"), { type: "warning" })
     }
     else {
-      dispatch(addItem(item));
+      dispatch(addItem({ item }));
     }
   };
 
@@ -49,10 +46,11 @@ export default function FoodItem(item: Item) {
       </PlusContainer>
       <ImageContainer>
         <Image
-          layout="fill"
           src={picture || process.env.NEXT_PUBLIC_DUMMY_PICTURE || ""}
           alt={`${title} image`}
-          objectFit="contain"
+          style={{ objectFit: "contain" }}
+          fill
+          sizes="100vw"
         />
         <TimeContainer>
           <TimeText>
@@ -70,9 +68,11 @@ export default function FoodItem(item: Item) {
             height="15"
             tw="mr-1.5"
           />
-          <Text>A</Text>
-          <Text isAlternativeColor>Coffee</Text>
-          <Text isAlternativeColor isEnd>{priceRepresentation}</Text>
+          <Text $isAlternativeColor>{item.sku}</Text>
+          <Text $isAlternativeColor $isEnd>
+            {calculateDiscountPrice(price, discount?.discountValue, discount?.isPercentage, item.discountStatus) && `${calculateDiscountPrice(price, discount?.discountValue, discount?.isPercentage, item.discountStatus)} ₫`} &nbsp;
+            <StrikeText $isStrike={discount !== null && discount !== undefined && item.discountStatus === DiscountStatus.Active}>{price}</StrikeText> ₫
+          </Text>
         </RowContainer>
       </DetailContainer>
     </Container>

@@ -1,6 +1,5 @@
-import { categories } from '@/api/business/categoryApi';
+import { categories, deleteCategory } from '@/api/business/categoryApi';
 import Category from '@/type/Category';
-import Query from '@/type/Query';
 import { createAsyncThunk, createSlice, Draft, PayloadAction } from '@reduxjs/toolkit';
 
 
@@ -27,14 +26,32 @@ export const fetchCategoryData = createAsyncThunk(
   }
 )
 
+export const deleteCategoryAsync = createAsyncThunk(
+  'categories/deleteCategory',
+  async (id: number, { rejectWithValue }) => {
+    try {
+      const response = await deleteCategory(id);
+
+      if (response?.success) {
+        return true;
+      }
+      return false;
+    } catch (error: any) {
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+)
+
 type sliceType = {
   categories: Category[]
   currentCategory: number;
+  loading: boolean;
 }
 
 const initialState: sliceType = {
   categories: [],
-  currentCategory: 1
+  currentCategory: 1,
+  loading: false
 }
 
 const mainCategorySlice = createSlice({
@@ -46,9 +63,27 @@ const mainCategorySlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchCategoryData.fulfilled, (state, action) => {
-      state.categories = action.payload.categories;
-    })
+    builder
+      .addCase(fetchCategoryData.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchCategoryData.fulfilled, (state, action) => {
+        state.categories = action.payload.categories;
+        state.loading = false;
+      })
+      .addCase(fetchCategoryData.rejected, (state) => {
+        state.loading = false;
+      });
+    builder
+      .addCase(deleteCategoryAsync.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(deleteCategoryAsync.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(deleteCategoryAsync.rejected, (state) => {
+        state.loading = false;
+      });
   },
 
 })

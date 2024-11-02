@@ -70,3 +70,10 @@ export function actionReservation(reservation: Reservation, action: string): Pro
         params: null
     }, reservation)
 }
+
+export function deleteReservation(reservationId: number): Promise<SingleResponse | undefined> {
+    return apiDelete<SingleResponse>({
+        url: `/${CLASS_ITEM_NAME}/${reservationId}`,
+        params: null
+    })
+}

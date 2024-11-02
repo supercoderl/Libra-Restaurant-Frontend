@@ -5,10 +5,10 @@ import { Container, SwitchIcon, SwitchInput, SwitchPolyline } from './style';
 export default function DarkThemeToggler() {
   const themeContext = useContext(ThemeContext);
   return (
-    <Container onClick={themeContext.toggleTheme} className='group'>
-      <SwitchInput type="checkbox" role="switch" className='peer' />
+    <Container className='group'>
+      <SwitchInput onClick={themeContext.toggleTheme} type="checkbox" role="switch" className='peer' />
       <SwitchIcon
-        isDark={themeContext.theme !== "dark"}
+        $isdark={themeContext.theme !== "dark"}
         viewBox="0 0 12 12"
         width="12px"
         height="12px"
@@ -18,19 +18,19 @@ export default function DarkThemeToggler() {
         <g fill="none" stroke="#D14009" strokeWidth="1" strokeLinecap="round">
           <circle cx="6" cy="6" r="2" />
           <g strokeDasharray="1.5 1.5">
-            <SwitchPolyline isDark={themeContext.theme !== "dark"} points="6 10,6 11.5" transform="rotate(0,6,6)" />
-            <SwitchPolyline isDark={themeContext.theme !== "dark"} points="6 10,6 11.5" transform="rotate(45,6,6)" />
-            <SwitchPolyline isDark={themeContext.theme !== "dark"} points="6 10,6 11.5" transform="rotate(90,6,6)" />
-            <SwitchPolyline isDark={themeContext.theme !== "dark"} points="6 10,6 11.5" transform="rotate(135,6,6)" />
-            <SwitchPolyline isDark={themeContext.theme !== "dark"} points="6 10,6 11.5" transform="rotate(180,6,6)" />
-            <SwitchPolyline isDark={themeContext.theme !== "dark"} points="6 10,6 11.5" transform="rotate(225,6,6)" />
-            <SwitchPolyline isDark={themeContext.theme !== "dark"} points="6 10,6 11.5" transform="rotate(270,6,6)" />
-            <SwitchPolyline isDark={themeContext.theme !== "dark"} points="6 10,6 11.5" transform="rotate(315,6,6)" />
+            <SwitchPolyline $isdark={themeContext.theme !== "dark"} points="6 10,6 11.5" transform="rotate(0,6,6)" />
+            <SwitchPolyline $isdark={themeContext.theme !== "dark"} points="6 10,6 11.5" transform="rotate(45,6,6)" />
+            <SwitchPolyline $isdark={themeContext.theme !== "dark"} points="6 10,6 11.5" transform="rotate(90,6,6)" />
+            <SwitchPolyline $isdark={themeContext.theme !== "dark"} points="6 10,6 11.5" transform="rotate(135,6,6)" />
+            <SwitchPolyline $isdark={themeContext.theme !== "dark"} points="6 10,6 11.5" transform="rotate(180,6,6)" />
+            <SwitchPolyline $isdark={themeContext.theme !== "dark"} points="6 10,6 11.5" transform="rotate(225,6,6)" />
+            <SwitchPolyline $isdark={themeContext.theme !== "dark"} points="6 10,6 11.5" transform="rotate(270,6,6)" />
+            <SwitchPolyline $isdark={themeContext.theme !== "dark"} points="6 10,6 11.5" transform="rotate(315,6,6)" />
           </g>
         </g>
       </SwitchIcon>
       <SwitchIcon
-        isDark={themeContext.theme === "dark"}
+        $isdark={themeContext.theme === "dark"}
         viewBox="0 0 12 12"
         width="12px"
         height="12px"

@@ -30,8 +30,8 @@ import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import { appWithTranslation } from 'next-i18next';
 import DarkThemeToggler from '@/components/dark-theme-toggler';
-import { LanguageSelector } from '@/components/language-selector';
-import { SignalRProvider, useSignalR } from '@/context/signalRProvider';
+import { SignalRProvider } from '@/context/signalRProvider';
+import { Settings } from '@/components/settings';
 
 let persistor = persistStore(store);
 
@@ -46,8 +46,8 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 
   return (
     <ConfigProvider locale={locale}>
-      <LanguageSelector />
-      <Provider store={store}>
+      {/* <LanguageSelector /> */}
+      <Provider store={store} stabilityCheck="never">
         <SignalRProvider>
           <GlobalStyles />
           <ThemeStyles />
@@ -55,6 +55,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
           <ThemeProvider>
             <PersistGate loading={null} persistor={persistor}>
               <Component {...pageProps} />
+              <Settings />
             </PersistGate>
             <DarkThemeToggler />
           </ThemeProvider>

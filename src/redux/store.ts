@@ -16,6 +16,10 @@ import mainStoreSlice, { fetchStoreData } from './slices/store-slice';
 import mainRoleSlice, { fetchRoleData } from './slices/roles-slice';
 import mainEmployeeSlice, { fetchEmployeeData } from './slices/employee-slice';
 import mainNotificationSlice, { fetchNotifications } from './slices/message-slice';
+import mainDiscountTypeSlice, { fetchDiscountTypeData } from './slices/discountTypes-slice';
+import mainDiscountSlice from './slices/discount-slice';
+import mainReviewSlice from './slices/review-slice';
+import loadingDelayMiddleware from 'middlewares/loading';
 
 const reducers = combineReducers({
   cart: cartSlice,
@@ -30,7 +34,10 @@ const reducers = combineReducers({
   mainStoreSlice: mainStoreSlice,
   mainRoleSlice: mainRoleSlice,
   mainEmployeeSlice: mainEmployeeSlice,
-  mainNotificationSlice: mainNotificationSlice
+  mainNotificationSlice: mainNotificationSlice,
+  mainDiscountTypeSlice: mainDiscountTypeSlice,
+  mainDiscountSlice: mainDiscountSlice,
+  mainReviewSlice: mainReviewSlice
 });
 
 
@@ -47,7 +54,7 @@ const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
-    }),
+    }).concat(loadingDelayMiddleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>
@@ -66,5 +73,6 @@ store.dispatch(fetchStoreData());
 store.dispatch(fetchRoleData());
 store.dispatch(fetchEmployeeData());
 store.dispatch(fetchNotifications());
+store.dispatch(fetchDiscountTypeData());
 
 export default store

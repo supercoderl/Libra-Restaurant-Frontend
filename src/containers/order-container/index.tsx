@@ -1,10 +1,10 @@
 import { checkTimeDifference, formatDate, generateOrderNo } from "@/utils/date";
-import { BodyContainer, CartContainer, FluidContainer, CustomerCartText, HeaderContainer, HeaderText, HeaderTime, ImageDesktop, ImageItemContainer, ImageMobile, ItemContainer, ItemInfoContainer, ItemInfoMoreContainer, ItemInfoMoreText, ItemInfoPriceContainer, ItemInfoPriceDiscount, ItemInfoPriceText, ItemInfoPriceTotal, ItemInfoTextContainer, ItemInfoTitle, LeftContainer, Price, PriceCalculate, PriceCalculateContainer, PriceCalculateText, PriceCalculateTotal, PriceContainer, PriceTotal, PriceTotalNumber, PriceTotalText, RightContainer, ShippingText, Container, CenterContainer, Button, ButtonContainer, QuantityContainer, QuantityButton, ItemInfoPriceContainerMobile, PromoContainer, PromoInput, PromoButtonContainer, PromoButton, PromoSvg } from "./style";
+import { BodyContainer, CartContainer, FluidContainer, CustomerCartText, HeaderContainer, HeaderText, HeaderTime, ImageDesktop, ImageItemContainer, ImageMobile, ItemContainer, ItemInfoContainer, ItemInfoMoreContainer, ItemInfoMoreText, ItemInfoPriceContainer, ItemInfoPriceDiscount, ItemInfoPriceText, ItemInfoPriceTotal, ItemInfoTextContainer, ItemInfoTitle, LeftContainer, Price, PriceCalculate, PriceCalculateContainer, PriceCalculateText, PriceCalculateTotal, PriceContainer, PriceTotal, PriceTotalNumber, PriceTotalText, RightContainer, ShippingText, Container, CenterContainer, Button, ButtonContainer, QuantityContainer, QuantityButton, ItemInfoPriceContainerMobile, PromoContainer, PromoInput, PromoButtonContainer, PromoButton, PromoSvg, DiscountText, HeaderWarning } from "./style";
 import { useStoreDispatch, useStoreSelector } from "@/redux/store";
 import Header from "@/components/header";
 import { useRouter } from "next/navigation";
-import { OrderStatus } from "@/enums";
-import React, { useEffect, useState } from "react";
+import { DiscountStatus, OrderStatus } from "@/enums";
+import React, { useContext, useEffect, useState } from "react";
 import { actionOrder, order } from "@/api/business/orderApi";
 import { Order } from "@/type/Order";
 import { Spinner } from "@/components/loading/spinner";
@@ -13,12 +13,17 @@ import AddIcon from '../../../public/assets/icons/add-icon.svg';
 import CloseIcon from '../../../public/assets/icons/close-icon.svg';
 import SubtractIcon from '../../../public/assets/icons/subtract-icon.svg';
 import { ArrowEffect } from "@/components/arrows/effect";
-import { changeQuantity, removeItem } from "@/redux/slices/cart-slice";
+import { changeQuantity, removeItem, updateItemsInCart } from "@/redux/slices/cart-slice";
 import { toast } from "react-toastify";
 import { v4 as uuid } from 'uuid';
 import { get, set } from "@/utils/localStorage";
 import { TFunction } from "i18next";
 import { useSignalR } from "@/context/signalRProvider";
+import { fetchDiscountTypeByCodeData, updateDiscount } from "@/redux/slices/discountTypes-slice";
+import { calculateDiscountPrice, calculateTotal } from "@/utils/price";
+import { mergeItemsAndOrderLines } from "@/utils/check";
+import { OrderLine } from "@/type/OrderLine";
+import { ThemeContext } from "@/theme/theme-provider";
 
 export default function OrderContainer({ t }: { t: TFunction<"translation", undefined> }) {
     const router = useRouter();
@@ -29,25 +34,38 @@ export default function OrderContainer({ t }: { t: TFunction<"translation", unde
     const [count, setCount] = useState(0);
     const dispatch = useStoreDispatch();
     const { sendMessageToGroup } = useSignalR();
+    const [discount, setDiscount] = useState("");
     const myTable = get("my-table");
+    const [now, setNow] = useState(new Date());
+    const themeContext = useContext(ThemeContext);
 
-    const { itemsInCart, id, storeId, tableNumber } = useStoreSelector(
+    const { itemsInCart, id, storeId, tableNumber, discountLoading, discountType, items } = useStoreSelector(
         state => ({
             itemsInCart: state.cart.itemsInCart,
             id: state.reservation.id,
             storeId: state.reservation.storeId,
-            tableNumber: state.reservation.tableNumber
+            tableNumber: state.reservation.tableNumber,
+            discountLoading: state.mainDiscountTypeSlice.loading,
+            discountType: state.mainDiscountTypeSlice.discountType,
+            items: state.mainProductSlice.items
         })
     );
 
-    const calculatePriceItems = () => {
-        if (itemsInCart && itemsInCart.length > 0) {
-            const totalPrice = itemsInCart.reduce((total, e) => {
-                return total + (e.item.price * e.quantityOrder);
-            }, 0);
-            return totalPrice;
+    const handlePromoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (itemsInCart.length <= 0) {
+            toast(t("cannot-input-promo"), { type: "warning" });
+            return;
         }
-        return 0;
+
+        setDiscount(e.target.value);
+
+        if (e.target.value === "") {
+            dispatch(updateDiscount(null));
+        }
+    }
+
+    const onAcceptCode = () => {
+        dispatch(fetchDiscountTypeByCodeData(discount));
     }
 
     const onCancel = () => {
@@ -66,7 +84,7 @@ export default function OrderContainer({ t }: { t: TFunction<"translation", unde
             return;
         }
         else if (!myTable) {
-            toast("Bàn của bạn xảy ra lỗi!", { type: "warning" });
+            toast(t("your-reservation-have-error"), { type: "warning" });
             return;
         }
 
@@ -75,10 +93,10 @@ export default function OrderContainer({ t }: { t: TFunction<"translation", unde
             orderNo: generateOrderNo(Number(tableNumber)),
             storeId,
             reservationId: Number(id),
-            priceCalculated: calculatePriceItems(),
-            subtotal: calculatePriceItems(),
+            priceCalculated: calculateTotal(itemsInCart, discountType),
+            subtotal: calculateTotal(itemsInCart, discountType),
             tax: 0,
-            total: calculatePriceItems(),
+            total: calculateTotal(itemsInCart, discountType),
             latestStatus: OrderStatus.InPreperation,
             latestStatusUpdate: new Date(),
             isPaid: false,
@@ -90,7 +108,13 @@ export default function OrderContainer({ t }: { t: TFunction<"translation", unde
                 orderId: uuid(),
                 itemId: e.item.itemId,
                 quantity: e.quantityOrder,
-                isCanceled: false
+                isCanceled: false,
+                foodPrice: e.item?.discount ? calculateDiscountPrice(
+                    e.item.price,
+                    e.item?.discount?.discountValue,
+                    e.item?.discount?.isPercentage,
+                    e.item.discountStatus
+                ) : e.item.price
             }))
         };
 
@@ -110,7 +134,7 @@ export default function OrderContainer({ t }: { t: TFunction<"translation", unde
                     setOrderId(response.data);
                 };
             }
-            await sendMessageToGroup(myTable, `Khách bàn số ${tableNumber} đã đặt món`);
+            await sendMessageToGroup(myTable, `Khách bàn số ${tableNumber} đã đặt món`, "order");
             toast(t("order-success"), { type: "success" })
         }
         catch (error) {
@@ -127,12 +151,31 @@ export default function OrderContainer({ t }: { t: TFunction<"translation", unde
         if (orderId && typeof orderId === "string") setOrderId(orderId);
     }, []);
 
+    useEffect(() => {
+        setInterval(() => {
+            setNow(new Date());
+        }, 1000);
+    }, []);
+
     //? Focus On Mount
     useEffect(() => {
         const getOrder = async () => {
             const res = await order(orderId || "");
             if (res && res.data) {
                 setOrderS(res.data);
+                if (itemsInCart.length === 0 && res.data?.orderLines && res.data?.orderLines.length > 0) {
+                    const itemsAddToCart = res.data?.orderLines.map((x: OrderLine) => {
+                        const item = items.find(i => i.itemId === x.itemId);
+                        if (item) {
+                            return {
+                                item,
+                                quantityOrder: x.quantity
+                            };
+                        }
+                        return null;
+                    }).filter(Boolean);
+                    dispatch(updateItemsInCart(itemsAddToCart));
+                }
             }
         }
 
@@ -142,23 +185,19 @@ export default function OrderContainer({ t }: { t: TFunction<"translation", unde
     return (
         <Container>
             <CenterContainer>
-                <Header />
+                <Header t={t} />
                 <FluidContainer>
                     <HeaderContainer>
                         <HeaderText>{t("my-cart")}: #13432</HeaderText>
-                        <HeaderTime>{formatDate(new Date(), t)}</HeaderTime>
+                        <HeaderTime>{`${formatDate(new Date(), t)} - ${now.toLocaleString("en-US", { hour: "numeric", minute: "numeric", second: "2-digit", hour12: false })}`}</HeaderTime>
+                        {!orderId && <HeaderWarning>{t("please-scan")}</HeaderWarning>}
                     </HeaderContainer>
                     <BodyContainer>
                         <LeftContainer>
                             <CartContainer>
                                 <CustomerCartText>{t("cart")}</CustomerCartText>
                                 {
-                                    itemsInCart && itemsInCart.length > 0 &&
-                                    itemsInCart.map((e, index) => {
-                                        let orderLine;
-                                        if (orderS && orderS.orderLines && orderS.orderLines.length > 0) {
-                                            orderLine = orderS.orderLines.find((x: any) => x.itemId === e.item.itemId);
-                                        }
+                                    mergeItemsAndOrderLines(itemsInCart, orderS?.orderLines, items).map((e, index) => {
                                         return (
                                             <ItemContainer key={index}>
                                                 <ImageItemContainer>
@@ -167,7 +206,7 @@ export default function OrderContainer({ t }: { t: TFunction<"translation", unde
                                                 </ImageItemContainer>
                                                 <ItemInfoContainer>
                                                     <ItemInfoTextContainer>
-                                                        <ItemInfoTitle>{e.item.title}</ItemInfoTitle>
+                                                        <ItemInfoTitle>{e.item?.title}</ItemInfoTitle>
                                                         <ItemInfoMoreContainer>
                                                             <ItemInfoMoreText><span>Style: </span> Italic Minimal Design</ItemInfoMoreText>
                                                             <ItemInfoMoreText><span>Size: </span> Small</ItemInfoMoreText>
@@ -175,17 +214,25 @@ export default function OrderContainer({ t }: { t: TFunction<"translation", unde
                                                         </ItemInfoMoreContainer>
                                                     </ItemInfoTextContainer>
                                                     <ItemInfoPriceContainerMobile>
-                                                        <ItemInfoPriceTotal>{e.item.price * e.quantityOrder} ₫</ItemInfoPriceTotal>
+                                                        <ItemInfoPriceTotal $isStrike={false}>{
+                                                            e.item?.discount &&
+                                                            `${calculateDiscountPrice(
+                                                                e.item.price * e.quantityOrder,
+                                                                e.item?.discount?.discountValue,
+                                                                e.item?.discount?.isPercentage,
+                                                                e.item.discountStatus
+                                                            )} ₫`}</ItemInfoPriceTotal>
+                                                        <ItemInfoPriceTotal $isStrike={e.item.discountStatus === DiscountStatus.Active}>{e.item.price * e.quantityOrder} ₫</ItemInfoPriceTotal>
                                                         <QuantityContainer>
                                                             <QuantityButton
-                                                                isDisabled={false}
+                                                                $isDisabled={false}
                                                                 onClick={() => dispatch(changeQuantity({ id: e.item.itemId, quantity: e.quantityOrder + 1 }))}>
                                                                 <AddIcon width={16} fill="white" />
                                                             </QuantityButton>
                                                             <ItemInfoPriceText>{e.quantityOrder}</ItemInfoPriceText>
                                                             <QuantityButton
-                                                                isDisabled={orderLine && orderLine.quantity === e.quantityOrder}
-                                                                disabled={orderLine && orderLine.quantity === e.quantityOrder}
+                                                                $isDisabled={!e.hasMore}
+                                                                disabled={!e.hasMore}
                                                                 onClick={() => {
                                                                     if (e.quantityOrder === 1) {
                                                                         dispatch(removeItem(e.item.itemId))
@@ -219,41 +266,48 @@ export default function OrderContainer({ t }: { t: TFunction<"translation", unde
                                     <PriceCalculate>
                                         <PriceCalculateContainer>
                                             <PriceCalculateText>{t("subtotal")}</PriceCalculateText>
-                                            <PriceCalculateTotal>{calculatePriceItems()} ₫</PriceCalculateTotal>
+                                            <PriceCalculateTotal>{calculateTotal(itemsInCart, discountType)} ₫</PriceCalculateTotal>
                                         </PriceCalculateContainer>
                                         <PriceCalculateContainer>
                                             <PriceCalculateText>{t("sale")}</PriceCalculateText>
-                                            <PriceCalculateTotal>0 ₫</PriceCalculateTotal>
+                                            <PriceCalculateTotal>{discountType ? discountType.isPercentage ? `${discountType.value}%` : `${discountType.value} ₫` : `0 ₫`}</PriceCalculateTotal>
                                         </PriceCalculateContainer>
                                         <PriceCalculateContainer>
                                             <PriceCalculateText>{t("tax")}</PriceCalculateText>
-                                            <PriceCalculateTotal>10%</PriceCalculateTotal>
+                                            <PriceCalculateTotal>0%</PriceCalculateTotal>
                                         </PriceCalculateContainer>
+                                        {discountType && <DiscountText>{t("applied-promo")} {discountType.counponCode}</DiscountText>}
                                         <PromoContainer>
                                             <PromoInput
                                                 type="text"
                                                 placeholder={t("input-discount")}
+                                                onChange={handlePromoChange}
+                                                value={discount}
                                             />
                                             <PromoButtonContainer>
                                                 <PromoButton
                                                     type="submit"
                                                     aria-label="Submit"
+                                                    onClick={onAcceptCode}
                                                 >
-                                                    <PromoSvg viewBox="0 0 16 6" aria-hidden="true">
-                                                        <path
-                                                            fill="currentColor"
-                                                            fill-rule="evenodd"
-                                                            clip-rule="evenodd"
-                                                            d="M16 3 10 .5v2H0v1h10v2L16 3Z"
-                                                        ></path>
-                                                    </PromoSvg>
+                                                    {discountLoading ?
+                                                        <Spinner width={20} color={themeContext.theme === "dark" ? "black" : "white"} />
+                                                        :
+                                                        <PromoSvg viewBox="0 0 16 6" aria-hidden="true">
+                                                            <path
+                                                                fill={themeContext.theme === "dark" ? "black" : "white"}
+                                                                fillRule="evenodd"
+                                                                clipRule="evenodd"
+                                                                d="M16 3 10 .5v2H0v1h10v2L16 3Z"
+                                                            ></path>
+                                                        </PromoSvg>}
                                                 </PromoButton>
                                             </PromoButtonContainer>
                                         </PromoContainer>
                                     </PriceCalculate>
                                     <PriceTotal>
                                         <PriceTotalText>{t("total")}</PriceTotalText>
-                                        <PriceTotalNumber>{calculatePriceItems() + calculatePriceItems() * 10 / 100} ₫</PriceTotalNumber>
+                                        <PriceTotalNumber>{calculateTotal(itemsInCart, discountType)} ₫</PriceTotalNumber>
                                     </PriceTotal>
                                     <ButtonContainer>
                                         <Button onClick={onCancel}>{t("cancel")}</Button>
@@ -269,7 +323,9 @@ export default function OrderContainer({ t }: { t: TFunction<"translation", unde
                                 </Price>
 
                                 <ButtonContainer>
-                                    <Button onClick={() => setShow(true)} className="group">
+                                    <Button onClick={() => {
+                                        orderId ? setShow(true) : toast(t("please-call-order"), { type: "warning" });
+                                    }} className="group">
                                         {t("pay")}
                                     </Button>
                                 </ButtonContainer>
@@ -283,8 +339,12 @@ export default function OrderContainer({ t }: { t: TFunction<"translation", unde
                 show={show}
                 setShow={setShow}
                 router={router}
-                orderId={orderId || ""}
-                amount={calculatePriceItems() + calculatePriceItems() * 10 / 100}
+                order={orderS}
+                amount={calculateTotal(itemsInCart, discountType)}
+                dispatch={dispatch}
+                tableCode={myTable}
+                sendMessageFunction={sendMessageToGroup}
+                tableNumber={tableNumber}
             />
         </Container>
     )

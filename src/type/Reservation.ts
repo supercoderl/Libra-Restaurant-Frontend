@@ -10,4 +10,5 @@ export interface Reservation {
     customerPhone?: string | null;
     qrCode?: string | null;
     storeName?: string | null;
+    orderId?: string | null;
 }

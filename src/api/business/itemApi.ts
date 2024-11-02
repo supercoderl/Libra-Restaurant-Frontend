@@ -35,3 +35,15 @@ export function actionItem(item: Item, action: string): Promise<SingleResponse |
         params: null
     }, item)
 }
+
+export function deleteItem(id: number): Promise<SingleResponse | undefined> {
+    return apiDelete<SingleResponse>({
+        url: `/${CLASS_ITEM_NAME}/${id}`
+    })
+}
+
+export function itemBySlug(slug: string): Promise<SingleResponse | undefined> {
+    return apiGet<SingleResponse>({
+        url: `/${CLASS_ITEM_NAME}/slug/${slug}`
+    })
+}

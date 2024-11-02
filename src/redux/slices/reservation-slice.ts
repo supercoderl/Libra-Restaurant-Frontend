@@ -1,4 +1,5 @@
-import { generateCode, reservationByTableAndStore, reservationCustomer } from "@/api/business/reservationApi";
+import { deleteReservation, generateCode, reservationByTableAndStore, reservationCustomer } from "@/api/business/reservationApi";
+import { set } from "@/utils/localStorage";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export const getStatus = createAsyncThunk(
@@ -40,6 +41,21 @@ export const generateCodeAsync = createAsyncThunk(
                 return response?.data;
             }
             return null;
+        } catch (error: any) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+export const deleteReservationAsync = createAsyncThunk(
+    'reservation/deleteReservation',
+    async (reservationId: number, { rejectWithValue }) => {
+        try {
+            const response = await deleteReservation(reservationId);
+            if (response?.success) {
+                return true;
+            }
+            return false;
         } catch (error: any) {
             return rejectWithValue(error.response.data);
         }
@@ -109,6 +125,8 @@ const mainReservationSlice = createSlice({
                 state.status = action.payload.status;
                 state.customerName = action.payload.customerName;
                 state.customerPhone = action.payload.customerPhone;
+
+                if (action.payload.orderId) set("orderId", action.payload.orderId);
             }
         });
         builder
@@ -139,6 +157,16 @@ const mainReservationSlice = createSlice({
                 state.loading = false;
             })
             .addCase(generateCodeAsync.rejected, (state) => {
+                state.loading = false;
+            });
+        builder
+            .addCase(deleteReservationAsync.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(deleteReservationAsync.fulfilled, (state) => {
+                state.loading = false;
+            })
+            .addCase(deleteReservationAsync.rejected, (state) => {
                 state.loading = false;
             });
     },

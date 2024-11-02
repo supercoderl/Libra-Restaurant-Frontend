@@ -1,4 +1,9 @@
 import { TFunction } from "i18next";
+import moment from "moment";
+
+export const dateFormatter = (date: Date, format?: string) => {
+    return date ? moment(date).format(format || "DD-MM-YYYY") : "N/A";
+}
 
 export function formatDate(date: Date, t: TFunction<"translation", undefined>) {
     const daysOfWeek = t('daysOfWeek', { returnObjects: true }) as string[];

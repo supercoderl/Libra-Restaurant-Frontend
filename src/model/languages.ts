@@ -1,4 +1,13 @@
 import { Language } from "@/type/Language";
+import vietnam from "../../public/assets/images/flag/vietnam.png";
+import england from "../../public/assets/images/flag/england.png";
+import germany from "../../public/assets/images/flag/germany.png";
+import france from "../../public/assets/images/flag/french.png";
+import india from "../../public/assets/images/flag/hindi.png";
+import japan from "../../public/assets/images/flag/japan.png";
+import korea from "../../public/assets/images/flag/korea.png";
+import thailand from "../../public/assets/images/flag/thailand.png";
+import china from "../../public/assets/images/flag/china.png";
 
 export const languages: { [key: string]: Language } = {
     "ab": {
@@ -120,7 +129,8 @@ export const languages: { [key: string]: Language } = {
     "zh": {
         "name": "Chinese",
         "nativeName": "中文 (Zhōngwén), 汉语, 漢語",
-        "code": "zh"
+        "code": "zh",
+        "flag": china.src
     },
     "cv": {
         "name": "Chuvash",
@@ -161,7 +171,8 @@ export const languages: { [key: string]: Language } = {
     "en": {
         "name": "English",
         "nativeName": "English",
-        "code": "en"
+        "code": "en",
+        "flag": england.src
     },
     "eo": {
         "name": "Esperanto",
@@ -190,7 +201,8 @@ export const languages: { [key: string]: Language } = {
     "fr": {
         "name": "French",
         "nativeName": "français, langue française",
-        "code": "fr"
+        "code": "fr",
+        "flag": france.src
     },
     "ff": {
         "name": "Fula; Fulah; Pulaar; Pular",
@@ -207,7 +219,8 @@ export const languages: { [key: string]: Language } = {
     "de": {
         "name": "German",
         "nativeName": "Deutsch",
-        "code": "de"
+        "code": "de",
+        "flag": germany.src
     },
     "el": {
         "name": "Greek, Modern",
@@ -240,7 +253,8 @@ export const languages: { [key: string]: Language } = {
     "hi": {
         "name": "Hindi",
         "nativeName": "हिन्दी, हिंदी",
-        "code": "hi"
+        "code": "hi",
+        "flag": india.src
     },
     "ho": {
         "name": "Hiri Motu",
@@ -293,7 +307,8 @@ export const languages: { [key: string]: Language } = {
     "ja": {
         "name": "Japanese",
         "nativeName": "日本語 (にほんご／にっぽんご)",
-        "code": "jp"
+        "code": "jp",
+        "flag": japan.src
     },
     "jv": {
         "name": "Javanese",
@@ -346,7 +361,8 @@ export const languages: { [key: string]: Language } = {
     "ko": {
         "name": "Korean",
         "nativeName": "한국어 (韓國語), 조선말 (朝鮮語)",
-        "code": "ko"
+        "code": "ko",
+        "flag": korea.src
     },
     "ku": {
         "name": "Kurdish",
@@ -631,7 +647,8 @@ export const languages: { [key: string]: Language } = {
     "th": {
         "name": "Thai",
         "nativeName": "ไทย",
-        "code": "th"
+        "code": "th",
+        "flag": thailand.src
     },
     "ti": {
         "name": "Tigrinya",
@@ -700,7 +717,8 @@ export const languages: { [key: string]: Language } = {
     "vi": {
         "name": "Vietnamese",
         "nativeName": "Tiếng Việt",
-        "code": "vi"
+        "code": "vi",
+        "flag": vietnam.src
     },
     "vo": {
         "name": "Volapük",

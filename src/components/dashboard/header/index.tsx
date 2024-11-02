@@ -57,7 +57,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ isShowButton, onMenuC
                 </Dropdown>
                 <Dropdown
                     menu={{ items }}
-                    placement="bottomCenter"
+                    placement="bottom"
                     overlayStyle={{ cursor: 'pointer' }}
                     trigger={['click']}
                     

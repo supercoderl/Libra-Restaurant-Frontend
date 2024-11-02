@@ -1,6 +1,5 @@
 import Header from "@/components/header";
 import { Food } from "../home-container/food";
-import DarkThemeToggler from "@/components/dark-theme-toggler";
 import { useStoreSelector } from "src/redux/store";
 import { shallowEqual } from "react-redux";
 import { Hero } from "@/components/hero";
@@ -20,8 +19,8 @@ export default function FoodContainer({ t }: { t: TFunction<"translation", undef
         <Container>
             <BodyContainer>
                 <CenterContainer>
-                    <Header />
-                    <Hero t={t} />
+                    <Header t={t} />
+                    <Hero title={t("food-store")} />
                     <SecondCategory />
                     <ContentContainer>
                         <Food

@@ -32,4 +32,8 @@ export interface Order {
     storeName?: string | null;
     orderLines: OrderLine[];
     orderLogs: OrderLog[];
+    reservationInfo?: {
+        customerName?: string | null;
+        customerPhone?: string | null;
+    } | null;
 }

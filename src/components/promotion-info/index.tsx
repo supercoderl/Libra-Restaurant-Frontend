@@ -17,8 +17,8 @@ export default function PromotionInfo() {
         <Image
           src={personIMG}
           alt="person img"
-          layout="fill"
-          objectFit="contain"
+          style={{ objectFit: "contain" }}
+          fill
         />
       </LeftContainer>
       <CenterContainer>

@@ -1,14 +1,11 @@
 import Header from "@/components/header";
-import { CenterContainer, BodyContainer, Container, ContentContainer, OrderContainer } from "./style";
+import { CenterContainer, BodyContainer, Container, ContentContainer } from "./style";
 import { Food } from "../home-container/food";
-import DarkThemeToggler from "@/components/dark-theme-toggler";
 import { useStoreSelector } from "src/redux/store";
 import { shallowEqual } from "react-redux";
-import { Order } from "@/components/order";
 import { Hero } from "@/components/hero";
-import { OrderPrice } from "@/components/order/price";
 import { SecondCategory } from "@/components/food-category/second-category";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { toast } from "react-toastify";
 import { TFunction } from "i18next";
 
@@ -41,8 +38,8 @@ export default function ReservationContainer({ tableNumber, storeId, reservation
             <Container>
                 <BodyContainer>
                     <CenterContainer>
-                        <Header />
-                        <Hero t={t} />
+                        <Header t={t} />
+                        <Hero title={t("food-store")} />
                         <SecondCategory />
                         <ContentContainer>
                             <Food

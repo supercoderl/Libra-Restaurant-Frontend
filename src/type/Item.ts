@@ -12,4 +12,12 @@ export default interface Item {
     createdAt: Date;
     lastUpdatedAt?: Date | null;
     categoryIds: number[];
+    discount: {
+        discountId: number;
+        isPercentage: boolean;
+        discountValue: number;
+        discountTypeId: number;
+    };
+    discountStatus: number;
+    ratingScore: number;
 }

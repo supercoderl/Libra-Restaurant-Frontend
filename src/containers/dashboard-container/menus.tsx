@@ -1,7 +1,7 @@
 import { DashboardLayout } from "@/layouts/DashboardLayout"
-import { Button, Checkbox, CheckboxProps, DatePicker, DatePickerProps, Divider, Image, Input, Select, Table, TableColumnsType, Tag, Tooltip } from "antd";
+import { Button, Checkbox, CheckboxProps, DatePicker, DatePickerProps, Divider, Input, Select, Table, TableColumnsType, Tag, Tooltip } from "antd";
 import { ActionContainer, AlignContainer, HeaderText, TableContainer, ToolbarContainer } from "./style";
-import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined, ReloadOutlined, RollbackOutlined } from "@ant-design/icons";
+import { EditOutlined, EyeOutlined, PlusOutlined, ReloadOutlined, RollbackOutlined } from "@ant-design/icons";
 import useWindowDimensions from "@/hooks/use-window-dimensions";
 import { ListRep } from "@/type/objectTypes";
 import { useState } from "react";
@@ -18,7 +18,7 @@ type HeaderProps = {
 const Header: React.FC<HeaderProps> = ({ isShowText, t }) => {
     const router = useRouter();
     return (
-        <ToolbarContainer isRow={true}>
+        <ToolbarContainer $isRow={true}>
             <HeaderText>{t("menu-management-full")}</HeaderText>
             <Button
                 icon={<RollbackOutlined />}
@@ -55,7 +55,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch, t }) => {
     const { Search } = Input;
 
     return (
-        <ToolbarContainer isRow={isRow}>
+        <ToolbarContainer $isRow={isRow}>
             <AlignContainer>
                 <DatePicker placeholder={t("update-at")} onChange={onChangeDate} />
 
@@ -155,13 +155,6 @@ export const MenuContainer: React.FC<MenuProps> = ({ result, loading, onReload, 
                             href={`edit?menuId=${row.menuId}`}
                         />
                     </Tooltip>
-                    <Tooltip title={t("delete")}>
-                        <Button
-                            icon={<DeleteOutlined />}
-                            type="link"
-                            danger
-                        />
-                    </Tooltip>
                 </ActionContainer>
             ),
         }
@@ -195,6 +188,7 @@ export const MenuContainer: React.FC<MenuProps> = ({ result, loading, onReload, 
                             }}
                             columns={columns}
                             dataSource={result?.items}
+                            rowKey={(record) => record.menuId}
                             style={{ borderRadius: 0 }}
                             loading={loading}
                             pagination={{ pageSize: result?.pageSize, total: result?.count, onChange: onPaginationChange }}

@@ -15,7 +15,7 @@ type HeaderProps = {
 
 const HeaderTitle: React.FC<HeaderProps> = ({ isShowText, title, onSubmit, loading, t, children }) => {
     return (
-        <ToolbarContainer isRow={true}>
+        <ToolbarContainer $isRow={true}>
             <HeaderText>{title}</HeaderText>
             <Space>
                 <Button icon={<RollbackOutlined />} type="primary" danger href="general">{isShowText && t("back")}</Button>

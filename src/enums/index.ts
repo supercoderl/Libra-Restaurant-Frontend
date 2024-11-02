@@ -52,3 +52,17 @@ export const UserStatus = {
     Active: 0,
     InActive: 1
 }
+
+export const DiscountTargetType = {
+    Food: 0,
+    Category: 1,
+    Order: 2,
+    Invoice: 3
+}
+
+export const DiscountStatus = {
+    NotYet: 0,
+    Active: 1,
+    Expired: 2,
+    Unknow: 3
+}

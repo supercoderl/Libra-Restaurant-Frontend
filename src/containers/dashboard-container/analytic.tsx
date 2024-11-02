@@ -265,7 +265,7 @@ export default function DashboardContainer({ t }: { t: TFunction<"translation", 
                         <TextContainer>
                             <PreviewTextProgress>{t("profit-from-cus")}</PreviewTextProgress>
 
-                            <Progress type="dashboard" percent={data?.customer?.customerCountInThisMonth} width={148} format={(percent) => `${percent}`} />
+                            <Progress type="dashboard" percent={data?.customer?.customerCountInThisMonth} size={148} format={(percent) => `${percent}`} />
                             <p>{t("quantity-cus-in-month")}</p>
                             <Divider />
                             <Statistic

@@ -35,7 +35,7 @@ export const OrderPrice: React.FC<OrderPriceProps> = ({t}) => {
                         <NormalPrice>{t("calculated")}: &nbsp; <b>{calculatePriceItems()} ₫</b></NormalPrice>
                     </PriceContainer>
                     <PriceContainer>
-                        <NormalPrice>{t("tax")}: &nbsp; <b>10%</b></NormalPrice>
+                        <NormalPrice>{t("tax")}: &nbsp; <b>0%</b></NormalPrice>
                     </PriceContainer>
                     <PriceContainer>
                         <NormalPrice>{t("total-revenue")}: &nbsp; <b>{calculatePriceItems() + calculatePriceItems() * 10 / 100} ₫</b></NormalPrice>

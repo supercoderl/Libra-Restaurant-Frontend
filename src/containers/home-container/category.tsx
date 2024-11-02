@@ -8,38 +8,55 @@ import useEmblaCarousel from "embla-carousel-react";
 import Category from "@/type/Category";
 import { Empty } from "@/components/empty";
 import { TFunction } from "i18next";
+import { FoodCategorySkeleton } from "@/components/food-category/skeleton";
 
 interface CategoryProps {
   categories: Category[];
-  t: TFunction<"translation", undefined>
+  t: TFunction<"translation", undefined>;
+  loading: boolean;
 }
 
-export const CategorySlide: React.FC<CategoryProps> = ({ categories, t }) => {
+export const CategorySlide: React.FC<CategoryProps> = ({ categories, t, loading }) => {
   const OPTIONS: EmblaOptionsType = { slidesToScroll: 2, containScroll: 'trimSnaps', align: 'start' };
   const [emblaApi, setEmblaApi] = useState<EmblaCarouselType | null>(null);
 
   return (
     <>
       <MidContainer>
-        <Title isBigger>{t("catalog")}</Title>
+        <Title $isBigger>{t("catalog")}</Title>
         <ArrowButton embla={emblaApi} />
       </MidContainer>
       <FoodCategoriesContainer>
         {
-          categories.length <= 0 ? (
-            <Empty title={t("catalog-empty")} />
-          )
-            :
+          loading ? (
             <Carousel
               options={OPTIONS}
               setEmbla={setEmblaApi}
             >
-              {categories.map(e => (
-                <div className='embla__slide__1' key={e.categoryId}>
-                  <FoodCategory t={t} category={e}></FoodCategory>
-                </div>
-              ))}
+              {
+                Array.from({ length: 8 }).map((_, index) => (
+                  <div className='embla__slide__1' key={index}>
+                    <FoodCategorySkeleton />
+                  </div>
+                ))
+              }
             </Carousel>
+          )
+            :
+            categories.length <= 0 ? (
+              <Empty title={t("catalog-empty")} />
+            )
+              :
+              <Carousel
+                options={OPTIONS}
+                setEmbla={setEmblaApi}
+              >
+                {categories.map(e => (
+                  <div className='embla__slide__1' key={e.categoryId}>
+                    <FoodCategory t={t} category={e}></FoodCategory>
+                  </div>
+                ))}
+              </Carousel>
         }
       </FoodCategoriesContainer>
     </>

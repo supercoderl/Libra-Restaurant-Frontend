@@ -4,4 +4,4 @@ export const Container = tw.div`relative overflow-hidden md:h-96 w-full rounded-
 
 export const Image = tw.img`w-full md:absolute blur-sm brightness-50`
 
-export const Text = tw.h2`text-3xl absolute md:relative font-bold text-white z-10`
+export const Text = tw.h2`text-3xl absolute md:relative font-bold text-white`

@@ -1,6 +1,6 @@
 import { Container, CTA, CustomCheck, CustomCheckInput, CustomCheckLabel, FormGroup, FormInput, FormLabel, GoogleButton, GoogleSvg, Link, LoginForm, LoginFormInner, Logo, Onboarding, Seperator, SeperatorText, SingleRow, SlideContent, SlideDescription, SlideImg, SlideText, SwiperContainer, Title } from "./style"
 import { Pagination } from 'swiper/modules';
-import logo from "../../../public/assets/images/logo-no-bg.png";
+import logo from "../../../public/assets/images/logo/logo-removebg-preview.png";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import food1 from "../../../public/assets/banner/food1.png";
 import food2 from "../../../public/assets/banner/food2.png";
@@ -9,10 +9,10 @@ import React, { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useStoreDispatch, useStoreSelector } from "@/redux/store";
 import { login, setMessage, validateUser } from "@/redux/slices/auth-slice";
-import { message } from "antd";
 import { Spinner } from "@/components/loading/spinner";
 import { get } from "@/utils/localStorage";
 import { TFunction } from "i18next";
+import { toast } from "react-toastify";
 
 type LoginProps = {
     t: TFunction<"translation", undefined>
@@ -27,32 +27,24 @@ export const LoginContainer: React.FC<LoginProps> = ({ t }) => {
     const router = useRouter()
     const dispatch = useStoreDispatch();
 
-    // Message States
-    const [messageApi, contextHolder] = message.useMessage()
-
     // Get Data from Redux Store
-    const isAuthenticated = useStoreSelector(state => state?.mainAuthSlice?.isAuthenticated ?? false)
-    const isAuthenticating = useStoreSelector(state => state?.mainAuthSlice?.isAuthenticating ?? true)
+    const isAuthenticated = useStoreSelector(state => state.mainAuthSlice.isAuthenticated)
+    const isAuthenticating = useStoreSelector(state => state.mainAuthSlice.isAuthenticating)
     const actionMessage = useStoreSelector(state => state?.mainAuthSlice?.message ?? { type: null, message: null })
-
-    // Message
-    const _message = (type: any, content: string) => {
-        messageApi.open({
-            type,
-            content,
-        })
-    }
 
     // On Load Validate User by Token
     useEffect(() => {
         const token = get('token')
-        dispatch(validateUser(token))
+        if (token) dispatch(validateUser(token));
     }, [])
 
     // On Load Redirect User if Authenticated
     useEffect(() => {
         if (isAuthenticated && !isAuthenticating) {
-            router.push('/management/dashboard')
+            router.push('/management/dashboard');
+            setTimeout(() => {
+                toast(t("login-success"), { type: "success" });
+            }, 800);
         }
     }, [isAuthenticated, isAuthenticating])
 
@@ -60,7 +52,7 @@ export const LoginContainer: React.FC<LoginProps> = ({ t }) => {
         e.preventDefault();
 
         if (loginInput.email === "" || loginInput.password === "") {
-            _message("warning", t("please-input-login"));
+            toast(t("please-input-login"), { type: "warning" });
             return;
         }
 
@@ -68,8 +60,7 @@ export const LoginContainer: React.FC<LoginProps> = ({ t }) => {
 
         setTimeout(() => {
             if (actionMessage?.type === "error") {
-                console.log("error message")
-                _message("error", actionMessage?.message)
+                toast(actionMessage?.message, { type: "error" })
                 setMessage({ type: "", message: "" })
             }
         }, 500);
@@ -77,7 +68,6 @@ export const LoginContainer: React.FC<LoginProps> = ({ t }) => {
 
     return (
         <>
-            {contextHolder}
             <Container>
                 <LoginForm onSubmit={(e) => onSubmit(e)}>
                     <LoginFormInner>
@@ -133,7 +123,7 @@ export const LoginContainer: React.FC<LoginProps> = ({ t }) => {
                         </SingleRow>
 
                         <CTA type="submit">
-                            {(isAuthenticated || isAuthenticating) && <Spinner width="1.2vw" color="white" />}
+                            {isAuthenticating && <Spinner width="1.2vw" color="white" />}
                             {t("login")}
                         </CTA>
                     </LoginFormInner>
@@ -146,8 +136,6 @@ export const LoginContainer: React.FC<LoginProps> = ({ t }) => {
                             spaceBetween={50}
                             slidesPerView={1}
                             pagination={{ clickable: true }}
-                            onSwiper={(swiper) => console.log(swiper)}
-                            onSlideChange={() => console.log('slide change')}
                         >
                             <SwiperSlide>
                                 <div className="slide-image">

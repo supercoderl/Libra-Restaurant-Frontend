@@ -1,86 +1,151 @@
-import { Avatar, Image } from "antd"
-import { Address, Container, HorizontalLine, InvoiceItems, InvoiceItem, ItemTable, Price, PriceTable, Section, Title, TotalTable } from "./style"
+import { Address, Container, HorizontalLine, InvoiceItems, InvoiceItem, ItemTable, Price, PriceTable, Section, Title, TotalTable, LogoContainer, InfoContainer, InvoiceText, List, InvoiceInfo, TableContainer, Table, Total, PaymentInfoContainer, FooterContainer, FooterRow, InvoiceTime, Medium, TableItem, InfoText, LightLink, Image } from "./style"
 import useWindowDimensions from "@/hooks/use-window-dimensions"
 import { TFunction } from "i18next"
+import logo from "../../../public/assets/images/logo/logo-removebg-preview.png";
+import { MailOutlined, PhoneOutlined, PrinterOutlined, ShopOutlined } from "@ant-design/icons";
+import { Order } from "@/type/Order";
+import { dateFormatter } from "@/utils/date";
+import { getOrderStatus } from "@/utils/status";
+import { OrderStatus } from "@/enums";
+import { RefObject, useRef } from "react";
+import { Button } from "antd";
+import { useReactToPrint } from "react-to-print";
 
 type InvoiceProps = {
-    t: TFunction<"translation", undefined>
+    t: TFunction<"translation", undefined>;
+    order: Order | null;
 }
 
-export const Invoice: React.FC<InvoiceProps> = ({ t }) => {
+export const Invoice: React.FC<InvoiceProps> = ({ t, order }) => {
     const { width } = useWindowDimensions();
+    const contentRef = useRef<HTMLDivElement>(null);
+    const reactToPrintFn = useReactToPrint({ contentRef });
 
     return (
-        <Section>
-            <Container>
-                <Avatar
-                    size={width / 10}
-                    src="https://res.cloudinary.com/dcystvroz/image/upload/v1724204618/Restaurant/logo/gyltrkd5sjmkfi7p1a98.png"
-                    shape="square"
-                />
+        <>
+            <Button type="default" icon={<PrinterOutlined />} onClick={() => reactToPrintFn()}>In hóa hơn</Button>
 
-                <Title>
-                    {t("invoice")}
-                </Title>
-                <Address>
-                    {t("my-address")}
-                </Address>
-                <p>
-                    <b>{t("bill-no")}:</b> 0987653456789
-                </p>
-                <p>
-                    <b>{t("order-no")}:</b> 0987653456789
-                </p>
-                <p>
-                    <b>{t("tax-code")}:</b> 0987653456789
-                </p>
-                <HorizontalLine />
-            </Container>
-            <ItemTable>
-                <thead>
-                    <tr>
-                        <InvoiceItem style={{ width: 60, textAlign: 'center', fontWeight: '700' }}>{t("stt")}</InvoiceItem>
-                        <InvoiceItem style={{ textAlign: 'left', fontWeight: '700' }}>{t("food-name")}</InvoiceItem>
-                        <InvoiceItem style={{ width: 120, textAlign: 'center', fontWeight: '700' }}>{t("quantity")}</InvoiceItem>
-                        <InvoiceItem style={{ textAlign: 'right', fontWeight: '700' }}>{t("price")}</InvoiceItem>
-                    </tr>
-                </thead>
-                <tbody>
-                    <InvoiceItems>
-                        <InvoiceItem style={{ width: 60, textAlign: 'center' }}>01</InvoiceItem>
-                        <InvoiceItem style={{ textAlign: 'left' }}>Tropicana Purenectar Pomegr</InvoiceItem>
-                        <InvoiceItem style={{ width: 120, textAlign: 'center' }}>5 PC</InvoiceItem>
-                        <Price>₹ 100</Price>
-                    </InvoiceItems>
-                    <InvoiceItems>
-                        <InvoiceItem style={{ width: 60, textAlign: 'center' }}>02</InvoiceItem>
-                        <InvoiceItem style={{ textAlign: 'left' }}>Tropicana Purenectar Pomegr</InvoiceItem>
-                        <InvoiceItem style={{ width: 120, textAlign: 'center' }}>5 PC</InvoiceItem>
-                        <Price>₹ 100</Price>
-                    </InvoiceItems>
-                    <InvoiceItems>
-                        <InvoiceItem style={{ width: 60, textAlign: 'center' }}>03</InvoiceItem>
-                        <InvoiceItem style={{ textAlign: 'left' }}>Tropicana Purenectar Pomegr</InvoiceItem>
-                        <InvoiceItem style={{ width: 120, textAlign: 'center' }}>5 PC</InvoiceItem>
-                        <Price>₹ 100</Price>
-                    </InvoiceItems>
-                    <InvoiceItems>
-                        <InvoiceItem style={{ width: 60, textAlign: 'center' }}>04</InvoiceItem>
-                        <InvoiceItem style={{ textAlign: 'left' }}>Tropicana Purenectar Pomegr</InvoiceItem>
-                        <InvoiceItem style={{ width: 120, textAlign: 'center' }}>5 PC</InvoiceItem>
-                        <Price>₹ 100</Price>
-                    </InvoiceItems>
-                </tbody>
-            </ItemTable>
+            <Section ref={contentRef}>
+                <Container>
+                    <LogoContainer>
+                        <Image src={logo.src} alt="" />
+                    </LogoContainer>
 
-            <TotalTable>
-                <thead>
-                    <tr>
-                        <td style={{ paddingLeft: 10, paddingBlock: 5 }}>{t("total")}: </td>
-                        <Price style={{ paddingRight: 5, fontWeight: '700' }}>₹ 396</Price>
-                    </tr>
-                </thead>
-            </TotalTable>
-        </Section>
+                    <InfoContainer>
+                        <div>
+                            <InvoiceText>Khách hàng</InvoiceText>
+                            <h4>{order?.reservationInfo?.customerName}</h4>
+                            <List>
+                                <li><PhoneOutlined /> {order?.reservationInfo?.customerPhone}</li>
+                                <li>info@xyzcompany.com</li>
+                                <li>123 Main Street</li>
+                            </List>
+                        </div>
+                        <div>
+                            <InvoiceText>Điểm thu</InvoiceText>
+                            <h4>Libra Restaurant</h4>
+                            <List>
+                                <li>Công ty TNHH một thành viên Libra</li>
+                                <li>info@libra.com</li>
+                                <li>52 Nguyễn Thị Minh Khai, Q1, HCM</li>
+                            </List>
+                        </div>
+                    </InfoContainer>
+
+                    <InvoiceInfo>
+                        <Title>Thanh toán hóa đơn </Title>
+                        <InvoiceTime>
+                            <p className="m-0"> <Medium>Hóa đơn số:</Medium> #{order?.orderNo}</p>
+                            <p className="m-0"> <Medium>Ngày thanh toán:</Medium> {dateFormatter(order?.latestStatusUpdate || new Date())}</p>
+                            <p className="m-0">
+                                <Medium >Trạng thái:</Medium>
+                                <span style={{ color: getOrderStatus(order?.latestStatus || OrderStatus.Ready, t).color }}> {getOrderStatus(order?.latestStatus || OrderStatus.Ready, t).title}</span>
+                            </p>
+                        </InvoiceTime>
+                    </InvoiceInfo>
+
+                    <TableContainer>
+                        <Table>
+                            <thead>
+                                <tr>
+                                    <TableItem>STT</TableItem>
+                                    <TableItem>Tên món</TableItem>
+                                    <TableItem>Đơn giá</TableItem>
+                                    <TableItem>Số lượng</TableItem>
+                                    <TableItem>Tổng cộng</TableItem>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    order && order.orderLines && order.orderLines.length > 0 &&
+                                    order.orderLines.map((item, index) => (
+                                        <tr key={index}>
+                                            <TableItem>{index + 1}</TableItem>
+                                            <TableItem>{item?.foodName}</TableItem>
+                                            <TableItem>{item?.foodPrice}</TableItem>
+                                            <TableItem>{item?.quantity}</TableItem>
+                                            <TableItem>{item?.foodPrice ? item?.foodPrice * item?.quantity : 0}</TableItem>
+                                        </tr>
+                                    ))
+                                }
+                                <tr>
+                                    <TableItem></TableItem>
+                                    <TableItem></TableItem>
+                                    <TableItem></TableItem>
+                                    <TableItem className="">Tạm tính</TableItem>
+                                    <TableItem>{order?.subtotal}</TableItem>
+                                </tr>
+                                <tr>
+                                    <TableItem></TableItem>
+                                    <TableItem></TableItem>
+                                    <TableItem></TableItem>
+                                    <TableItem className="">Thuế</TableItem>
+                                    <TableItem>0%</TableItem>
+                                </tr>
+                                <tr>
+                                    <TableItem></TableItem>
+                                    <TableItem></TableItem>
+                                    <TableItem></TableItem>
+                                    <Total>Thành tiền</Total>
+                                    <Total>{order?.total}</Total>
+                                </tr>
+                            </tbody>
+                        </Table>
+                    </TableContainer>
+                    <PaymentInfoContainer>
+                        <div>
+                            <InfoText>Thông tin thanh toán</InfoText>
+                            <ul className="list-unstyled">
+                                <li><span className="fw-semibold">Số tài khoản: </span> 102 3345 56938</li>
+                                <li><span className="fw-semibold">Tên tài khoản: </span> LE MINH QUANG</li>
+                                <li><span className="fw-semibold">Chi nhánh: </span> Quận 1 </li>
+
+                            </ul>
+                        </div>
+
+                        <div>
+                            <InfoText>Thông tin liên hệ</InfoText>
+                            <ul className="list-unstyled">
+                                <li> <ShopOutlined /> Chi nhánh quận 1</li>
+                                <li> <PhoneOutlined /> +84349337045</li>
+                                <li> <MailOutlined /> minh.quang1720@gmail.com</li>
+                            </ul>
+                        </div>
+
+
+                    </PaymentInfoContainer>
+
+                    <div id="footer-bottom">
+                        <FooterContainer>
+                            <FooterRow>
+                                <div className="copyright">
+                                    <p>© 2024 Hóa đơn. <LightLink href="#">Điều khoản sử dụng</LightLink> </p>
+                                </div>
+                            </FooterRow>
+                        </FooterContainer>
+                    </div>
+                </Container>
+            </Section >
+        </>
     )
 }

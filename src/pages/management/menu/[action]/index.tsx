@@ -55,6 +55,9 @@ const MenuAction: NextPage = () => {
             if (Array.isArray(field.name) && typeof field.name[0] === 'string') {
                 acc[field.name[0]] = field.value;
             }
+            else if (typeof field.name === 'string') {
+                acc[field.name] = field.value;
+            }
             return acc;
         }, {} as { [key: string]: any });
 

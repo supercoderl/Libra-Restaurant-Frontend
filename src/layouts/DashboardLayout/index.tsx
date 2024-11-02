@@ -5,7 +5,7 @@ import MenuComponent from '@/components/dashboard/menu'
 import { BrandText, Logo, LogoContainer } from './style'
 import { SpanLogo } from '@/components/title'
 import useWindowDimensions from '@/hooks/use-window-dimensions'
-import { MenuOutlined } from '@ant-design/icons'
+import logo from "../../../public/assets/images/logo/logo-removebg-preview.png"
 import { useState } from 'react'
 import { TFunction } from 'i18next'
 
@@ -32,7 +32,6 @@ export const DashboardLayout: React.FC<DashboardProps> = ({ children, t }) => {
                     position: width > 767 ? 'fixed' : 'absolute',
                     left: width > 767 ? 0 : posLeft,
                     textAlign: "center",
-                    zIndex: 10
                 }}
                 collapsible={width <= 767}
                 collapsed={false}
@@ -40,7 +39,7 @@ export const DashboardLayout: React.FC<DashboardProps> = ({ children, t }) => {
                 theme={theme}
             >
                 <LogoContainer>
-                    <Logo src="https://libra-novel.vercel.app/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flibra.9f3498a1.png&w=640&q=75" alt='logo' />
+                    <Logo src={logo.src} alt='logo' />
                     <BrandText>Libra<SpanLogo>Restaurant</SpanLogo></BrandText>
                 </LogoContainer>
                 <Divider />

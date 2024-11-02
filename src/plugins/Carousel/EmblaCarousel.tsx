@@ -7,12 +7,13 @@ type PropType = {
   options?: EmblaOptionsType;
   children?: React.ReactNode;
   className?: string;
+  isAutoPlay: boolean;
 }
 
 const EmblaCarousel: React.FC<PropType> = (props) => {
-  const { options, children, className } = props
+  const { options, children, className, isAutoPlay } = props
   const [emblaRef, emblaApi] = useEmblaCarousel(options, [
-    Autoplay({ playOnInit: false, delay: 3000 })
+    Autoplay({ playOnInit: isAutoPlay, delay: 3000 })
   ]);
 
   const [visibleSlides, setVisibleSlides] = useState<React.ReactNode[]>([]);

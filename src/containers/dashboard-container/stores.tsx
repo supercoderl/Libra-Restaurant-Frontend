@@ -19,7 +19,7 @@ const Header: React.FC<HeaderProps> = ({ isShowText, t }) => {
     const router = useRouter();
 
     return (
-        <ToolbarContainer isRow={true}>
+        <ToolbarContainer $isRow={true}>
             <HeaderText>{t("store-management-full")}</HeaderText>
             <Button
                 icon={<RollbackOutlined />}
@@ -56,7 +56,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch, t }) => {
     const { Search } = Input;
 
     return (
-        <ToolbarContainer isRow={isRow}>
+        <ToolbarContainer $isRow={isRow}>
             <AlignContainer>
                 <DatePicker placeholder={t("update-at")} onChange={onChangeDate} />
 
@@ -211,6 +211,7 @@ export const StoreContainer: React.FC<StoreProps> = ({ result, loading, onReload
                                 type: 'checkbox',
                                 ...rowSelection,
                             }}
+                            rowKey={(record) => record.storeId}
                             columns={columns}
                             dataSource={result?.items}
                             style={{ borderRadius: 0 }}

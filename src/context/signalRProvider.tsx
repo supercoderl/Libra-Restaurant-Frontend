@@ -13,7 +13,7 @@ type SignalRProviderProps = {
     messages: Message[];
     joinTableGroups: (tableNames: string[]) => Promise<void>;
     joinTableGroup: (tableName: string) => Promise<void>;
-    sendMessageToGroup: (tableName: string, message: string) => Promise<void>;
+    sendMessageToGroup: (tableName: string, message: string, type: string) => Promise<void>;
 }
 
 const SignalRContext = createContext<SignalRProviderProps | null>(null);
@@ -119,9 +119,9 @@ export const SignalRProvider: React.FC<{ children: ReactNode }> = ({ children })
         }
     }
 
-    const sendMessageToGroup = async (tableName: string, message: string) => {
+    const sendMessageToGroup = async (tableName: string, message: string, type: string) => {
         if (connection) {
-            await connection.invoke("NotifyOrderPlaced", tableName, message);
+            await connection.invoke("NotifyOrderPlaced", tableName, message, type);
         }
     };
 

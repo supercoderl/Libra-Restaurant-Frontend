@@ -23,8 +23,7 @@ export function category(id?: number): Promise<SingleResponse | undefined> {
 }
 
 export function actionCategory(category: Category, action: string): Promise<SingleResponse | undefined> {
-    if(action === "create")
-    {
+    if (action === "create") {
         return apiPost<SingleResponse>({
             url: `/${CLASS_ITEM_NAME}`,
             params: null
@@ -34,4 +33,10 @@ export function actionCategory(category: Category, action: string): Promise<Sing
         url: `/${CLASS_ITEM_NAME}`,
         params: null
     }, category)
+}
+
+export function deleteCategory(id: number): Promise<SingleResponse | undefined> {
+    return apiDelete<SingleResponse>({
+        url: `/${CLASS_ITEM_NAME}/${id}`
+    })
 }

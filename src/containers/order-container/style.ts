@@ -13,13 +13,15 @@ export const HeaderText = tw.h1`text-3xl dark:text-white lg:text-4xl font-semibo
 
 export const HeaderTime = tw.p`text-base dark:text-gray-300 font-medium leading-6 text-gray-600`
 
+export const HeaderWarning = tw.p`text-sm text-red-600 italic`
+
 export const BodyContainer = tw.div`mt-10 md:grid md:grid-cols-3 justify-center items-stretch w-full xl:space-x-8 space-y-4 md:space-y-6 xl:space-y-0`;
 
 export const LeftContainer = tw.div`col-span-2 flex flex-col justify-start items-start space-y-4 md:space-y-6 xl:space-y-8`;
 
-export const RightContainer = tw.div`col-span-1 bg-gray-50 dark:bg-gray-800 flex justify-between items-center md:items-start px-4 py-6 md:p-6 xl:p-8 flex-col`
+export const RightContainer = tw.div`col-span-1 bg-gray-50 dark:bg-[rgb(59_46_46)] flex justify-between items-center md:items-start px-4 py-6 md:p-6 xl:p-8 flex-col`
 
-export const CartContainer = tw.div`flex flex-col justify-start items-start dark:bg-gray-800 bg-gray-50 px-4 py-4 md:py-6 md:p-6 xl:p-8 w-full`;
+export const CartContainer = tw.div`flex flex-col justify-start items-start dark:bg-[rgb(59_46_46)] bg-gray-50 px-4 py-4 md:py-6 md:p-6 xl:p-8 w-full`;
 
 export const PriceContainer = tw.div`flex justify-between flex-col flex-col gap-6 md:gap-0 items-stretch w-full h-full space-y-4 md:space-y-0 md:space-x-6 xl:space-x-8`
 
@@ -47,9 +49,9 @@ export const BottomContainer = tw.div`flex justify-end xl:h-full items-stretch w
 
 export const Bottom = tw.div`flex w-full justify-center items-center md:justify-start md:items-start`;
 
-export const Button = tw.button`m-0! flex items-center justify-center gap-1.5 dark:border-white dark:hover:bg-white dark:bg-main dark:text-white py-4 hover:bg-main hover:text-white border border-main font-medium w-full text-base font-medium leading-4 text-gray-800 duration-500 transition`;
+export const Button = tw.button`m-0! flex items-center justify-center gap-1.5 dark:bg-white dark:text-black py-4 dark:hover:bg-main dark:hover:text-white hover:bg-main hover:text-white border border-main font-medium w-full text-base font-medium leading-4 text-gray-800 duration-500 transition`;
 
-export const Price = tw.div`flex flex-col w-full h-full bg-gray-50 dark:bg-gray-800 space-y-6`;
+export const Price = tw.div`flex flex-col w-full h-full bg-gray-50 dark:bg-[rgb(59_46_46)] space-y-6`;
 
 export const ShippingText = tw.h3`text-xl dark:text-white font-semibold leading-5 text-gray-800`;
 
@@ -89,7 +91,14 @@ export const ItemInfoMoreText = tw.p`dark:text-white leading-none text-gray-800`
 
 export const ItemInfoPriceText = tw.p`dark:text-white leading-6`;
 
-export const ItemInfoPriceTotal = tw.p`dark:text-white font-semibold leading-6 text-gray-800`;
+type ItemInfoPriceTotalProps = {
+    $isStrike: boolean;
+}
+
+export const ItemInfoPriceTotal = styled.p<ItemInfoPriceTotalProps>`
+${({ $isStrike }) => $isStrike && tw`line-through`}
+${tw`dark:text-white font-semibold leading-6 text-gray-800`}
+`;
 
 export const ItemInfoPriceDiscount = tw.span`text-red-300 line-through`;
 
@@ -100,11 +109,11 @@ export const ButtonContainer = tw.div`flex gap-3 w-full m-0! md:pt-4`
 export const QuantityContainer = tw.div`flex items-center gap-3`;
 
 type quantityButton = {
-    isDisabled?: boolean;
+    $isDisabled?: boolean;
 }
 
 export const QuantityButton = styled.button<quantityButton>`
-${({ isDisabled }) => isDisabled ? tw`bg-gray-400` : tw`bg-main cursor-pointer`}
+${({ $isDisabled }) => $isDisabled ? tw`bg-gray-400` : tw`bg-main cursor-pointer`}
 ${tw`p-2 rounded-sm transition duration-300`}
 `
 
@@ -128,16 +137,18 @@ export const PaymentCardContainer = tw.div`grid grid-cols-2 gap-4 md:flex md:gap
 export const PaymentCardButtonContainer = tw.div`flex flex-col md:flex-row gap-5 justify-between`;
 
 type PaymentCardButtonProps = {
-    isLink?: boolean;
-    isPrimary?: boolean;
-    isSecondary?: boolean;
+    $isLink: boolean;
+    $isPrimary: boolean;
+    $isSecondary: boolean;
+    $isCenter: boolean;
 }
 
 export const PaymentCardButton = styled.button<PaymentCardButtonProps>`
-${tw`uppercase font-[600] flex-1 md:flex-none text-xs px-6 py-2 rounded-2xl cursor-pointer transition duration-500 bg-transparent border-2 border-transparent`},
-${({ isLink }) => isLink && tw`pb-[2px]! mx-[25px] border-0 border-b-2 border-main rounded-none opacity-75 hover:border-[#40b3ff] hover:opacity-100`},
-${({ isPrimary }) => isPrimary && tw`bg-main text-white hover:bg-[#218fd9]`},
-${({ isSecondary }) => isSecondary && tw`bg-transparent border-main text-main hover:border-[#28333b] text-[#28333b]`}
+${tw`uppercase font-[600] flex-1 flex gap-2 items-center md:flex-none text-xs px-6 py-2 rounded-2xl cursor-pointer transition duration-500 bg-transparent border-2 border-transparent`},
+${({ $isLink }) => $isLink && tw`pb-[2px]! mx-[25px] border-0 border-b-2 border-main rounded-none opacity-75 hover:border-[#40b3ff] hover:opacity-100`},
+${({ $isPrimary }) => $isPrimary && tw`bg-main text-white hover:bg-[#218fd9]`},
+${({ $isSecondary }) => $isSecondary && tw`bg-transparent border-main text-main hover:border-[#28333b] text-[#28333b]`}
+${({ $isCenter }) => $isCenter && tw`mx-auto`}
 `
 
 export const PaymentCardImage = tw.img`w-16`
@@ -154,6 +165,8 @@ export const PromoInput = tw.input`transition duration-500 block w-full rounded-
 
 export const PromoButtonContainer = tw.div`absolute inset-y-1 right-1 flex justify-end`
 
-export const PromoButton = tw.button`transition duration-500 flex aspect-square h-full items-center justify-center rounded-lg bg-main text-white transition hover:bg-neutral-800`
+export const PromoButton = tw.button`transition duration-500 flex aspect-square h-full items-center justify-center rounded-lg bg-main text-white transition hover:bg-neutral-800 dark:bg-white dark:hover:bg-main`
 
-export const PromoSvg = tw.svg`w-4`
+export const PromoSvg = tw.svg`w-4 fill-black`
+
+export const DiscountText = tw.p`self-start text-sm text-red-500 italic`

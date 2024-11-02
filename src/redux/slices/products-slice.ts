@@ -1,4 +1,4 @@
-import { items } from '@/api/business/itemApi';
+import { deleteItem, itemBySlug, items } from '@/api/business/itemApi';
 import Item from '@/type/Item';
 import Query from '@/type/Query';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
@@ -27,14 +27,48 @@ export const fetchData = createAsyncThunk(
   }
 )
 
+export const getItemAsync = createAsyncThunk(
+  'items/getItem',
+  async (slug: string, { rejectWithValue }) => {
+    try {
+      const response = await itemBySlug(slug);
+
+      if (response?.success) {
+        return response?.data;
+      }
+      return null;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+)
+
+export const deleteItemAsync = createAsyncThunk(
+  'items/deleteItem',
+  async (id: number, { rejectWithValue }) => {
+    try {
+      const response = await deleteItem(id);
+
+      if (response?.success) {
+        return true;
+      }
+      return false;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+)
+
 type sliceType = {
   items: Item[],
-  loading: boolean
+  loading: boolean,
+  item: Item | null
 }
 
 const initialState: sliceType = {
   items: [],
-  loading: false
+  loading: false,
+  item: null
 }
 
 const mainProductSlice = createSlice({
@@ -52,7 +86,28 @@ const mainProductSlice = createSlice({
       })
       .addCase(fetchData.rejected, (state) => {
         state.loading = false;
+      });
+    builder
+      .addCase(deleteItemAsync.pending, (state) => {
+        state.loading = true;
       })
+      .addCase(deleteItemAsync.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(deleteItemAsync.rejected, (state) => {
+        state.loading = false;
+      });
+    builder
+      .addCase(getItemAsync.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getItemAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.item = action.payload;
+      })
+      .addCase(getItemAsync.rejected, (state) => {
+        state.loading = false;
+      });
   },
 
 })

@@ -10,7 +10,8 @@ export default function Banner() {
     return (
         <EmblaCarousel
             className='banner'
-            options={OPTIONS} >
+            isAutoPlay={true}
+            options={OPTIONS}>
             {
                 banners.map((item, index) => (
                     <LazyLoadImage

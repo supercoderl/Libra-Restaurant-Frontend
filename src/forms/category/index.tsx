@@ -3,7 +3,7 @@ import { Container, ImageContainer } from "../style"
 import { DashboardLayout } from "@/layouts/DashboardLayout";
 import HeaderTitle from "@/components/dashboard/headerTitle";
 import useWindowDimensions from "@/hooks/use-window-dimensions";
-import { t, TFunction } from "i18next";
+import { TFunction } from "i18next";
 
 
 type FormProps = {
@@ -29,7 +29,7 @@ export const CategoryForm: React.FC<FormProps> = (props: FormProps) => {
     };
 
     return (
-        <DashboardLayout t={t}>
+        <DashboardLayout t={props.t}>
             <HeaderTitle t={props.t} title={props.title} isShowText={width > 767} onSubmit={props.onFinish} loading={props.loading} />
             <Container>
                 <Form
@@ -42,30 +42,30 @@ export const CategoryForm: React.FC<FormProps> = (props: FormProps) => {
                     onFinish={props.onFinish}
                 >
                     <Form.Item
-                        label={t("category-name")}
+                        label={props.t("category-name")}
                         name="name"
-                        rules={[{ required: true, message: t("category-require") }]}
+                        rules={[{ required: true, message: props.t("category-require") }]}
                     >
-                        <Input placeholder={t("input-category")} />
+                        <Input placeholder={props.t("input-category")} />
                     </Form.Item>
                     <Form.Item
-                        label={t("status")}
-                        tooltip={{ title: t("show-category") }}
+                        label={props.t("status")}
+                        tooltip={{ title: props.t("show-category") }}
                         name="isActive"
-                        rules={[{ required: true, message: t("status-require") }]}
+                        rules={[{ required: true, message: props.t("status-require") }]}
                     >
                         <Select
                             showSearch
-                            placeholder={t("choose-status")}
+                            placeholder={props.t("choose-status")}
                             optionFilterProp="label"
                             options={[
                                 {
                                     value: true,
-                                    label: t("active"),
+                                    label: props.t("active"),
                                 },
                                 {
                                     value: false,
-                                    label: t("blocked"),
+                                    label: props.t("blocked"),
                                 }
                             ]}
                         />
@@ -73,7 +73,7 @@ export const CategoryForm: React.FC<FormProps> = (props: FormProps) => {
                     <Form.Item name="picture" noStyle />
                     <ImageContainer>
                         <Form.Item
-                            label={t("picture")}
+                            label={props.t("picture")}
                             name="base64"
                             valuePropName="fileList"
                             getValueFromEvent={normFile}
@@ -83,7 +83,7 @@ export const CategoryForm: React.FC<FormProps> = (props: FormProps) => {
                                 multiple={false}
                                 className="customSizedUpload"
                             >
-                                {props.src && props.src !== '' ? t("change-picture") : t("add-picture")}
+                                {props.src && props.src !== '' ? props.t("change-picture") : props.t("add-picture")}
                             </Upload>
                         </Form.Item>
                         {
@@ -94,8 +94,8 @@ export const CategoryForm: React.FC<FormProps> = (props: FormProps) => {
                             />
                         }
                     </ImageContainer>
-                    <Form.Item label={t("description")} name="description">
-                        <Input.TextArea rows={5} placeholder={t("input-description")} />
+                    <Form.Item label={props.t("description")} name="description">
+                        <Input.TextArea rows={5} placeholder={props.t("input-description")} />
                     </Form.Item>
                 </Form>
             </Container>

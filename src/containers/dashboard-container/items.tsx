@@ -1,5 +1,5 @@
 import { DashboardLayout } from "@/layouts/DashboardLayout"
-import { Button, Checkbox, CheckboxProps, DatePicker, DatePickerProps, Divider, Image, Input, Modal, Select, Table, TableColumnsType, Tooltip } from "antd";
+import { Button, Checkbox, CheckboxProps, DatePicker, DatePickerProps, Divider, Image, Input, Modal, Popconfirm, Select, Table, TableColumnsType, Tooltip } from "antd";
 import { ActionContainer, AlignContainer, HeaderText, TableContainer, ToolbarContainer } from "./style";
 import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined, ReloadOutlined, RollbackOutlined } from "@ant-design/icons";
 import useWindowDimensions from "@/hooks/use-window-dimensions";
@@ -11,6 +11,9 @@ import ItemDetail from "./item/item-detail";
 import { useRouter } from "next/navigation";
 import { MobileTable } from "@/components/mobile/tables/mobile-table";
 import { TFunction } from "i18next";
+import { DiscountSelect } from "./item/discount-select";
+import { useStoreDispatch, useStoreSelector } from "@/redux/store";
+import { deleteItemAsync } from "@/redux/slices/products-slice";
 
 type HeaderProps = {
     isShowText?: boolean;
@@ -20,7 +23,7 @@ type HeaderProps = {
 const Header: React.FC<HeaderProps> = ({ isShowText, t }) => {
     const router = useRouter();
     return (
-        <ToolbarContainer isRow={true}>
+        <ToolbarContainer $isRow={true}>
             <HeaderText>{t("food-management-full")}</HeaderText>
             <Button
                 icon={<RollbackOutlined />}
@@ -57,7 +60,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch, t }) => {
     const { Search } = Input;
 
     return (
-        <ToolbarContainer isRow={isRow}>
+        <ToolbarContainer $isRow={isRow}>
             <AlignContainer>
                 <DatePicker placeholder={t("update-at")} onChange={onChangeDate} />
 
@@ -83,7 +86,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch, t }) => {
                     ]}
                 />
 
-                <Checkbox onChange={onChangeCheckbox}>{t("food-deleted")}</Checkbox>
+                <Button type="primary" style={{ backgroundColor: "#c41d7f" }}>Giảm giá</Button>
 
                 <Button>{t("filter")}</Button>
 
@@ -122,8 +125,7 @@ export const ItemContainer: React.FC<ItemProps> = ({ result, loading, onReload, 
         },
         {
             title: t("food-name"),
-            dataIndex: 'title',
-            render: (text: string) => <a>{text}</a>,
+            render: (row: Item) => <a onClick={() => handleTitleClick(row)}>{row.title}</a>
         },
         {
             title: t("slug"),
@@ -171,11 +173,20 @@ export const ItemContainer: React.FC<ItemProps> = ({ result, loading, onReload, 
                         />
                     </Tooltip>
                     <Tooltip title={t("delete")}>
-                        <Button
-                            icon={<DeleteOutlined />}
-                            type="link"
-                            danger
-                        />
+                        <Popconfirm
+                            title="Xóa món ăn"
+                            description="Bạn có chắc muốn xóa món này?"
+                            okText="Đồng ý"
+                            cancelText="Không"
+                            okButtonProps={{ loading: itemLoading }}
+                            onConfirm={() => dispatch(deleteItemAsync(row.itemId)).then(onReload)}
+                        >
+                            <Button
+                                icon={<DeleteOutlined />}
+                                type="link"
+                                danger
+                            />
+                        </Popconfirm>
                     </Tooltip>
                 </ActionContainer>
             ),
@@ -192,8 +203,19 @@ export const ItemContainer: React.FC<ItemProps> = ({ result, loading, onReload, 
     };
 
     const [isOpen, setIsOpen] = useState(false);
+    const [isDiscountOpen, setIsDiscountOpen] = useState(false);
     const [itemSelected, setItemSelected] = useState<Item | null>(null);
     const { width } = useWindowDimensions();
+    const { discountTypes, itemLoading } = useStoreSelector(state => ({
+        discountTypes: state.mainDiscountTypeSlice.discountTypes,
+        itemLoading: state.mainProductSlice.loading
+    }));
+    const dispatch = useStoreDispatch();
+
+    const handleTitleClick = (item: Item) => {
+        setIsDiscountOpen(true);
+        setItemSelected(item);
+    }
 
     return (
         <DashboardLayout t={t}>
@@ -209,6 +231,7 @@ export const ItemContainer: React.FC<ItemProps> = ({ result, loading, onReload, 
                                 ...rowSelection,
                             }}
                             columns={columns}
+                            rowKey={(record) => record.itemId}
                             dataSource={result?.items}
                             style={{ borderRadius: 0 }}
                             loading={loading}
@@ -235,6 +258,16 @@ export const ItemContainer: React.FC<ItemProps> = ({ result, loading, onReload, 
                 }}
                 t={t}
                 item={itemSelected}
+            />
+            <DiscountSelect
+                isOpen={isDiscountOpen}
+                handleCancel={() => {
+                    setIsDiscountOpen(false);
+                    setItemSelected(null);
+                }}
+                t={t}
+                item={itemSelected}
+                discountTypes={discountTypes}
             />
         </DashboardLayout>
     )

@@ -11,19 +11,24 @@ export const fetchNotifications = createAsyncThunk(
   async (data?: Query) => {
     try {
       const response = await messages(data);
-
       if (response?.success && response?.data) {
         return {
           notifications: response?.data?.items,
+          hasMore: response?.data?.pageSize < response?.data?.count,
+          count: response?.data?.count
         }
       }
       return {
-        notifications: []
+        notifications: [],
+        hasMore: false,
+        count: 0
       };
     } catch (error) {
       console.log(error);
       return {
-        notifications: []
+        notifications: [],
+        hasMore: false,
+        count: 0
       }
     }
   }
@@ -51,14 +56,20 @@ type sliceType = {
   notifications: Notification[],
   loading: boolean,
   loadingMessageId: number | null;
-  unread: number
+  unread: number;
+  hasMore: boolean;
+  size: number;
+  count: number;
 }
 
 const initialState: sliceType = {
   notifications: [],
   loading: false,
   loadingMessageId: null,
-  unread: 0
+  unread: 0,
+  hasMore: true,
+  size: 10,
+  count: 0
 }
 
 const mainNotificationSlice = createSlice({
@@ -84,6 +95,9 @@ const mainNotificationSlice = createSlice({
         state.notifications = action.payload.notifications;
         state.unread = action.payload.notifications.filter(x => !x.isRead).length;
         state.loading = false;
+        state.size = state.size + 10 >= action.payload.count ? action.payload.count : state.size + 10;
+        state.hasMore = action.payload.hasMore;
+        state.count = action.payload.count;
       })
       .addCase(fetchNotifications.rejected, (state) => {
         state.loading = false;

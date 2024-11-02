@@ -18,7 +18,7 @@ type HeaderProps = {
 const Header: React.FC<HeaderProps> = ({ isShowText, t }) => {
     const router = useRouter();
     return (
-        <ToolbarContainer isRow={true}>
+        <ToolbarContainer $isRow={true}>
             <HeaderText>{t("payment-history")}</HeaderText>
             <Button
                 icon={<RollbackOutlined />}
@@ -55,7 +55,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch, t }) => {
     const { Search } = Input;
 
     return (
-        <ToolbarContainer isRow={isRow}>
+        <ToolbarContainer $isRow={isRow}>
             <AlignContainer>
                 <DatePicker placeholder={t("update-at")} onChange={onChangeDate} />
 
@@ -186,6 +186,7 @@ export const PaymentHistoryContainer: React.FC<PaymentHistoryProps> = ({ result,
                             }}
                             columns={columns}
                             dataSource={result?.items}
+                            rowKey={(record) => record.paymentHistoryId}
                             style={{ borderRadius: 0 }}
                             loading={loading}
                             pagination={{ pageSize: result?.pageSize, total: result?.count, onChange: onPaginationChange }}

@@ -9,4 +9,5 @@ export interface OrderLine {
     canceledReason?: string | null;
     customerReview?: string | null;
     customerLike: number;
+    foodPrice?: number | null;
 }

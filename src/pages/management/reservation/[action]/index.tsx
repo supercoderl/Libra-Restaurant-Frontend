@@ -32,7 +32,7 @@ const ReservationAction: NextPage = () => {
         { name: ['reservationTime'], value: dayjs(new Date()) },
         { name: ['customerName'], value: '' },
         { name: ['customerPhone'], value: '' },
-        { name: ['code'], value: ''}
+        { name: ['code'], value: '' }
     ]);
     const [storeDatas, setStores] = useState<Store[]>([]);
     const [loading, setLoading] = useState(false);
@@ -76,7 +76,10 @@ const ReservationAction: NextPage = () => {
     const onFinish = async () => {
         setLoading(true);
         let values = fields.reduce((acc, field) => {
-            if (typeof field.name === 'string') { // Kiểm tra nếu name là chuỗi
+            if (Array.isArray(field.name) && typeof field.name[0] === 'string') {
+                acc[field.name[0]] = field.value;
+            }
+            else if (typeof field.name === 'string') {
                 acc[field.name] = field.value;
             }
             return acc;

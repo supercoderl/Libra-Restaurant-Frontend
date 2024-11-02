@@ -25,7 +25,7 @@ type HeaderProps = {
 const Header: React.FC<HeaderProps> = ({ isShowText, t }) => {
     const router = useRouter();
     return (
-        <ToolbarContainer isRow={true}>
+        <ToolbarContainer $isRow={true}>
             <HeaderText>{t("order-management-full")}</HeaderText>
             <Button
                 icon={<RollbackOutlined />}
@@ -62,7 +62,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch, t }) => {
     const { Search } = Input;
 
     return (
-        <ToolbarContainer isRow={isRow}>
+        <ToolbarContainer $isRow={isRow}>
             <AlignContainer>
                 <DatePicker placeholder={t("update-at")} onChange={onChangeDate} />
 
@@ -205,14 +205,6 @@ export const OrderContainer: React.FC<OrderProps> = ({ result, loading, onReload
                             }}
                         />
                     </Tooltip>
-                    <Tooltip title={t("print-invoice")}>
-                        <Button
-                            icon={<FileDoneOutlined />}
-                            type="link"
-                            danger
-                            href={`edit?menuId=${row.orderId}`}
-                        />
-                    </Tooltip>
                 </ActionContainer>
             ),
         }
@@ -272,7 +264,6 @@ export const OrderContainer: React.FC<OrderProps> = ({ result, loading, onReload
                             expandable={{
                                 expandedRowRender,
                                 rowExpandable: record => record.orderLines?.length > 0,
-                                expandRowByClick: true
                             }}
                             rowKey={(record) => record.orderId}
                             style={{ borderRadius: 0 }}
@@ -304,11 +295,14 @@ export const OrderContainer: React.FC<OrderProps> = ({ result, loading, onReload
                 title={t("invoice")}
                 centered
                 open={showModal}
-                onCancel={() => setShowModal(false)}
+                onCancel={() => {
+                    setShowModal(false);
+                    setItemSelected(null);
+                }}
                 footer={null}
                 width={700}
             >
-                <Invoice t={t} />
+                <Invoice t={t} order={itemSelected} />
             </Modal>
         </DashboardLayout>
     )

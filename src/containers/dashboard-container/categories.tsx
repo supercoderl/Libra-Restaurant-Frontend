@@ -1,5 +1,5 @@
 import { DashboardLayout } from "@/layouts/DashboardLayout"
-import { Button, Checkbox, CheckboxProps, DatePicker, DatePickerProps, Divider, Input, Select, Table, TableColumnsType, Tag, Tooltip, Image } from "antd";
+import { Button, Checkbox, CheckboxProps, DatePicker, DatePickerProps, Divider, Input, Select, Table, TableColumnsType, Tag, Tooltip, Image, Popconfirm } from "antd";
 import { ActionContainer, AlignContainer, HeaderText, TableContainer, ToolbarContainer } from "./style";
 import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined, ReloadOutlined, RollbackOutlined } from "@ant-design/icons";
 import useWindowDimensions from "@/hooks/use-window-dimensions";
@@ -9,6 +9,8 @@ import Category from "@/type/Category";
 import { MobileTable } from "@/components/mobile/tables/mobile-table";
 import { useRouter } from "next/navigation";
 import { TFunction } from "i18next";
+import { useStoreDispatch, useStoreSelector } from "@/redux/store";
+import { deleteCategoryAsync } from "@/redux/slices/categories-slice";
 
 type HeaderProps = {
     isShowText?: boolean;
@@ -19,7 +21,7 @@ const Header: React.FC<HeaderProps> = ({ isShowText, t }) => {
     const router = useRouter();
 
     return (
-        <ToolbarContainer isRow={true}>
+        <ToolbarContainer $isRow={true}>
             <HeaderText>{t("category-management-full")}</HeaderText>
             <Button
                 icon={<RollbackOutlined />}
@@ -56,7 +58,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch, t }) => {
     const { Search } = Input;
 
     return (
-        <ToolbarContainer isRow={isRow}>
+        <ToolbarContainer $isRow={isRow}>
             <AlignContainer>
                 <DatePicker placeholder={t("update-at")} onChange={onChangeDate} />
 
@@ -160,11 +162,20 @@ export const CategoryContainer: React.FC<CategoryProps> = ({ result, loading, on
                         />
                     </Tooltip>
                     <Tooltip title={t("delete")}>
-                        <Button
-                            icon={<DeleteOutlined />}
-                            type="link"
-                            danger
-                        />
+                        <Popconfirm
+                            title="Xóa danh mục"
+                            description="Bạn có chắc muốn xóa danh mục này?"
+                            okText="Đồng ý"
+                            cancelText="Không"
+                            okButtonProps={{ loading: categoryLoading }}
+                            onConfirm={() => dispatch(deleteCategoryAsync(row.categoryId)).then(onReload)}
+                        >
+                            <Button
+                                icon={<DeleteOutlined />}
+                                type="link"
+                                danger
+                            />
+                        </Popconfirm>
                     </Tooltip>
                 </ActionContainer>
             ),
@@ -183,6 +194,10 @@ export const CategoryContainer: React.FC<CategoryProps> = ({ result, loading, on
     const [isOpen, setIsOpen] = useState(false);
     const [itemSelected, setItemSelected] = useState<Category | null>(null);
     const { width } = useWindowDimensions();
+    const { categoryLoading } = useStoreSelector(state => ({
+        categoryLoading: state.mainCategorySlice.loading
+    }));
+    const dispatch = useStoreDispatch();
 
     return (
         <DashboardLayout t={t}>
@@ -199,6 +214,7 @@ export const CategoryContainer: React.FC<CategoryProps> = ({ result, loading, on
                             }}
                             columns={columns}
                             dataSource={result?.items}
+                            rowKey={(record) => record.categoryId}
                             style={{ borderRadius: 0 }}
                             loading={loading}
                             pagination={{ pageSize: result?.pageSize, total: result?.count, onChange: onPaginationChange }}

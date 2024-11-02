@@ -41,7 +41,8 @@ export default function CartItem({
           src={picture || process.env.NEXT_PUBLIC_DUMMY_PICTURE || ""}
           width="100"
           height="100"
-          objectFit="cover"
+          style={{ objectFit: "cover" }}
+          fill
         />
       </ImageContainer>
       <TextContainer>
@@ -54,7 +55,7 @@ export default function CartItem({
         <Text>{title}</Text>
       </TextContainer>
       <PriceContainer>
-        <Text isAlternativeColor>
+        <Text $isAlternativeColor>
           ${Math.round(price * quantityOrder * 100) / 100}
         </Text>
         <RemoveText onClick={handleClick}>remove</RemoveText>

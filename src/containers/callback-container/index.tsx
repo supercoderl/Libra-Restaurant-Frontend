@@ -1,5 +1,5 @@
 import { BillContainer, Card, Container, ContentContainer, Curved, FlexContainer, HomeButton, Icon, IconContainer, ItemContainer, Logo, LogoImg, LogoRed, StatusText, Subtitle, TextFooter, TextItem, TextItemContainer, Title } from "./style";
-import logo from "../../../public/assets/images/logo-no-bg.png";
+import logo from "../../../public/assets/images/logo/logo-removebg-preview.png";
 import { Loading } from "@/components/loading";
 import useWindowDimensions from "@/hooks/use-window-dimensions";
 import { useEffect, useState } from "react";
@@ -37,7 +37,7 @@ export default function Cart() {
                 transactionId: searchParams.get("vnp_TxnRef"),
                 responseJSON: router.asPath.split('?')[1],
                 callbackURL: process.env.NEXT_PUBLIC_BASE_URL + router.asPath,
-                orderId: searchParams.get("vnp_OrderInfo")?.split(':')[1],
+                orderId: searchParams.get("vnp_OrderInfo")?.split('_')[1],
                 paymentMethodId: PaymentMethod.VNPay
             }
         }
