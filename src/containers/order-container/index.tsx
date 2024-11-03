@@ -123,31 +123,31 @@ export default function OrderContainer({ t }: { t: TFunction<"translation", unde
             }))
         };
 
-        // try {
-        //     let response;
-        //     if (orderId) {
-        //         body.orderId = orderId;
-        //         body.action = "update";
-        //         response = await actionOrder(body as Order, "edit");
-        //         setCount(count + 1);
-        //     }
-        //     else {
-        //         response = await actionOrder(body as Order, "create");
-        //         setCount(count + 1);
-        //         if (response && response.data) {
-        //             set("orderId", response.data);
-        //             setOrderId(response.data);
-        //         };
-        //     }
-        //     await sendMessageToGroup(myTable, `Khách bàn số ${tableNumber} đã đặt món`, "order");
-        //     toast(t("order-success"), { type: "success" })
-        // }
-        // catch (error) {
-        //     console.log("Submit to pay: ", error);
-        // }
-        // finally {
-        //     setTimeout(() => setLoading(false), 600);
-        // }
+        try {
+            let response;
+            if (orderId) {
+                body.orderId = orderId;
+                body.action = "update";
+                response = await actionOrder(body as Order, "edit");
+                setCount(count + 1);
+            }
+            else {
+                response = await actionOrder(body as Order, "create");
+                setCount(count + 1);
+                if (response && response.data) {
+                    set("orderId", response.data);
+                    setOrderId(response.data);
+                };
+            }
+            await sendMessageToGroup(myTable, `Khách bàn số ${tableNumber} đã đặt món`, "order");
+            toast(t("order-success"), { type: "success" })
+        }
+        catch (error) {
+            console.log("Submit to pay: ", error);
+        }
+        finally {
+            setTimeout(() => setLoading(false), 600);
+        }
     }
 
     //? Init
