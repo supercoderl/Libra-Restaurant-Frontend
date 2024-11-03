@@ -88,6 +88,11 @@ export default function OrderContainer({ t }: { t: TFunction<"translation", unde
             return;
         }
 
+        else if (!storeId) {
+            toast(t("please-scan-again"), { type: "warning" });
+            return;
+        }
+
         setLoading(true);
         let body: any = {
             orderNo: generateOrderNo(Number(tableNumber)),
@@ -117,8 +122,6 @@ export default function OrderContainer({ t }: { t: TFunction<"translation", unde
                 ) : e.item.price
             }))
         };
-
-        console.log(body);
 
         // try {
         //     let response;

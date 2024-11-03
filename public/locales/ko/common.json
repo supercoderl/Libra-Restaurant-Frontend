@@ -473,5 +473,6 @@
   "mode": "디스플레이",
   "light": "밝기",
   "dark": "어두운",
-  "default": "기본값"
+  "default": "기본값",
+  "please-scan-again": "오류가 발생하면 QR 코드를 다시 스캔하세요."
 }

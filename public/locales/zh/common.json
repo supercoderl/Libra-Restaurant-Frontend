@@ -473,5 +473,6 @@
   "mode": "显示",
   "light": "亮",
   "dark": "暗",
-  "default": "默认"
+  "default": "默认",
+  "please-scan-again": "如果出现错误，请重新扫描二维码"
 }

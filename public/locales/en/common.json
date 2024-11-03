@@ -473,5 +473,6 @@
   "mode": "Mode",
   "light": "Light",
   "dark": "Dark",
-  "default": "Default"
+  "default": "Default",
+  "please-scan-again": "If an error occurs, please rescan the QR code"
 }

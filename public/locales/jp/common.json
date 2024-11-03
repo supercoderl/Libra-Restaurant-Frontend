@@ -473,5 +473,6 @@
   "mode": "表示",
   "light": "明るい",
   "dark": "暗い",
-  "default": "デフォルト"
+  "default": "デフォルト",
+  "please-scan-again": "エラーが発生した場合は、QRコードを再度スキャンしてください"
 }

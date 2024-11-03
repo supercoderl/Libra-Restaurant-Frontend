@@ -473,5 +473,6 @@
   "mode": "Anzeige",
   "light": "Helligkeit",
   "dark": "Dunkel",
-  "default": "Standard"
+  "default": "Standard",
+  "please-scan-again": "Sollte ein Fehler auftreten, scannen Sie bitte den QR-Code erneut"
 }

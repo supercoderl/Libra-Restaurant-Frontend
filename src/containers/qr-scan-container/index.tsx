@@ -47,7 +47,6 @@ export default function QRScanContainer() {
         setPause(false);
         setShow(false);
         setStep(1);
-        console.log(jsonValue);
         if (status === Status.Available) {
             dispatch(updateReservationAsync({
                 reservationId: id,

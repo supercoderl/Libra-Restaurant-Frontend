@@ -473,5 +473,6 @@
   "mode": "Mode",
   "light": "Lumière",
   "dark": "Sombre",
-  "default": "Par défaut"
+  "default": "Par défaut",
+  "please-scan-again": "Si une erreur se produit, veuillez scanner à nouveau le code QR"
 }

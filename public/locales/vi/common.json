@@ -477,5 +477,6 @@
   "mode": "Giao diện",
   "light": "Sáng",
   "dark": "Tối",
-  "default": "Mặc định"
+  "default": "Mặc định",
+  "please-scan-again": "Có lỗi xảy ra vui lòng quét lại mã QR"
 }
