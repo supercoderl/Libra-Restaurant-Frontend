@@ -63,3 +63,5 @@ export const DetailTitleContainer = tw.h4`font-semibold flex items-center text-l
 export const DetailRecipe = tw.p``
 
 export const DetailSummary = tw.p`leading-relaxed text-justify`
+
+export const ProgressContainer = tw.div`mx-auto flex items-center justify-center mb-1`

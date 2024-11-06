@@ -7,13 +7,14 @@ import { ArrowUpOutlined } from "@ant-design/icons";
 
 import { DashboardLayout } from "@/layouts/DashboardLayout";
 import RecentTable from "@/components/recent-table";
-import { Container, PreviewContainer, PreviewContentContainer, PreviewStateContainer, PreviewText, PreviewTextContainer, PreviewTextProgress, RecentContainer, RecentText, Space, Text, TextContainer } from "./style";
+import { Container, PreviewContainer, PreviewContentContainer, PreviewStateContainer, PreviewText, PreviewTextContainer, PreviewTextProgress, ProgressContainer, RecentContainer, RecentText, Space, Text, TextContainer } from "./style";
 import useWindowDimensions from "@/hooks/use-window-dimensions";
 import { items } from "@/api/business/itemApi";
 import dayjs from "dayjs";
 import { useStoreSelector } from "@/redux/store";
 import { TFunction } from "i18next";
 import { useTranslation } from "next-i18next";
+import { Spinner } from "@/components/loading/spinner";
 
 type TopCardProps = {
     title: string;
@@ -21,9 +22,10 @@ type TopCardProps = {
     tagColor: string;
     prefix: string;
     isFullWidth?: boolean;
+    loading: boolean;
 }
 
-const TopCard: React.FC<TopCardProps> = ({ title, tagContent, tagColor, prefix, isFullWidth }) => {
+const TopCard: React.FC<TopCardProps> = ({ title, tagContent, tagColor, prefix, isFullWidth, loading }) => {
 
     return (
         <Col className="gutter-row" span={isFullWidth ? 24 : 6}>
@@ -50,8 +52,9 @@ const TopCard: React.FC<TopCardProps> = ({ title, tagContent, tagColor, prefix, 
                         >
                             <Tag
                                 color={tagColor}
+                                style={{ alignItems: "center", justifyContent: "center", display: "flex" }}
                             >
-                                {tagContent}
+                                {loading ? <Spinner width={16} /> : tagContent}
                             </Tag>
                         </Col>
                     </Row>
@@ -116,21 +119,22 @@ const PreviewState: React.FC<PreviewStateProps> = ({ tag, color, value }) => {
 };
 export default function DashboardContainer({ t }: { t: TFunction<"translation", undefined> }) {
     const { width } = useWindowDimensions();
-    const { data } = useStoreSelector(state => ({
-        data: state.mainDashboardSlice.data
+    const { data, loading } = useStoreSelector(state => ({
+        data: state.mainDashboardSlice.data,
+        loading: state.mainDashboardSlice.loading
     }));
 
     const leadColumns = [
         {
-            title: "Client",
-            dataIndex: "client",
+            title: "Tên khách hàng",
+            dataIndex: "customerName",
         },
         {
-            title: "Phone",
-            dataIndex: "phone",
+            title: "Số điện thoại",
+            dataIndex: "customerPhone",
         },
         {
-            title: "Status",
+            title: "Trạng thái",
             dataIndex: "status",
             render: (status: string) => {
                 let color = status === "pending" ? "volcano" : "green";
@@ -142,32 +146,19 @@ export default function DashboardContainer({ t }: { t: TFunction<"translation", 
 
     const productColumns = [
         {
-            title: "Product Name",
-            dataIndex: "productName",
+            title: "Tên món",
+            dataIndex: "title",
         },
 
         {
-            title: "Price",
+            title: "Đơn giá",
             dataIndex: "price",
         },
         {
-            title: "Status",
-            dataIndex: "status",
-            render: (status: string) => {
-                let color = status === "available" ? "green" : "volcano";
-
-                return <Tag color={color}>{status}</Tag>;
-            },
+            title: "Tồn kho",
+            dataIndex: "quantity",
         },
     ];
-
-    const getItems = async () => {
-        const res = await items();
-    }
-
-    useEffect(() => {
-        getItems();
-    }, []);
 
     return (
         <DashboardLayout t={t}>
@@ -178,6 +169,7 @@ export default function DashboardContainer({ t }: { t: TFunction<"translation", 
                     prefix={`Tháng ${dayjs(new Date).get('month') + 1}`}
                     tagContent={"34,000,000 ₫"}
                     isFullWidth={width <= 767}
+                    loading={loading}
                 />
                 <TopCard
                     title={t("order")}
@@ -185,6 +177,7 @@ export default function DashboardContainer({ t }: { t: TFunction<"translation", 
                     prefix={`Tổng số`}
                     tagContent={`${data.orderCount} đơn`}
                     isFullWidth={width <= 767}
+                    loading={loading}
                 />
                 <TopCard
                     title={t("employee")}
@@ -192,6 +185,7 @@ export default function DashboardContainer({ t }: { t: TFunction<"translation", 
                     prefix={`Ca tối`}
                     tagContent={"12 người đang làm"}
                     isFullWidth={width <= 767}
+                    loading={loading}
                 />
                 <TopCard
                     title={t("revenue")}
@@ -199,6 +193,7 @@ export default function DashboardContainer({ t }: { t: TFunction<"translation", 
                     prefix={`Tháng ${dayjs(new Date).get('month') + 1}`}
                     tagContent={`${data.paymentAmount} ₫`}
                     isFullWidth={width <= 767}
+                    loading={loading}
                 />
             </Row>
             <Space />
@@ -265,7 +260,15 @@ export default function DashboardContainer({ t }: { t: TFunction<"translation", 
                         <TextContainer>
                             <PreviewTextProgress>{t("profit-from-cus")}</PreviewTextProgress>
 
-                            <Progress type="dashboard" percent={data?.customer?.customerCountInThisMonth} size={148} format={(percent) => `${percent}`} />
+                            {
+                                loading ?
+                                    <ProgressContainer>
+                                        <Spinner width={148} color="#1677ff" />
+                                    </ProgressContainer>
+                                    :
+                                    <Progress type="dashboard" percent={data?.customer?.customerCountInThisMonth} size={148} format={(percent) => `${percent}`} />
+                            }
+
                             <p>{t("quantity-cus-in-month")}</p>
                             <Divider />
                             <Statistic
@@ -290,7 +293,12 @@ export default function DashboardContainer({ t }: { t: TFunction<"translation", 
                             </RecentText>
                         </PreviewTextContainer>
 
-                        <RecentTable entity={"lead"} dataTableColumns={leadColumns} />
+                        <RecentTable
+                            entity={"lead"}
+                            data={data?.customer?.top5Customers?.map((item, index) => ({ ...item, key: index + 1 }))}
+                            dataTableColumns={leadColumns}
+                            loading={loading}
+                        />
                     </RecentContainer>
                 </Col>
 
@@ -301,7 +309,12 @@ export default function DashboardContainer({ t }: { t: TFunction<"translation", 
                                 {t("food-recent")}
                             </RecentText>
                         </PreviewTextContainer>
-                        <RecentTable entity={"product"} dataTableColumns={productColumns} />
+                        <RecentTable
+                            entity={"product"}
+                            data={data?.top5Items?.map((item, index) => ({ ...item, key: index + 1 }))}
+                            dataTableColumns={productColumns}
+                            loading={loading}
+                        />
                     </RecentContainer>
                 </Col>
             </Row>

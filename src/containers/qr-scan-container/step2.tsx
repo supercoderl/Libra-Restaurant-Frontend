@@ -2,7 +2,6 @@ import React, { useState, FormEvent } from 'react';
 import { ModalActionButton, ModalActionContainer, ModalActionSvg, ModalActionText, ModalBody, ModalBodyFormContainer, ModalBodyFormGroup, ModalBodyFormInput, ModalBodyFormLabel, ModalBodyStatus, ModalHeader } from "../reservation-container/style";
 import { Status } from '@/enums';
 import { toast } from 'react-toastify';
-import { useStoreDispatch } from '@/redux/store';
 import { TFunction } from 'i18next';
 
 // Define the props interface for Step2 component
@@ -15,8 +14,6 @@ interface Step2Props {
 }
 
 const Step2: React.FC<Step2Props> = ({ onPrevious, onSubmit, status, customerPhone, t }) => {
-    const dispatch = useStoreDispatch();
-
     // State to manage form data
     const [customerData, setCustomerData] = useState({
         customerName: '',

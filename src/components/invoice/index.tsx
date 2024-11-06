@@ -1,4 +1,4 @@
-import { Address, Container, HorizontalLine, InvoiceItems, InvoiceItem, ItemTable, Price, PriceTable, Section, Title, TotalTable, LogoContainer, InfoContainer, InvoiceText, List, InvoiceInfo, TableContainer, Table, Total, PaymentInfoContainer, FooterContainer, FooterRow, InvoiceTime, Medium, TableItem, InfoText, LightLink, Image } from "./style"
+import { Container, Section, Title, LogoContainer, InfoContainer, InvoiceText, List, InvoiceInfo, TableContainer, Table, Total, PaymentInfoContainer, FooterContainer, FooterRow, InvoiceTime, Medium, TableItem, InfoText, LightLink, Image } from "./style"
 import useWindowDimensions from "@/hooks/use-window-dimensions"
 import { TFunction } from "i18next"
 import logo from "../../../public/assets/images/logo/logo-removebg-preview.png";
@@ -7,7 +7,7 @@ import { Order } from "@/type/Order";
 import { dateFormatter } from "@/utils/date";
 import { getOrderStatus } from "@/utils/status";
 import { OrderStatus } from "@/enums";
-import { RefObject, useRef } from "react";
+import { useRef } from "react";
 import { Button } from "antd";
 import { useReactToPrint } from "react-to-print";
 
@@ -34,9 +34,9 @@ export const Invoice: React.FC<InvoiceProps> = ({ t, order }) => {
                     <InfoContainer>
                         <div>
                             <InvoiceText>Khách hàng</InvoiceText>
-                            <h4>{order?.reservationInfo?.customerName}</h4>
+                            <h4>{order?.customerName}</h4>
                             <List>
-                                <li><PhoneOutlined /> {order?.reservationInfo?.customerPhone}</li>
+                                <li><PhoneOutlined /> {order?.customerPhone}</li>
                                 <li>info@xyzcompany.com</li>
                                 <li>123 Main Street</li>
                             </List>
@@ -116,9 +116,9 @@ export const Invoice: React.FC<InvoiceProps> = ({ t, order }) => {
                         <div>
                             <InfoText>Thông tin thanh toán</InfoText>
                             <ul className="list-unstyled">
-                                <li><span className="fw-semibold">Số tài khoản: </span> 102 3345 56938</li>
+                                <li><span className="fw-semibold">Số tài khoản: </span> 0349337045</li>
                                 <li><span className="fw-semibold">Tên tài khoản: </span> LE MINH QUANG</li>
-                                <li><span className="fw-semibold">Chi nhánh: </span> Quận 1 </li>
+                                <li><span className="fw-semibold">Ngân hàng: </span> MB Bank </li>
 
                             </ul>
                         </div>

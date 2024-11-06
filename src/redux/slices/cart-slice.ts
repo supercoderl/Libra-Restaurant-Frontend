@@ -1,9 +1,30 @@
 import { createAsyncThunk, createSlice, Draft, PayloadAction } from '@reduxjs/toolkit';
 import Item from '@/type/Item';
 import { toast } from 'react-toastify';
-import { OrderLine } from '@/type/OrderLine';
 import { Order } from '@/type/Order';
 import { actionOrder } from '@/api/business/orderApi';
+
+export const submitOrder = createAsyncThunk(
+  'orders/submit',
+  async ({ order, action }: { order: Order, action: string }, { rejectWithValue }) => {
+    try {
+      const response = await actionOrder(order, action);
+
+      if (response?.success) {
+        return {
+          success: true,
+          orderId: response?.data
+        };
+      }
+      return {
+        success: false,
+        orderId: null
+      };
+    } catch (error: any) {
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+)
 
 //stateType
 type useCartType = {
@@ -11,6 +32,7 @@ type useCartType = {
   itemsInCart: { item: Item, quantityOrder: number }[];
   loading: boolean;
   isSuccess: boolean;
+  orderId: string | null;
 }
 
 
@@ -19,7 +41,8 @@ const initialState: useCartType = {
   isOpen: false,
   itemsInCart: [],
   loading: false,
-  isSuccess: false
+  isSuccess: false,
+  orderId: null
 }
 
 export const updateOrder = createAsyncThunk(
@@ -103,9 +126,22 @@ export const cartSlice = createSlice({
       .addCase(updateOrder.fulfilled, (state, action) => {
         state.loading = false;
         state.isSuccess = action.payload;
-        toast("Hoàn thành!", { type: "success" });
       })
       .addCase(updateOrder.rejected, (state) => {
+        state.loading = false;
+        state.isSuccess = false;
+      });
+    builder
+      .addCase(submitOrder.pending, (state) => {
+        state.loading = true;
+        state.isSuccess = false;
+      })
+      .addCase(submitOrder.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isSuccess = action.payload.success;
+        state.orderId = action.payload.orderId;
+      })
+      .addCase(submitOrder.rejected, (state) => {
         state.loading = false;
         state.isSuccess = false;
       });

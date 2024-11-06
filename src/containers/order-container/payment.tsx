@@ -13,7 +13,6 @@ import { toast } from "react-toastify";
 import { v4 as uuid } from 'uuid';
 import { Order } from "@/type/Order";
 import { OrderStatus } from "@/enums";
-import { actionOrder } from "@/api/business/orderApi";
 import { clearCart, updateOrder } from "@/redux/slices/cart-slice";
 import { Spinner } from "@/components/loading/spinner";
 import { remove } from "@/utils/localStorage";
@@ -75,6 +74,7 @@ export const Payment: React.FC<PaymentProps> = ({ show, setShow, router, order, 
                 setTimeout(() => {
                     dispatch(updateOrder(body)).then(async () => {
                         if (isSuccess) {
+                            toast("Hoàn thành!", { type: "success" });
                             await sendMessageFunction(tableCode, `Khách bàn số ${tableNumber} yêu cầu thanh toán`, "pay");
                             setType("notify");
                             remove("orderId");

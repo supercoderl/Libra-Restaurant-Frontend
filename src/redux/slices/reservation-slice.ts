@@ -22,8 +22,8 @@ export const updateReservationAsync = createAsyncThunk(
                 customerName: reservationData.customerName,
                 customerPhone: reservationData.customerPhone
             });
-            if (response?.success) {
-                return reservationData;
+            if (response?.success && response?.data && response?.data !== -1) {
+                return { ...reservationData, customerId: response?.data };
             }
             return null;
         } catch (error: any) {
@@ -67,11 +67,12 @@ type sliceType = {
     id: any;
     isChanged: boolean;
     capacity: number;
-    customerName: string;
-    customerPhone: string;
     storeId: any;
     tableNumber: number;
     loading: boolean;
+    loadingId: number | null;
+    customerId: number | null;
+    customerPhone: string | null;
 }
 
 const initialState: sliceType = {
@@ -79,11 +80,12 @@ const initialState: sliceType = {
     id: null,
     isChanged: false,
     capacity: 0,
-    customerName: '',
-    customerPhone: '',
     storeId: null,
     tableNumber: -1,
-    loading: false
+    loading: false,
+    loadingId: null,
+    customerId: null,
+    customerPhone: null
 }
 
 const mainReservationSlice = createSlice({
@@ -112,10 +114,10 @@ const mainReservationSlice = createSlice({
             state.id = null;
             state.isChanged = false;
             state.capacity = 0;
-            state.customerName = '';
-            state.customerPhone = '';
+            state.customerId = null;
             state.storeId = null;
             state.tableNumber = -1;
+            state.customerPhone = null;
         }
     },
     extraReducers: (builder) => {
@@ -123,31 +125,36 @@ const mainReservationSlice = createSlice({
             if (action.payload) {
                 state.id = action.payload.reservationId;
                 state.status = action.payload.status;
-                state.customerName = action.payload.customerName;
+                state.customerId = action.payload.customerId;
                 state.customerPhone = action.payload.customerPhone;
 
                 if (action.payload.orderId) set("orderId", action.payload.orderId);
             }
         });
         builder
-            .addCase(updateReservationAsync.pending, (state) => {
+            .addCase(updateReservationAsync.pending, (state, action) => {
                 state.loading = true;
+                state.loadingId = action.meta.arg.reservationId;
             })
             .addCase(updateReservationAsync.fulfilled, (state, action) => {
                 if (action.payload) {
-                    const { reservationId, capacity, isChanged, storeId, tableNumber } = action.payload;
+                    const { reservationId, capacity, isChanged, storeId, tableNumber, customerId, customerPhone } = action.payload;
 
                     // Cập nhật state bằng dữ liệu đã truyền vào
                     state.id = reservationId;
                     state.capacity = capacity;
                     state.storeId = storeId;
                     state.tableNumber = tableNumber;
+                    state.customerId = customerId;
+                    state.customerPhone = customerPhone;
                     state.isChanged = isChanged; // Cập nhật xong
                 }
                 state.loading = false;
+                state.loadingId = null;
             })
             .addCase(updateReservationAsync.rejected, (state, action) => {
                 state.loading = false;
+                state.loadingId = null;
             });
         builder
             .addCase(generateCodeAsync.pending, (state) => {
@@ -160,14 +167,17 @@ const mainReservationSlice = createSlice({
                 state.loading = false;
             });
         builder
-            .addCase(deleteReservationAsync.pending, (state) => {
+            .addCase(deleteReservationAsync.pending, (state, action) => {
                 state.loading = true;
+                state.loadingId = action.meta.arg;
             })
             .addCase(deleteReservationAsync.fulfilled, (state) => {
                 state.loading = false;
+                state.loadingId = null;
             })
             .addCase(deleteReservationAsync.rejected, (state) => {
                 state.loading = false;
+                state.loadingId = null;
             });
     },
 

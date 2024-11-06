@@ -84,8 +84,6 @@ const Toolbar: React.FC<ToolbarProps> = ({ isRow, onReload, onSearch, t }) => {
                 <Button>{t("filter")}</Button>
 
                 <Button type="primary">{t("reset")}</Button>
-
-                <Button type="primary" danger icon={<PlusOutlined />} href="create">{t("create")}</Button>
             </AlignContainer>
 
             <Divider type="vertical" />

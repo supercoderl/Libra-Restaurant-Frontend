@@ -113,7 +113,7 @@ export default function QRScanContainer() {
             </Container>
             <ModalSection onOpenChange={() => { }} open={show}>
                 {step === 1 && <Step1 t={t} onNext={handleNextStep} status={status} isChanged={isChanged} tableNumber={tableNumber} onClose={onClose} />}
-                {step === 2 && <Step2 t={t} onPrevious={handlePreviousStep} status={status} onSubmit={onSubmit} customerPhone={customerPhone} />}
+                {step === 2 && <Step2 t={t} onPrevious={handlePreviousStep} status={status} onSubmit={onSubmit} customerPhone={customerPhone || ""} />}
             </ModalSection>
         </>
     );

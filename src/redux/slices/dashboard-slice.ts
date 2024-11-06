@@ -26,7 +26,8 @@ export const fetchDataDashboard = createAsyncThunk(
 )
 
 type sliceType = {
-    data: Dashboard
+    data: Dashboard;
+    loading: boolean;
 }
 
 const initialState: sliceType = {
@@ -36,9 +37,12 @@ const initialState: sliceType = {
         customer: {
             customerCountInThisMonth: 0,
             customerCountInLastMonth: 0,
-            percentage: 0
-        }
-    }
+            percentage: 0,
+            top5Customers: []
+        },
+        top5Items: []
+    },
+    loading: false
 }
 
 const mainDashboardSlice = createSlice({
@@ -46,9 +50,17 @@ const mainDashboardSlice = createSlice({
     initialState: initialState,
     reducers: {},
     extraReducers: (builder) => {
-        builder.addCase(fetchDataDashboard.fulfilled, (state, action) => {
-            state.data = action.payload.data;
-        })
+        builder
+            .addCase(fetchDataDashboard.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(fetchDataDashboard.fulfilled, (state, action) => {
+                state.data = action.payload.data;
+                state.loading = false;
+            })
+            .addCase(fetchDataDashboard.rejected, (state) => {
+                state.loading = false;
+            })
     },
 
 })

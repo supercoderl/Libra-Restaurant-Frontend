@@ -1,7 +1,7 @@
 import React from 'react'
 import { Avatar, Button, Dropdown, Flex } from 'antd'
 import { Dot, HeaderContainer, Name, NotificationContainer, UserContainer } from './style'
-import { BellOutlined, CreditCardOutlined, LogoutOutlined, MenuOutlined, ProfileOutlined, UserOutlined } from '@ant-design/icons'
+import { BellOutlined, CreditCardOutlined, HomeOutlined, LogoutOutlined, MenuOutlined, ProfileOutlined, UserOutlined } from '@ant-design/icons'
 import { TFunction } from 'i18next';
 import { useStoreDispatch, useStoreSelector } from '@/redux/store';
 import { NotificationCard } from '@/components/notification';
@@ -21,9 +21,10 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ isShowButton, onMenuC
 
     const items = [
         {
-            label: t("information"),
+            label: t("home"),
             key: '1',
-            icon: <ProfileOutlined />
+            icon: <HomeOutlined />,
+            onClick: () => router.push("/")
         },
         {
             label: t("pay"),
@@ -60,7 +61,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ isShowButton, onMenuC
                     placement="bottom"
                     overlayStyle={{ cursor: 'pointer' }}
                     trigger={['click']}
-                    
+
                 >
                     <UserContainer>
                         <Avatar icon={<UserOutlined />} style={{ margin: 5 }} size='small' />

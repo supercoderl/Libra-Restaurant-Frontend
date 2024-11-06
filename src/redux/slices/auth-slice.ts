@@ -1,4 +1,4 @@
-import { authenticate, currentUser, logout } from "@/api/business/userApi"
+import { authenticate, currentUser, logout, socialAuthenticate } from "@/api/business/userApi"
 import { clear, get, keys, remove, set } from "@/utils/localStorage";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
 import axios from "axios";
@@ -7,7 +7,7 @@ export const login = createAsyncThunk('auth/login', async (data: { email: string
     try {
         const res = await authenticate(data);
         // If Error or Token Doesn't Exist
-        if (res?.data) {
+        if (res?.data && res?.data !== "") {
             const token = res.data.accessToken;
             set(keys.KEY_TOKEN, token);
 
@@ -59,6 +59,36 @@ export const validateUser = createAsyncThunk('auth/validateUser', async (token: 
 
     } catch (err) {
         console.error(err)
+    }
+})
+
+// Login by google
+export const loginBySocial = createAsyncThunk('auth/loginBySocial', async (data: { provider: string, idToken: string }, { dispatch }) => {
+    try {
+        const res = await socialAuthenticate(data);
+
+        if (res?.data && res?.data !== "") {
+            const token = res.data.accessToken;
+            set(keys.KEY_TOKEN, token);
+
+            const refreshToken = res.data.refreshToken;
+            set(keys.KEY_REFRESH_TOKEN, refreshToken);
+
+            // Validate User By Token
+            dispatch(validateUser(token))
+        }
+
+    } catch (err: unknown) {
+        if (axios.isAxiosError(err)) {
+            // Đây là lỗi từ Axios, bạn có thể truy cập vào `err.response.data.message`
+            dispatch(setMessage({ type: "error", message: err?.response?.data?.message }));
+        } else if (err instanceof Error) {
+            // Đây là một lỗi JavaScript thông thường
+            dispatch(setMessage({ type: "error", message: err.message }));
+        } else {
+            // Lỗi khác không xác định
+            dispatch(setMessage({ type: "error", message: "An unknown error occurred" }));
+        }
     }
 })
 
@@ -149,6 +179,7 @@ const authSlice = createSlice({
                 state.isAuthenticating = true;
             })
             .addCase(validateUser.fulfilled, (state, action) => {
+                console.log(action);
                 state.isAuthenticating = false;
                 state.isAuthenticated = true;
                 state.token = action.payload?.token;
@@ -175,7 +206,20 @@ const authSlice = createSlice({
                 state.isAuthenticated = false;
                 state.token = null;
                 state.user = {};
+            });
+        builder
+            .addCase(loginBySocial.pending, (state) => {
+                state.isAuthenticating = true;
             })
+            .addCase(loginBySocial.fulfilled, (state, action) => {
+                state.isAuthenticating = false;
+            })
+            .addCase(loginBySocial.rejected, (state) => {
+                state.isAuthenticating = false;
+                state.isAuthenticated = false;
+                state.token = null;
+                state.user = {};
+            });
     },
 })
 

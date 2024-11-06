@@ -26,6 +26,7 @@ const EmployeeAction: NextPage = () => {
         { name: ['storeId'], value: '' },
         { name: ['email'], value: '' },
         { name: ['mobile'], value: '' },
+        { name: ['password'], value: 'Password123!' }
     ]);
     const [loading, setLoading] = useState(false);
     const [state, setState] = useState(t("employee-create"));
@@ -41,6 +42,7 @@ const EmployeeAction: NextPage = () => {
                         { name: 'storeId', value: res.data?.storeId },
                         { name: 'email', value: res.data?.email },
                         { name: 'mobile', value: res.data?.mobile },
+                        { name: 'password', value: res.data?.password }
                     ]);
                     setState(t("employee-update"));
                 }
@@ -53,8 +55,13 @@ const EmployeeAction: NextPage = () => {
 
     const onFinish = async () => {
         setLoading(true);
+        
         let values = fields.reduce((acc, field) => {
-            if (Array.isArray(field.name) && typeof field.name[0] === 'string') {
+            if (typeof field.name === 'string') {
+                acc[field.name] = field.value;
+            }
+
+            else if (Array.isArray(field.name) && typeof field.name[0] === 'string') {
                 acc[field.name[0]] = field.value;
             }
             return acc;

@@ -6,7 +6,7 @@ export interface Reservation {
     storeId: string;
     description?: string | null;
     reservationTime?: Date | null;
-    customerName?: string | null;
+    customerId?: number | null;
     customerPhone?: string | null;
     qrCode?: string | null;
     storeName?: string | null;

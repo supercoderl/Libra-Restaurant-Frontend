@@ -12,6 +12,13 @@ export function authenticate(data: { email: string, password: string }): Promise
     }, data);
 }
 
+export function socialAuthenticate(data: { provider: string, idToken: string }): Promise<SingleResponse | undefined> {
+    return apiPost<SingleResponse>({
+        url: `/Social/${data.provider}`,
+        params: null
+    }, data);
+}
+
 export function logout(data: { refreshToken: string }): Promise<SingleResponse | undefined> {
     return apiPut<SingleResponse>({
         url: `/${CLASS_ITEM_NAME}/logout`,

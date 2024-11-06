@@ -28,7 +28,7 @@ function DropDownRowMenu() {
 }
 
 export default function RecentTable({ ...props }) {
-    let { entity, dataTableColumns } = props;
+    let { entity, dataTableColumns, data, loading } = props;
     dataTableColumns = [
         ...dataTableColumns,
         {
@@ -41,28 +41,14 @@ export default function RecentTable({ ...props }) {
         },
     ];
 
-    const dataSource = [
-        {
-            key: '1',
-            name: 'Mike',
-            age: 32,
-            address: '10 Downing Street',
-        },
-        {
-            key: '2',
-            name: 'John',
-            age: 42,
-            address: '10 Downing Street',
-        },
-    ];
-
     return (
         <>
             <Table
                 columns={dataTableColumns}
                 rowKey={(item) => item.key}
-                dataSource={dataSource}
+                dataSource={data}
                 pagination={false}
+                loading={loading}
             />
         </>
     );

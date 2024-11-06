@@ -81,20 +81,16 @@ export default function MenuComponent() {
             icon: <SettingOutlined />,
             children: [
                 {
-                    label: t("graphics"),
+                    label: t("currency"),
                     key: '12'
                 },
                 {
-                    label: t("currency"),
+                    label: t("gps"),
                     key: '13'
                 },
                 {
-                    label: t("gps"),
-                    key: '14'
-                },
-                {
                     label: (<Link href="/management/role/general">{t("role")}</Link>),
-                    key: '15'
+                    key: '14'
                 },
             ],
         },

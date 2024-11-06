@@ -13,7 +13,7 @@ import AddIcon from '../../../public/assets/icons/add-icon.svg';
 import CloseIcon from '../../../public/assets/icons/close-icon.svg';
 import SubtractIcon from '../../../public/assets/icons/subtract-icon.svg';
 import { ArrowEffect } from "@/components/arrows/effect";
-import { changeQuantity, removeItem, updateItemsInCart } from "@/redux/slices/cart-slice";
+import { changeQuantity, removeItem, submitOrder, updateItemsInCart } from "@/redux/slices/cart-slice";
 import { toast } from "react-toastify";
 import { v4 as uuid } from 'uuid';
 import { get, set } from "@/utils/localStorage";
@@ -28,7 +28,7 @@ import { ThemeContext } from "@/theme/theme-provider";
 export default function OrderContainer({ t }: { t: TFunction<"translation", undefined> }) {
     const router = useRouter();
     const [orderId, setOrderId] = useState<string | null>(null);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [show, setShow] = useState(false);
     const [orderS, setOrderS] = useState<Order | null>(null);
     const [count, setCount] = useState(0);
@@ -39,7 +39,7 @@ export default function OrderContainer({ t }: { t: TFunction<"translation", unde
     const [now, setNow] = useState(new Date());
     const themeContext = useContext(ThemeContext);
 
-    const { itemsInCart, id, storeId, tableNumber, discountLoading, discountType, items } = useStoreSelector(
+    const { itemsInCart, id, storeId, tableNumber, discountLoading, discountType, items, orderLoading, customerId } = useStoreSelector(
         state => ({
             itemsInCart: state.cart.itemsInCart,
             id: state.reservation.id,
@@ -47,7 +47,9 @@ export default function OrderContainer({ t }: { t: TFunction<"translation", unde
             tableNumber: state.reservation.tableNumber,
             discountLoading: state.mainDiscountTypeSlice.loading,
             discountType: state.mainDiscountTypeSlice.discountType,
-            items: state.mainProductSlice.items
+            items: state.mainProductSlice.items,
+            orderLoading: state.cart.loading,
+            customerId: state.reservation.customerId
         })
     );
 
@@ -93,7 +95,6 @@ export default function OrderContainer({ t }: { t: TFunction<"translation", unde
             return;
         }
 
-        setLoading(true);
         let body: any = {
             orderNo: generateOrderNo(Number(tableNumber)),
             storeId,
@@ -102,6 +103,7 @@ export default function OrderContainer({ t }: { t: TFunction<"translation", unde
             subtotal: calculateTotal(itemsInCart, discountType),
             tax: 0,
             total: calculateTotal(itemsInCart, discountType),
+            customerId,
             latestStatus: OrderStatus.InPreperation,
             latestStatusUpdate: new Date(),
             isPaid: false,
@@ -123,31 +125,24 @@ export default function OrderContainer({ t }: { t: TFunction<"translation", unde
             }))
         };
 
-        try {
-            let response;
-            if (orderId) {
-                body.orderId = orderId;
-                body.action = "update";
-                response = await actionOrder(body as Order, "edit");
-                setCount(count + 1);
+        setCount(count + 1);
+        if (orderId) {
+            body.orderId = orderId;
+            body.action = "update";
+        }
+        dispatch(submitOrder({ order: body, action: orderId ? "update" : "create" })).then(async (res) => {
+            if (submitOrder.fulfilled.match(res)) {
+                if (orderId) {
+
+                }
+                else {
+                    set("orderId", res.payload.orderId);
+                    setOrderId(res.payload.orderId);
+                }
+                await sendMessageToGroup(myTable, `Khách bàn số ${tableNumber} đã đặt món`, "order");
+                toast(t("order-success"), { type: "success" })
             }
-            else {
-                response = await actionOrder(body as Order, "create");
-                setCount(count + 1);
-                if (response && response.data) {
-                    set("orderId", response.data);
-                    setOrderId(response.data);
-                };
-            }
-            await sendMessageToGroup(myTable, `Khách bàn số ${tableNumber} đã đặt món`, "order");
-            toast(t("order-success"), { type: "success" })
-        }
-        catch (error) {
-            console.log("Submit to pay: ", error);
-        }
-        finally {
-            setTimeout(() => setLoading(false), 600);
-        }
+        });
     }
 
     //? Init
@@ -165,26 +160,33 @@ export default function OrderContainer({ t }: { t: TFunction<"translation", unde
     //? Focus On Mount
     useEffect(() => {
         const getOrder = async () => {
-            const res = await order(orderId || "");
-            if (res && res.data) {
-                setOrderS(res.data);
-                if (itemsInCart.length === 0 && res.data?.orderLines && res.data?.orderLines.length > 0) {
-                    const itemsAddToCart = res.data?.orderLines.map((x: OrderLine) => {
-                        const item = items.find(i => i.itemId === x.itemId);
-                        if (item) {
-                            return {
-                                item,
-                                quantityOrder: x.quantity
-                            };
-                        }
-                        return null;
-                    }).filter(Boolean);
-                    dispatch(updateItemsInCart(itemsAddToCart));
+            setLoading(true);
+            try {
+                const res = await order(orderId || "");
+                if (res && res.data) {
+                    setOrderS(res.data);
+                    if (itemsInCart.length === 0 && res.data?.orderLines && res.data?.orderLines.length > 0) {
+                        const itemsAddToCart = res.data?.orderLines.map((x: OrderLine) => {
+                            const item = items.find(i => i.itemId === x.itemId);
+                            if (item) {
+                                return {
+                                    item,
+                                    quantityOrder: x.quantity
+                                };
+                            }
+                            return null;
+                        }).filter(Boolean);
+                        dispatch(updateItemsInCart(itemsAddToCart));
+                    }
                 }
             }
+            catch (error) { console.log(error) }
+            finally {
+                setTimeout(() => setLoading(false), 2000);
+            };
         }
 
-        orderId && getOrder();
+        orderId ? getOrder() : setLoading(false);
     }, [count, orderId]);
 
     return (
@@ -236,8 +238,8 @@ export default function OrderContainer({ t }: { t: TFunction<"translation", unde
                                                             </QuantityButton>
                                                             <ItemInfoPriceText>{e.quantityOrder}</ItemInfoPriceText>
                                                             <QuantityButton
-                                                                $isDisabled={!e.hasMore}
-                                                                disabled={!e.hasMore}
+                                                                $isDisabled={!e.hasMore || loading}
+                                                                disabled={!e.hasMore || loading}
                                                                 onClick={() => {
                                                                     if (e.quantityOrder === 1) {
                                                                         dispatch(removeItem(e.item.itemId))
@@ -248,10 +250,13 @@ export default function OrderContainer({ t }: { t: TFunction<"translation", unde
                                                                 }}
                                                             >
                                                                 {
-                                                                    e.quantityOrder === 1 ?
-                                                                        <CloseIcon width={16} height={16} fill="white" />
+                                                                    loading ?
+                                                                        <Spinner width={16} color="white" />
                                                                         :
-                                                                        <SubtractIcon width={16} fill="white" />
+                                                                        e.quantityOrder === 1 ?
+                                                                            <CloseIcon width={16} height={16} fill="white" />
+                                                                            :
+                                                                            <SubtractIcon width={16} fill="white" />
                                                                 }
                                                             </QuantityButton>
                                                         </QuantityContainer>
@@ -318,7 +323,7 @@ export default function OrderContainer({ t }: { t: TFunction<"translation", unde
                                         <Button onClick={onCancel}>{t("cancel")}</Button>
                                         <Button onClick={onSubmit} className="group">
                                             {
-                                                loading && <Spinner width={15} />
+                                                orderLoading && <Spinner width={15} />
                                             }
                                             {t("order")}
                                         </Button>

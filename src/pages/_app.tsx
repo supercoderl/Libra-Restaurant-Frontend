@@ -32,6 +32,7 @@ import { appWithTranslation } from 'next-i18next';
 import DarkThemeToggler from '@/components/dark-theme-toggler';
 import { SignalRProvider } from '@/context/signalRProvider';
 import { Settings } from '@/components/settings';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 let persistor = persistStore(store);
 
@@ -46,21 +47,23 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 
   return (
     <ConfigProvider locale={locale}>
-      {/* <LanguageSelector /> */}
-      <Provider store={store} stabilityCheck="never">
-        <SignalRProvider>
-          <GlobalStyles />
-          <ThemeStyles />
-          <ToastContainer position="top-center" />
-          <ThemeProvider>
-            <PersistGate loading={null} persistor={persistor}>
-              <Component {...pageProps} />
-              <Settings />
-            </PersistGate>
-            <DarkThemeToggler />
-          </ThemeProvider>
-        </SignalRProvider>
-      </Provider>
+      <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}>
+        {/* <LanguageSelector /> */}
+        <Provider store={store} stabilityCheck="never">
+          <SignalRProvider>
+            <GlobalStyles />
+            <ThemeStyles />
+            <ToastContainer position="top-center" />
+            <ThemeProvider>
+              <PersistGate loading={null} persistor={persistor}>
+                <Component {...pageProps} />
+                <Settings />
+              </PersistGate>
+              <DarkThemeToggler />
+            </ThemeProvider>
+          </SignalRProvider>
+        </Provider>
+      </GoogleOAuthProvider>
     </ConfigProvider>
   );
 }

@@ -1,7 +1,7 @@
 import { DashboardLayout } from "@/layouts/DashboardLayout"
 import { Button, Checkbox, CheckboxProps, DatePicker, DatePickerProps, Divider, Image, Input, Popconfirm, Select, Table, TableColumnsType, Tag, Tooltip } from "antd";
 import { ActionContainer, AlignContainer, HeaderText, TableContainer, ToolbarContainer } from "./style";
-import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined, ReloadOutlined, RollbackOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, EyeOutlined, LoadingOutlined, PlusOutlined, ReloadOutlined, RollbackOutlined } from "@ant-design/icons";
 import useWindowDimensions from "@/hooks/use-window-dimensions";
 import { ListRep } from "@/type/objectTypes";
 import { useState } from "react";
@@ -154,8 +154,9 @@ export const ReservationContainer: React.FC<ReservationProps> = ({ result, loadi
                 <ActionContainer>
                     <Tooltip title={t("clean")}>
                         <Button
-                            icon={<ClearIcon fill="#ff4d4f" />}
+                            icon={(reservationLoading && reservationLoadingId === row.reservationId) ? <LoadingOutlined /> : <ClearIcon fill="#ff4d4f" />}
                             type="link"
+                            disabled={reservationLoading && reservationLoadingId === row.reservationId}
                             danger
                             onClick={() => handleSubmitClean(row)}
                         />
@@ -176,6 +177,7 @@ export const ReservationContainer: React.FC<ReservationProps> = ({ result, loadi
                             icon={<EditOutlined />}
                             type="link"
                             danger
+                            disabled={reservationLoading && reservationLoadingId === row.reservationId}
                             href={`edit?reservationId=${row.reservationId}`}
                         />
                     </Tooltip>
@@ -184,8 +186,9 @@ export const ReservationContainer: React.FC<ReservationProps> = ({ result, loadi
                             title="Xóa bàn"
                             description="Bạn có chắc muốn xóa bàn này?"
                             okText="Đồng ý"
+                            disabled={reservationLoading && reservationLoadingId === row.reservationId}
                             cancelText="Không"
-                            okButtonProps={{ loading: reservationLoading }}
+                            okButtonProps={{ loading: reservationLoading && reservationLoadingId === row.reservationId }}
                             onConfirm={() => dispatch(deleteReservationAsync(row.reservationId)).then(onReload)}
                         >
                             <Button
@@ -212,8 +215,9 @@ export const ReservationContainer: React.FC<ReservationProps> = ({ result, loadi
     const [isOpen, setIsOpen] = useState(false);
     const [itemSelected, setItemSelected] = useState<Reservation | null>(null);
     const { width } = useWindowDimensions();
-    const { reservationLoading } = useStoreSelector(state => ({
-        reservationLoading: state.reservation.loading
+    const { reservationLoading, reservationLoadingId } = useStoreSelector(state => ({
+        reservationLoading: state.reservation.loading,
+        reservationLoadingId: state.reservation.loadingId
     }));
 
     const dispatch = useStoreDispatch();
@@ -226,11 +230,13 @@ export const ReservationContainer: React.FC<ReservationProps> = ({ result, loadi
             storeId: reservation.storeId,
             tableNumber: reservation.tableNumber,
             status: Status.Available,
-            customerName: null,
-            customerPhone: null
-        })).then(() => {
-            toast("Cập nhật bàn thành công", { type: "success" });
-            onReload();
+            customerName: "",
+            customerPhone: ""
+        })).then((res) => {
+            if (updateReservationAsync.fulfilled.match(res)) {
+                toast("Cập nhật bàn thành công", { type: "success" });
+                onReload();
+            }
         });
     }
 

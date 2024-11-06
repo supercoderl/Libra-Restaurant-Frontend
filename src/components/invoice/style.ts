@@ -39,19 +39,3 @@ export const FooterRow = tw.div`flex justify-between mt-3`
 export const InfoText = tw.h5`font-bold my-4`
 
 export const LightLink = tw.a`text-gray-500`
-
-export const Address = tw.p`my-[10px] font-semibold text-sm mx-auto`;
-
-export const HorizontalLine = tw.hr`border-[1px] border-dashed border-[rgb(131,_131,_131)] my-[25px] mx-auto`;
-
-export const ItemTable = tw.table`w-full table-fixed`;
-
-export const InvoiceItems = tw.tr`border-t-[1px] border-[#ddd] p-[10px]`;
-
-export const InvoiceItem = tw.td`py-2`
-
-export const Price = tw.td`text-right`;
-
-export const PriceTable = tw.table`w-full bg-[#fcbd024f] rounded-[4px]`;
-
-export const TotalTable = tw.table`w-full mt-[15px] border-[1px] border-dashed border-[#00cd00] rounded-[3px]`
