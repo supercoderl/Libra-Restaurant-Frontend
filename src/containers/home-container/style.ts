@@ -30,7 +30,7 @@ export const ScrollableContainer = styled.div`${tw`flex overflow-scroll w-full h
 export const FoodCategoriesContainer = tw.div`flex w-[90%] justify-around`
 
 export const FoodContainer = styled.div<foodProps>`
-${({ $isReservation }) => $isReservation ? tw`grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 col-span-3 w-full pt-4 gap-y-8 md:max-h-[800px]` : tw`grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 w-[90%] gap-8`}
+${({ $isReservation }) => $isReservation ? tw`grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 col-span-3 w-full pt-4 gap-y-8 md:max-h-[800px]` : tw`grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 w-full md:w-[90%] gap-8`}
 ${tw`grid place-items-center md:place-items-start overflow-x-hidden overflow-y-scroll p-4 pb-12`}
 `
 
