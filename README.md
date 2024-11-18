@@ -1,6 +1,6 @@
 
 
-# ![alt text](https://github.com/supercoderl/Libra-Restaurant-Frontend/blob/main/public/assets/images/logo/logo-removebg-preview.png?raw=true =60x60) Libra Restaurant
+# ![logo](https://github.com/supercoderl/Libra-Restaurant-Frontend/blob/main/public/assets/images/logo/logo-removebg-preview.png?raw=true){ :height="36px" width="36px" } Libra Restaurant
 
 
 A next.js restaurant app, with redux-toolkit and tailwindcss
