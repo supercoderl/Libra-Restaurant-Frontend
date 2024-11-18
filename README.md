@@ -8,25 +8,29 @@ Welcome to our restaurant's website, designed to offer a seamless and modern din
 
 ## Features
 
-- Multi Languages
-- DarkMode 🐱‍👤
-- Full responsiveness
-- Order directly
-- Payment online
+- Multi Languages 🌎
+- DarkMode ☀️🌑
+- Full responsiveness 📱🖥️
+- Order directly 🛒
+- Payment online 💳
 
 ## Screenshots
 
-![screen1](https://user-images.githubusercontent.com/45109516/135887679-9d760f00-45da-41a7-baa7-e1ffe88f6ea0.png)
+![screen1](https://res.cloudinary.com/dcystvroz/image/upload/v1731938627/My%20pics/sbegjixbbqpptwjrewzv.png)
 
 ##
 
-![screen2](https://user-images.githubusercontent.com/45109516/135887676-5ae5a9d8-5232-4ea8-8a97-37d8855e476a.png)
+![screen2](https://res.cloudinary.com/dcystvroz/image/upload/v1731938625/My%20pics/hjdgjin0jm8sm4nvmemq.png)
 
 ##
 
-![screen3](https://user-images.githubusercontent.com/45109516/135887678-4f1667ce-b754-49f8-a62d-ebb6c9f888fb.png)
+![screen3](https://res.cloudinary.com/dcystvroz/image/upload/v1731938625/My%20pics/hnowezilzv9eh8rxffkn.png)
 
-## Notice
+##
+
+![screen4](https://res.cloudinary.com/dcystvroz/image/upload/v1731938625/My%20pics/gulopkliy2qcmiu4fisw.png)
+
+## Notice!!!
 
 You must to create an env file and following this code:
 
