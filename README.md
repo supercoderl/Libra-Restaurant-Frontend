@@ -1,6 +1,6 @@
 
 
-# ![alt text](F:\Workspace\LibraRestaurantFrontend\public\assets\images\logo\logo-removebg-preview.png) Libra Restaurant
+# ![alt text](https://github.com/supercoderl/Libra-Restaurant-Frontend/blob/main/public/assets/images/logo/logo-removebg-preview.png?raw=true) Libra Restaurant
 
 
 A next.js restaurant app, with redux-toolkit and tailwindcss
