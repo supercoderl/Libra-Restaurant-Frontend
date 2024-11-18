@@ -18,7 +18,7 @@ export const MenuHead = tw.div`mb-[25px]`
 
 export const MenuHeadTitle = tw.h4`font-lobster text-[34px] font-normal text-main`
 
-export const DzShopCard = tw.div`relative overflow-hidden mb-[30px] p-0 shadow-none z-10 transition duration-500 cursor-pointer p-4 rounded-md hover:bg-white hover:shadow-[rgba(0,_0,_0,_0.35)_0px_5px_15px]`
+export const DzShopCard = tw.div`relative overflow-hidden mb-[30px] p-0 shadow-none z-10 transition duration-500 cursor-pointer md:p-4 rounded-md hover:bg-white hover:shadow-[rgba(0,_0,_0,_0.35)_0px_5px_15px]`
 
 export const DzContent = tw.div`flex flex-col w-full`
 

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import tw from "twin.macro";
 
-export const Container = tw.div`fixed right-0 top-1/2`
+export const Container = tw.div`fixed right-0 top-1/2 z-20`
 
 export const ButtonSetting = tw.button`w-10 h-10 rounded-sm flex justify-center items-center bg-red-500`;
 
