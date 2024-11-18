@@ -1,6 +1,6 @@
 
 
-# 🤯Next.js-restaurant
+# ![alt text](F:\Workspace\LibraRestaurantFrontend\public\assets\images\logo\logo-removebg-preview.png) Libra Restaurant
 
 
 A next.js restaurant app, with redux-toolkit and tailwindcss
